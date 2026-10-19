@@ -1,0 +1,26 @@
+variable,libelle,type,modalites
+...1,Numéro de ligne créé lors de l'export du fichier,Numérique,Colonne technique sans intérêt
+X,Ancien numéro de ligne,Numérique,Colonne technique sans intérêt
+station,Identifiant de la station météo,Texte,"Ex. ""07790"" pour Bastia"
+date,Jour du relevé,Date,Du 01/01/2010 au 08/09/2026
+temp,Température moyenne de l'air sur la journée,Numérique,En °C
+tmin,Température minimale de la journée,Numérique,En °C
+tmax,Température maximale de la journée,Numérique,En °C
+rhum,Humidité relative de l'air,Numérique,En %
+prcp,Précipitations de la journée,Numérique,"En mm ; NA = relevé manquant (les jours secs valent 0)"
+snwd,Hauteur de neige au sol,Numérique,"En mm ; NA ambigus (aucun 0 dans la base)"
+wspd,Vitesse moyenne du vent,Numérique,En km/h
+wpgt,Rafale maximale,Numérique,"En km/h ; beaucoup de NA"
+pres,Pression atmosphérique,Numérique,En hPa
+tsun,Durée d'ensoleillement,Numérique,"En minutes ; beaucoup de NA"
+cldc,Couverture nuageuse,Numérique (catégorielle ordonnée),"En octas : 0 = ciel dégagé … 8 = couvert ; 9 = ciel invisible"
+*_source,Source de chaque mesure,Texte,Colonnes techniques (ghcnd, isd_lite…)
+id,Identifiant de la station,Texte,Identique à station
+country,Pays,Texte,"""FR"" uniquement"
+region,Code de région de la station,Texte,Code d'une lettre
+latitude,Latitude de la station,Numérique,En degrés
+longitude,Longitude de la station,Numérique,En degrés
+elevation,Altitude de la station,Numérique,En mètres
+timezone,Fuseau horaire,Texte,"""Europe/Paris"""
+language,Langue,Texte,"""en"""
+name,Nom de la station (la ville),Texte,"13 villes : Bastia, Lille, Lyon / Bron, Marseille / Marignane, Montelimar, Montpellier, Nancy / Essey, Nantes, Nice, Paris-Orly, Perpignan, Rennes, Strasbourg"
