@@ -6,8 +6,10 @@ Application Shiny (bslib) pour apprendre l'analyse de bases de données avec R e
 |---|---|
 | **Cours** | 17 leçons par base, découpées en cartes (explication → code → résultat réellement calculé → commentaire), des premières commandes jusqu'à une étude de cas complète, puis des compléments (pourcentages d'un tableau croisé, ggplot2, gt, jointures, cartes, boucles et fonctions, Eurostat) |
 | **Découverte** | 10 pistes guidées par base (code de départ + idées à tester) et un bac à sable libre. Chaque carte du cours peut y être envoyée pour être modifiée |
-| **Exercices** | 27 exercices (naissances) et 24 (météo) en 5 niveaux, avec indice, vérification automatique du résultat et correction commentée |
+| **Exercices** | 28 exercices (naissances) et 25 (météo) en 5 niveaux, avec indice, vérification automatique du résultat et correction commentée |
 | **Dashboard** | Un tableau de bord interactif par base. Chaque graphique a un bouton « Voir le code » qui affiche le code R exact qui le produit |
+
+Comme dans RStudio, les tableaux **gt** s'affichent dans un **Viewer**, sous le code, partout où du code s'exécute (voir `R/viewer.R` et le guide).
 
 On y trouve aussi une visite guidée (même principe que vizsurvey), un dictionnaire des variables et un sélecteur de base dans la barre du haut.
 
@@ -15,7 +17,7 @@ On y trouve aussi une visite guidée (même principe que vizsurvey), un dictionn
 
 ```r
 install.packages(c("shiny", "bslib", "dplyr", "tidyr", "ggplot2", "lubridate",
-                   "stringr", "forcats", "scales", "plotly", "shinyAce",
+                   "stringr", "forcats", "scales", "plotly", "shinyAce", "gt",
                    "evaluate", "commonmark", "jsonlite", "htmltools"))
 shiny::runApp("atelier_r")
 ```
@@ -49,7 +51,7 @@ content/
 ```
 Rscript tests/test_contenus.R          # toutes les cartes, pistes et corrections
 Rscript tests/test_verification.R      # vérification automatique des exercices
-Rscript tests/test_sandbox.R           # sécurité du bac à sable (104 tests)
+Rscript tests/test_sandbox.R           # sécurité du bac à sable (113 tests)
 ```
 
 ## Sécurité du code exécuté
@@ -59,7 +61,7 @@ Le code des étudiants s'exécute sur le serveur. Il est protégé par quatre ba
 1. **Liste blanche, avant exécution.** Le code est analysé avant d'être lancé : chaque fonction appelée doit faire partie des fonctions du cours (verbes du tidyverse, calculs, ggplot2…). Tout le reste est refusé : `system()`, la lecture et l'écriture de fichiers, `eval`, `get`, `library`, `::`, `<<-`, les boucles `while` et `repeat`, les fonctions récursives, les noms de fonctions passés en texte (`"system"`), etc. Les boucles `for` et les fonctions créées par l'étudiant sont permises, et leur corps est contrôlé de la même façon. Les jointures passent par des versions protégées : la base de droite est limitée à 50 000 lignes et doit avoir une seule ligne par clé.
 2. **Environnement isolé.** Le code tourne dans un environnement dont le parent est vide : il ne voit que les fonctions autorisées et les bases. Chaque session a son propre environnement, et les bases d'origine ne sont jamais modifiées.
 3. **Limites.** Le calcul est coupé à 15 secondes. La longueur du code, la taille des nombres écrits en dur, le nombre de variables dans `table()` et la longueur de l'affichage sont aussi plafonnés.
-4. **Affichage échappé.** Aucun HTML ni JavaScript ne peut être injecté dans la page.
+4. **Affichage échappé.** Aucun HTML ni JavaScript ne peut être injecté dans la page. Les tableaux gt (Viewer) sont affichés dans un cadre isolé (`iframe` sans script, sans ressource externe).
 
 Les étudiants voient la liste des fonctions autorisées (bouton « Fonctions autorisées » dans Découverte). Pour en ajouter une, complétez `SANDBOX_ALLOWED` dans `R/sandbox.R`.
 
@@ -83,6 +85,7 @@ Comptez environ 1 Go de mémoire par processus : la base des naissances occupe �
 app.R                 assemblage de l'interface et du serveur
 R/sandbox.R           exécution sécurisée
 R/render.R            coloration syntaxique, rendu des résultats, markdown
+R/viewer.R            le Viewer : tableaux gt affichés dans un cadre isolé
 R/content.R           lecture des fichiers de contenu
 R/compare.R           vérification automatique des exercices
 R/mod_*.R             un module par volet (accueil, cours, découverte, exercices, dashboard, visite)

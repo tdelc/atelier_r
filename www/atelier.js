@@ -3,10 +3,30 @@
 //  - boutons « Copier » des blocs de code
 //  - flèches du clavier dans le cours
 //  - progression des exercices gardée dans le navigateur (localStorage)
+//  - hauteur des cadres du Viewer (tableaux gt)
 // ===========================================================================
 
 (function () {
   var KEY = "atelierR_progression_v1";
+
+  // --- Viewer : le cadre prend la hauteur du tableau ------------------------
+  // (l'événement load ne remonte pas : on l'écoute en phase de capture)
+  function fitViewer(f) {
+    try {
+      var d = f.contentDocument;
+      if (d && d.documentElement) f.style.height = (d.documentElement.scrollHeight + 2) + "px";
+    } catch (err) {}
+  }
+  document.addEventListener("load", function (e) {
+    if (e.target && e.target.classList && e.target.classList.contains("viewer-frame")) fitViewer(e.target);
+  }, true);
+  // un cadre affiché dans un onglet caché mesure 0 : on le remesure à l'affichage
+  document.addEventListener("shown.bs.tab", function () {
+    document.querySelectorAll(".viewer-frame").forEach(fitViewer);
+  });
+  window.addEventListener("resize", function () {
+    document.querySelectorAll(".viewer-frame").forEach(fitViewer);
+  });
 
   // --- Copier le code -------------------------------------------------------
   document.addEventListener("click", function (e) {

@@ -610,3 +610,37 @@ fiche_dep("59")
 
 ## Commentaire
 Une fois la fonction écrite, `fiche_dep("75")` ou `fiche_dep("2A")` donnent la fiche d'un autre département sans recopier le code. Pour plusieurs départements à la fois, une boucle `for` et `bind_rows()` empilent les fiches… mais `group_by(DEPNAIS)` reste plus simple : les fonctions servent surtout quand un même traitement doit être répété sur des **objets différents**.
+
+# Un tableau de rapport avec gt
+niveau: 3
+theme: gt
+
+## Énoncé
+Calculez, pour chaque nationalité de la mère (`INDNATM`), le nombre de naissances et l'âge moyen de la mère (`AGEXACTM`). Présentez le résultat dans un tableau **gt** avec un titre, des libellés de colonnes en français et l'âge arrondi à une décimale. Le tableau s'affiche dans le Viewer, sous votre code.
+
+## Indice
+D'abord le tableau : `group_by(INDNATM) |> summarise(NB = n(), AGE = mean(AGEXACTM))`. Puis la présentation : `gt()`, `tab_header(title = "…")`, `cols_label(INDNATM = "…", …)` et `fmt_number(columns = AGE, decimals = 1)`.
+
+## Code de départ
+```r
+BDD_NAIS |>
+  group_by(INDNATM) |>
+  summarise(...) |>
+  gt()
+```
+
+## Correction
+```r
+BDD_NAIS |>
+  group_by(INDNATM) |>
+  summarise(NB = n(), AGE = mean(AGEXACTM)) |>
+  gt() |>
+  tab_header(title = "Naissances selon la nationalité de la mère, 2021") |>
+  cols_label(INDNATM = "Nationalité de la mère (1 = française)",
+             NB = "Naissances", AGE = "Âge moyen de la mère") |>
+  fmt_number(columns = NB, decimals = 0, sep_mark = " ") |>
+  fmt_number(columns = AGE, decimals = 1, dec_mark = ",", sep_mark = " ")
+```
+
+## Commentaire
+La vérification porte sur les **données** du tableau (les nombres et les moyennes), pas sur sa mise en forme : vos titres et libellés peuvent différer de la correction. Pour afficher « Française » et « Étrangère » plutôt que 1 et 2, recodez `INDNATM` avec `if_else()` avant `gt()`.

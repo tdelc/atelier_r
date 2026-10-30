@@ -136,6 +136,23 @@ r <- run('"<script>alert(1)</script>"')
 html <- as.character(render_run(r))
 expect("HTML échappé", !grepl("<script>", html, fixed = TRUE))
 
+# Viewer (tableaux gt) : affiché dans un cadre isolé, sans script
+types <- function(r) vapply(r$items, function(i) i$type, "")
+r <- run('BDD |> count(g) |> gt() |> tab_header(title = "T") |> fmt_percent(columns = n)')
+expect("un tableau gt s'affiche dans le Viewer", r$ok && "html" %in% types(r))
+expect("tableau gt vérifiable par ses données", compare_results(r$value, df |> count(g))$status == "ok")
+r <- run('T <- gt(BDD)')
+expect("gt assigné : rien dans le Viewer", r$ok && !"html" %in% types(r))
+r <- run('gt(BDD) |> tab_header(title = md("<script>alert(1)</script>"))')
+html <- as.character(render_run(r))
+expect("Viewer : HTML dans srcdoc échappé", !grepl("<script>", html, fixed = TRUE))
+expect("Viewer : iframe sans allow-scripts",
+       grepl('sandbox="allow-same-origin"', html, fixed = TRUE) && !grepl("allow-scripts", html, fixed = TRUE))
+expect("Viewer : CSP sans script", grepl("default-src &#39;none&#39;", html, fixed = TRUE))
+expect("gtsave bloqué", blocked('gtsave(gt(BDD), "a.html")'))
+expect("html() de gt bloqué", blocked('gt(BDD) |> tab_header(title = html("<b>x</b>"))'))
+expect("web_image bloqué", blocked('gt(BDD) |> text_transform(locations = cells_body(), fn = web_image)'))
+
 # Coloration syntaxique
 h <- highlight_r('BDD |> filter(A == "59") # commentaire é')
 expect("coloration", grepl("tk-fn", h) && grepl("tk-str", h) && grepl("tk-com", h) && grepl("é", h))

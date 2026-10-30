@@ -585,3 +585,40 @@ bilan_annee("Lyon / Bron", 2025)
 
 ## Commentaire
 Testez-la sur d'autres villes et d'autres années. Pour comparer plusieurs années d'un coup, une boucle `for (an in 2020:2025)` et `bind_rows()` empilent les bilans… mais `group_by(year(date))` le ferait en une ligne. Une fonction devient vraiment utile quand le même traitement s'applique à des objets **différents**, par exemple plusieurs bases.
+
+# Un tableau de rapport avec gt
+niveau: 3
+theme: gt
+
+## Énoncé
+Pour l'année 2025, calculez par ville (`name`) la température moyenne (`temp`) et le cumul de précipitations (`prcp`), en ignorant les valeurs manquantes. Présentez le résultat dans un tableau **gt**, trié de la ville la plus chaude à la plus froide, avec un titre, des libellés en français et une décimale. Le tableau s'affiche dans le Viewer, sous votre code.
+
+## Indice
+D'abord le tableau : `filter(year(date) == 2025)`, `group_by(name)`, `summarise(…, na.rm = TRUE)`, `arrange(desc(…))`. Puis la présentation : `gt()`, `tab_header()`, `cols_label()` et `fmt_number(decimals = 1)`.
+
+## Code de départ
+```r
+BDD_METEO |>
+  filter(year(date) == 2025) |>
+  group_by(name) |>
+  summarise(...) |>
+  gt()
+```
+
+## Correction
+```r
+BDD_METEO |>
+  filter(year(date) == 2025) |>
+  group_by(name) |>
+  summarise(TEMP = mean(temp, na.rm = TRUE),
+            PLUIE = sum(prcp, na.rm = TRUE)) |>
+  arrange(desc(TEMP)) |>
+  gt() |>
+  tab_header(title = "Température et précipitations par ville en 2025") |>
+  cols_label(name = "Ville", TEMP = "Température moyenne (°C)",
+             PLUIE = "Précipitations (mm)") |>
+  fmt_number(columns = c(TEMP, PLUIE), decimals = 1, dec_mark = ",", sep_mark = " ")
+```
+
+## Commentaire
+La vérification porte sur les **données** du tableau, pas sur sa mise en forme : vos titres et libellés peuvent différer de la correction. Le cumul de précipitations ignore les jours sans relevé : comparez les villes avec prudence si certaines ont beaucoup de valeurs manquantes.

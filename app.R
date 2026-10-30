@@ -6,6 +6,9 @@
 #   Exercices   : questions graduées, vérification automatique, corrections
 #   Dashboard   : ce qu'on peut construire avec R et Shiny
 #
+# Les tableaux gt s'affichent dans un « Viewer », comme dans RStudio
+# (R/viewer.R).
+#
 # Lancement : shiny::runApp() depuis ce dossier.
 # Les fichiers du dossier R/ sont chargés automatiquement par Shiny.
 # Le contenu pédagogique se modifie dans content/ (markdown), sans toucher au
@@ -23,6 +26,7 @@ suppressPackageStartupMessages({
   library(forcats)
   library(plotly)
   library(shinyAce)
+  library(gt)
 })
 
 options(shiny.maxRequestSize = 1e6)

@@ -90,6 +90,7 @@ render_run <- function(run, show_source = TRUE, copy = FALSE) {
       it$type,
       output  = htmltools::tags$pre(class = "code-out", .noWS = "inside", prefix_lines(it$text)),
       plot    = htmltools::div(class = "code-plot", htmltools::tags$img(src = it$src, alt = "Graphique")),
+      html    = viewer_frame(it$html),
       message = htmltools::HTML(sprintf('<div class="res-message">%s</div>', esc(it$text))),
       warning = htmltools::HTML(sprintf('<div class="res-warning"><strong>Avertissement : </strong>%s</div>', esc(it$text))),
       error   = htmltools::div(

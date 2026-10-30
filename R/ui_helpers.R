@@ -120,7 +120,8 @@ fonctions_modal <- function() {
     "Graphiques de base" = SANDBOX_ALLOWED$graphics,
     "ggplot2" = c("ggplot", "aes", "geom_*", "stat_*", "scale_*", "labs",
                   "theme_*", "facet_wrap", "facet_grid", "coord_*", "..."),
-    "Échelles (scales)" = SANDBOX_ALLOWED$scales
+    "Échelles (scales)" = SANDBOX_ALLOWED$scales,
+    "Tableaux (gt, affichés dans le Viewer)" = SANDBOX_ALLOWED$gt
   )
   shiny::modalDialog(
     title = "Les fonctions disponibles dans l'atelier",

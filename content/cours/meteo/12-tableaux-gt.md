@@ -14,7 +14,7 @@ Un tableau de rapport se construit en **deux temps** :
 :::
 
 ::: note
-**Dans l'atelier**, l'étape 1 s'exécute normalement. Le paquet gt produit un tableau HTML qui s'affiche dans le **Viewer** de RStudio : le code de l'étape 2 est donc présenté ici pour être recopié dans RStudio, après `install.packages("gt")` puis `library(gt)`.
+Le paquet gt produit un tableau HTML, qui s'affiche dans le **Viewer** de RStudio (le panneau en bas à droite). Dans l'atelier, il s'affiche de la même façon, sous le code. Dans RStudio, installez le paquet une fois avec `install.packages("gt")`, puis chargez-le avec `library(gt)` ; dans l'atelier, il est déjà chargé.
 :::
 
 # Étape 1 : calculer le tableau
@@ -49,8 +49,10 @@ EXPORT1
 # Étape 2 : le tableau brut, puis le titre et les libellés
 
 ```r norun
-library(gt)
+library(gt)   # dans RStudio ; inutile dans l'atelier
+```
 
+```r
 # Le tableau brut
 gt(EXPORT1)
 
@@ -84,18 +86,18 @@ TAB_GT
 
 # Couleurs, notes et source
 
-```r norun
+```r
 TAB_GT |>
   data_color(
     columns = c(degage, partiel, nuageux, couvert),
-    fn = scales::col_numeric(palette = c("#f7fbff", "#08306b"), domain = c(0, 1))
+    palette = c("#f7fbff", "#08306b"), domain = c(0, 1)
   ) |>
   tab_footnote(footnote = "Jours sans mesure de la couverture nuageuse exclus.") |>
   tab_source_note(source_note = "Source : meteostat.net.")
 ```
 
 ::: note
-`data_color()` colore chaque case selon sa valeur. Une **source** et une **note** sur les données exclues sont indispensables : ici, plus de 40 % des jours n'ont pas de mesure du ciel.
+`data_color()` colore chaque case selon sa valeur, sur une échelle de couleurs (`palette`) qui va de 0 à 1 (`domain`). Une **source** et une **note** sur les données exclues sont indispensables : ici, plus de 40 % des jours n'ont pas de mesure du ciel.
 :::
 
 # Exporter le tableau
@@ -120,10 +122,10 @@ EXPORT2 <- BDD_METEO |>
 EXPORT2
 ```
 
-```r norun
+```r
 gt(EXPORT2) |>
   tab_header(title = "Températures moyennes par ville en 2025") |>
   cols_label(name = "Ville", TMIN = "Minimale", TMOY = "Moyenne", TMAX = "Maximale") |>
-  fmt_number(columns = c(TMIN, TMOY, TMAX), decimals = 1, dec_mark = ",",
+  fmt_number(columns = c(TMIN, TMOY, TMAX), decimals = 1, dec_mark = ",", sep_mark = " ",
              pattern = "{x} °C")
 ```

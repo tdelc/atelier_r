@@ -33,7 +33,9 @@ SANDBOX_LIMITS <- list(
   max_out_chars   = 60000,  # caractères affichés
   max_table_vars  = 2,      # variables dans table()
   max_plots       = 6,      # graphiques par exécution
-  max_join_rows   = 50000   # lignes de la base « de droite » d'une jointure
+  max_join_rows   = 50000,  # lignes de la base « de droite » d'une jointure
+  max_viewer      = 4,      # résultats affichés dans le Viewer par exécution
+  max_html_chars  = 400000  # taille du HTML d'un résultat du Viewer
 )
 
 # --- 1. Les fonctions autorisées ---------------------------------------------
@@ -93,7 +95,21 @@ SANDBOX_ALLOWED <- list(
                "IQR", "mad", "chisq.test", "t.test", "addmargins", "reorder"),
   utils    = c("head", "tail", "str"),
   graphics = c("hist", "barplot", "boxplot", "plot", "pie", "abline", "lines",
-               "points", "legend", "title", "text", "par")
+               "points", "legend", "title", "text", "par"),
+  # tableaux de rapport, affichés dans le Viewer (voir viewer.R). Pas de
+  # gtsave() (écrit un fichier), ni html(), web_image(), local_image().
+  gt       = c("gt", "tab_header", "tab_spanner", "tab_footnote",
+               "tab_source_note", "tab_stubhead", "tab_row_group",
+               "tab_options", "tab_style", "cols_label", "cols_align",
+               "cols_hide", "cols_move", "cols_move_to_start", "cols_move_to_end",
+               "cols_width", "cols_merge", "fmt_number", "fmt_integer",
+               "fmt_percent", "fmt_currency", "fmt_date", "fmt_scientific",
+               "sub_missing", "sub_zero", "data_color", "cell_text", "cell_fill",
+               "cell_borders", "cells_body", "cells_column_labels",
+               "cells_column_spanners", "cells_title", "cells_stub",
+               "cells_row_groups", "md", "px", "pct", "opt_stylize",
+               "opt_row_striping", "opt_align_table_header", "summary_rows",
+               "grand_summary_rows", "row_group_order")
 )
 
 # ggplot2 : on prend les fonctions exportées qui suivent ces motifs…
@@ -469,7 +485,12 @@ sandbox_run <- function(code, env, check = TRUE, plot_width = 7,
   handler <- evaluate::new_output_handler(
     value = function(x, visible) {
       last$value <- x
-      if (visible) print(x) else invisible(NULL)
+      if (!visible) return(invisible(NULL))
+      # objets affichés dans le Viewer (tableau gt…) : leur HTML prend place
+      # parmi les sorties, à la position de la commande
+      html <- viewer_html(x)
+      if (!is.null(html)) return(structure(list(html = html), class = "atelier_html"))
+      print(x)
     }
   )
 
@@ -494,6 +515,7 @@ sandbox_run <- function(code, env, check = TRUE, plot_width = 7,
 
   items <- list()
   n_lines <- 0; n_chars <- 0; clipped <- FALSE; ok <- TRUE; n_plots <- 0
+  n_viewer <- 0
   for (r in res) {
     if (inherits(r, "source")) {
       items[[length(items) + 1]] <- list(type = "source", text = sub("\n$", "", r$src))
@@ -508,6 +530,15 @@ sandbox_run <- function(code, env, check = TRUE, plot_width = 7,
         clipped <- TRUE
         items[[length(items) + 1]] <- list(type = "message",
           text = "Affichage tronqué : le résultat est trop long. Utilisez head(), print(n = …) ou un filtre.")
+      }
+    } else if (inherits(r, "atelier_html")) {
+      n_viewer <- n_viewer + 1
+      if (n_viewer > SANDBOX_LIMITS$max_viewer) next
+      if (nchar(r$html) > SANDBOX_LIMITS$max_html_chars) {
+        items[[length(items) + 1]] <- list(type = "message",
+          text = "Le tableau est trop grand pour être affiché : gardez moins de lignes (head(), filter()) avant gt().")
+      } else {
+        items[[length(items) + 1]] <- list(type = "html", html = r$html)
       }
     } else if (inherits(r, "recordedplot")) {
       n_plots <- n_plots + 1

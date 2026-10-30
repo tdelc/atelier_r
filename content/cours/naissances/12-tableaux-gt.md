@@ -14,7 +14,7 @@ Un tableau de rapport se construit en **deux temps** :
 :::
 
 ::: note
-**Dans l'atelier**, l'étape 1 s'exécute normalement. Le paquet gt produit un tableau HTML qui s'affiche dans le **Viewer** de RStudio : le code de l'étape 2 est donc présenté ici pour être recopié dans RStudio, après `install.packages("gt")` puis `library(gt)`.
+Le paquet gt produit un tableau HTML, qui s'affiche dans le **Viewer** de RStudio (le panneau en bas à droite). Dans l'atelier, il s'affiche de la même façon, sous le code. Dans RStudio, installez le paquet une fois avec `install.packages("gt")`, puis chargez-le avec `library(gt)` ; dans l'atelier, il est déjà chargé.
 :::
 
 # Étape 1 : calculer le tableau
@@ -51,8 +51,10 @@ EXPORT1
 # Étape 2 : le tableau brut, puis le titre et les libellés
 
 ```r norun
-library(gt)
+library(gt)   # dans RStudio ; inutile dans l'atelier
+```
 
+```r
 # Le tableau brut
 gt(EXPORT1)
 
@@ -84,18 +86,18 @@ TAB_GT
 
 # Couleurs, notes et source
 
-```r norun
+```r
 TAB_GT |>
   data_color(
     columns = c(francaise, etrangere),
-    fn = scales::col_numeric(palette = c("#f7fbff", "#08306b"), domain = c(0, 1))
+    palette = c("#f7fbff", "#08306b"), domain = c(0, 1)
   ) |>
   tab_footnote(footnote = "Parents non mariés à la naissance (AMAR = 0000).") |>
   tab_source_note(source_note = "Source : INSEE, état civil, naissances 2021.")
 ```
 
 ::: note
-`data_color()` colore chaque case selon sa valeur, ici du bleu clair (0 %) au bleu foncé (100 %). Une **source** et une **note** de définition sont indispensables dans tout tableau de rapport.
+`data_color()` colore chaque case selon sa valeur, sur une échelle de couleurs (`palette`) qui va de 0 à 1 (`domain`), ici du bleu clair (0 %) au bleu foncé (100 %). Une **source** et une **note** de définition sont indispensables dans tout tableau de rapport.
 :::
 
 # Exporter le tableau
@@ -122,13 +124,13 @@ EXPORT2 <- BDD_NAIS |>
 EXPORT2
 ```
 
-```r norun
+```r
 gt(EXPORT2) |>
   tab_header(title = "Naissances dans les Hauts-de-France, 2021") |>
   cols_label(DEPNAIS = "Département", NB = "Naissances",
              AGE_MERE = "Âge moyen de la mère", AGE_PERE = "Âge moyen du père") |>
   fmt_number(columns = NB, decimals = 0, sep_mark = " ") |>
-  fmt_number(columns = c(AGE_MERE, AGE_PERE), decimals = 1, dec_mark = ",",
+  fmt_number(columns = c(AGE_MERE, AGE_PERE), decimals = 1, dec_mark = ",", sep_mark = " ",
              pattern = "{x} ans")
 ```
 

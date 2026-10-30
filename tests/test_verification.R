@@ -26,6 +26,10 @@ expect("count(SEXE) direct", verdict("naissances", "ex09", 'BDD_NAIS |> count(SE
 expect("table useNA = count", verdict("meteo", "ex08", 'L <- BDD_METEO |> filter(name == "Lille")\ntable(L$cldc, useNA = "ifany")') == "ok")
 expect("slice_max au lieu d'arrange", verdict("meteo", "ex04", 'BDD_METEO |> slice_max(tmax, n = 1) |> select(name, date, tmax)') == "ok")
 expect("autre ordre de colonnes", verdict("naissances", "ex12", 'BDD_NAIS |> filter(DEPNAIS == "59") |> group_by(SEXE) |> summarise(M = mean(AGEMERE), P = mean(AGEPERE))') == "ok")
+# Tableau gt : comparé par ses données, quelle que soit la mise en forme
+expect("gt avec d'autres libellés", verdict("naissances", "ex28", 'BDD_NAIS |> group_by(INDNATM) |> summarise(N = n(), A = mean(AGEXACTM)) |> gt() |> tab_header(title = "Mon titre")') == "ok")
+expect("tableau sans gt accepté", verdict("meteo", "ex25", 'BDD_METEO |> filter(year(date) == 2025) |> group_by(name) |> summarise(T = mean(temp, na.rm = TRUE), P = sum(prcp, na.rm = TRUE))') == "ok")
+expect("gt sur un mauvais calcul refusé", verdict("naissances", "ex28", 'BDD_NAIS |> group_by(INDNATM) |> summarise(N = n(), A = mean(AGEXACTP)) |> gt()') == "ko")
 # Réponses fausses
 expect("mauvais département refusé", verdict("naissances", "ex02", 'BDD_NAIS |> filter(DEPNAIS == "59") |> count()') == "ko")
 expect("oubli du filtre refusé", verdict("naissances", "ex01", 'BDD_NAIS |> summarise(mean(AGEMERE))') == "ko")
