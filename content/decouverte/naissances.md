@@ -153,3 +153,49 @@ BDD_NAIS |>
 - Écrivez d'abord votre question **en français**, puis traduisez-la avec le dictionnaire de la leçon « Traduire une phrase en R ».
 - Ouvrez le **Dictionnaire** (en haut de l'écran) pour trouver d'autres variables.
 - Pensez à vérifier chaque variable créée avec `count()` ou `summary()`.
+
+# Pourcentages : en ligne ou en colonne ?
+
+Le même tableau croisé, en pourcentage **en ligne**. Changez la variable du `group_by()` pour obtenir le pourcentage **en colonne**, et observez comment la lecture change.
+
+```r
+BDD_NAIS |>
+  count(SEXE, NBENF) |>
+  group_by(SEXE) |>
+  mutate(PCT = round(100 * n / sum(n), 2)) |>
+  ungroup() |>
+  select(-n) |>
+  pivot_wider(names_from = NBENF, values_from = PCT, names_prefix = "NBENF_")
+```
+
+## À essayer
+
+- Remplacez `group_by(SEXE)` par `group_by(NBENF)` : qu'est-ce qui fait 100 % maintenant ?
+- Supprimez le `group_by()` (et le `ungroup()`) : vous obtenez le pourcentage du total.
+- Vérifiez vos pourcentages avec `round(100 * prop.table(table(BDD_NAIS$SEXE, BDD_NAIS$NBENF), margin = 1), 2)`, puis `margin = 2`.
+- Croisez d'autres variables : `INDNATM` et `ORIGINOM`, `MNAIS` et `SEXE`…
+
+# Une carte par département
+
+Un indicateur par département, fusionné avec le fond de carte `CARTE_DEP`, puis dessiné. Changez l'indicateur !
+
+```r
+SYN <- BDD_NAIS |>
+  group_by(DEPNAIS) |>
+  summarise(INDICATEUR = mean(AGEPERE))
+
+CARTE_DEP |>
+  left_join(SYN, by = c("code_insee" = "DEPNAIS")) |>
+  ggplot(aes(x = long, y = lat, group = groupe, fill = INDICATEUR)) +
+  geom_polygon(colour = "white", linewidth = 0.2) +
+  coord_quickmap() +
+  scale_fill_distiller(palette = "YlOrBr", direction = 1) +
+  labs(title = "Âge moyen du père", fill = NULL) +
+  theme_void()
+```
+
+## À essayer
+
+- Remplacez `mean(AGEPERE)` par `mean(AMAR == "0000")` (part hors mariage) ou `mean(INDNATM == 2)` (part de mères étrangères).
+- Changez la palette : `"Blues"`, `"RdPu"`, `"Greens"`.
+- Découpez l'indicateur en classes avec `cut()` et remplacez `scale_fill_distiller()` par `scale_fill_brewer()`.

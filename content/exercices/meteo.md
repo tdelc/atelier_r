@@ -443,3 +443,145 @@ BDD_METEO |>
 
 ## Commentaire
 Même sans 2026, les étés récents sont plus chauds et plus secs. C'est la vérification qui rend une conclusion solide : le résultat ne dépend pas d'une seule année exceptionnelle.
+
+# Les classes de température par ville (en %)
+niveau: 4
+theme: pourcentage en ligne
+
+## Énoncé
+Pour Lille, Nancy (`"Nancy / Essey"`) et Nice, découpez la température maximale en classes : « Froid » (10 °C ou moins), « Doux » (10 à 20), « Chaud » (20 à 30), « Très chaud » (plus de 30). Calculez, **pour chaque ville**, la répartition de ses jours entre ces classes, en pourcentage : chaque ville doit faire 100 %. Une ligne par ville, une colonne par classe. Retirez les jours sans `tmax`.
+
+## Indice
+`cut(tmax, breaks = c(-50, 10, 20, 30, 50), labels = ...)`, puis `count(name, classe)`, `group_by(name)` et `mutate(PCT = 100 * n / sum(n))`.
+
+## Correction
+```r
+BDD_METEO |>
+  filter(name %in% c("Lille", "Nancy / Essey", "Nice"), !is.na(tmax)) |>
+  mutate(classe = cut(tmax, breaks = c(-50, 10, 20, 30, 50),
+                      labels = c("Froid", "Doux", "Chaud", "Très chaud"))) |>
+  count(name, classe) |>
+  group_by(name) |>
+  mutate(PCT = 100 * n / sum(n)) |>
+  ungroup() |>
+  select(-n) |>
+  pivot_wider(names_from = classe, values_from = PCT)
+```
+
+## Commentaire
+Chaque **ligne** fait 100 %. À Nice, les jours « froids » sont rares, alors qu'ils représentent une part importante des jours à Lille et à Nancy. Si une classe n'existe pas pour une ville, ajoutez `values_fill = 0` dans le `pivot_wider()`.
+
+# D'où viennent les jours de très forte chaleur ? (en %)
+niveau: 4
+theme: pourcentage en colonne
+
+## Énoncé
+Parmi **tous** les relevés à plus de 35 °C de la base (toutes villes confondues), quelle est la part de chaque ville ? Triez de la plus grande part à la plus petite.
+
+## Indice
+On garde d'abord les jours à plus de 35 °C, puis on compte par ville, et on divise par le **total** de ces jours : pas de `group_by()` avant la division.
+
+## Correction
+```r
+BDD_METEO |>
+  filter(tmax > 35) |>
+  count(name) |>
+  mutate(PCT = 100 * n / sum(n)) |>
+  arrange(desc(PCT))
+```
+
+## Commentaire
+Montélimar et Marseille concentrent à elles seules une grande partie des journées à plus de 35 °C. C'est une question de **composition** (« parmi les jours très chauds… »), à ne pas confondre avec « quelle part des jours de Montélimar est très chaude ? », qui demanderait un dénominateur par ville.
+
+# Littoral ou intérieur ?
+niveau: 4
+theme: left_join
+
+## Énoncé
+La table `INFO_VILLES` (déjà créée, voir le code exécuté avant le vôtre) indique pour chaque ville si elle est sur le littoral (`LITTORAL`). Fusionnez-la avec `BDD_METEO`, puis calculez, selon `LITTORAL`, la part des jours de gel (`tmin < 0`) et la température moyenne, en excluant l'année 2026.
+
+## Indice
+`left_join(INFO_VILLES, by = "name")`, puis `filter(year(date) < 2026)`, `group_by(LITTORAL)` et `summarise()`. Pensez à `na.rm = TRUE`.
+
+## Préparation
+```r
+INFO_VILLES <- tibble(
+  name = c("Bastia", "Lille", "Lyon / Bron", "Marseille / Marignane", "Montelimar",
+           "Montpellier", "Nancy / Essey", "Nantes", "Nice", "Paris-Orly",
+           "Perpignan", "Rennes", "Strasbourg"),
+  LITTORAL = c(TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE)
+)
+```
+
+## Correction
+```r
+BDD_METEO |>
+  left_join(INFO_VILLES, by = "name") |>
+  filter(year(date) < 2026) |>
+  group_by(LITTORAL) |>
+  summarise(PART_GEL = mean(tmin < 0, na.rm = TRUE),
+            TEMP_MOY = mean(temp, na.rm = TRUE))
+```
+
+## Commentaire
+Environ 2 % de jours de gel sur le littoral contre 9 % à l'intérieur. Attention : les villes du littoral de cette base sont toutes méditerranéennes : aucune n'est sur l'Atlantique (Nantes et Rennes sont à l'intérieur des terres). La comparaison « littoral / intérieur » se confond donc ici avec « sud / nord ».
+
+# Les stations sur une carte
+niveau: 5
+theme: carte
+verif: aucune
+
+## Énoncé
+Dessinez une carte des 13 stations, colorées selon leur nombre moyen de jours à 30 °C ou plus par an (de 2010 à 2025). Le fond de carte est la table `CARTE_DEP` (colonnes `groupe`, `long`, `lat`) ; les coordonnées des stations sont dans `latitude` et `longitude`.
+
+## Indice
+Un indicateur par station (`group_by(name, latitude, longitude)`), puis `ggplot()` vide avec deux couches : `geom_polygon(data = CARTE_DEP, ...)` et `geom_point(data = STATIONS, ...)`. Finissez par `coord_quickmap()`.
+
+## Correction
+```r
+STATIONS <- BDD_METEO |>
+  filter(year(date) < 2026) |>
+  group_by(name, latitude, longitude) |>
+  summarise(JOURS_30 = sum(tmax >= 30, na.rm = TRUE) / 16) |>
+  ungroup()
+
+ggplot() +
+  geom_polygon(data = CARTE_DEP, aes(x = long, y = lat, group = groupe),
+               fill = "grey95", colour = "grey70", linewidth = 0.2) +
+  geom_point(data = STATIONS, aes(x = longitude, y = latitude, colour = JOURS_30), size = 6) +
+  scale_colour_distiller(palette = "YlOrRd", direction = 1) +
+  coord_quickmap() +
+  labs(title = "Jours à 30 °C ou plus par an, 2010-2025", colour = "Jours / an") +
+  theme_void()
+```
+
+## Commentaire
+On divise par 16, le nombre d'années de 2010 à 2025. La vallée du Rhône (Montélimar) et le pourtour méditerranéen ressortent nettement. Sur une carte de points, ajoutez le nom des stations avec `geom_text()` pour que le lecteur s'y retrouve.
+
+# Une fonction pour décrire une ville
+niveau: 5
+theme: function
+
+## Énoncé
+Écrivez une fonction `bilan_annee` qui prend un nom de ville et une année, et renvoie un tableau d'une ligne avec la température moyenne, le nombre de jours à 30 °C ou plus et le nombre de jours de pluie (`prcp > 0`) de cette ville cette année-là. Appelez-la pour Lyon (`"Lyon / Bron"`) en 2025.
+
+## Indice
+`bilan_annee <- function(ville, an) { ... }`, avec à l'intérieur `filter(name == ville, year(date) == an)` puis `summarise()`. La dernière ligne de votre code doit être l'appel de la fonction.
+
+## Correction
+```r
+bilan_annee <- function(ville, an) {
+  BDD_METEO |>
+    filter(name == ville, year(date) == an) |>
+    summarise(VILLE = ville,
+              ANNEE = an,
+              TEMP_MOY = mean(temp, na.rm = TRUE),
+              JOURS_30 = sum(tmax >= 30, na.rm = TRUE),
+              JOURS_PLUIE = sum(prcp > 0, na.rm = TRUE))
+}
+
+bilan_annee("Lyon / Bron", 2025)
+```
+
+## Commentaire
+Testez-la sur d'autres villes et d'autres années. Pour comparer plusieurs années d'un coup, une boucle `for (an in 2020:2025)` et `bind_rows()` empilent les bilans… mais `group_by(year(date))` le ferait en une ligne. Une fonction devient vraiment utile quand le même traitement s'applique à des objets **différents**, par exemple plusieurs bases.

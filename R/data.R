@@ -11,7 +11,10 @@ BASES <- list(
     source   = "INSEE, fichier détail de l'état civil",
     ligne    = "une naissance",
     fichier  = "data/BDD_NAIS.rds",
-    icone    = "baby"
+    icone    = "baby",
+    # tables complémentaires disponibles dans le bac à sable (nom = fichier)
+    extras   = c(INFO_DEPARTEMENTS = "data/INFO_DEPARTEMENTS.rds",
+                 CARTE_DEP = "data/CARTE_DEP.rds")
   ),
   meteo = list(
     id       = "meteo",
@@ -21,7 +24,8 @@ BASES <- list(
     source   = "meteostat.net",
     ligne    = "une ville × un jour",
     fichier  = "data/BDD_METEO.rds",
-    icone    = "cloud-sun"
+    icone    = "cloud-sun",
+    extras   = c(CARTE_DEP = "data/CARTE_DEP.rds")
   )
 )
 
@@ -31,6 +35,7 @@ BASES <- list(
 load_bases <- function(dir = ".") {
   for (b in names(BASES)) {
     BASES[[b]]$data <<- readRDS(file.path(dir, BASES[[b]]$fichier))
+    BASES[[b]]$extras_data <<- lapply(BASES[[b]]$extras, function(f) readRDS(file.path(dir, f)))
     BASES[[b]]$dico <<- read_dictionary(file.path(dir, "content/dictionnaires",
                                                    paste0(b, ".csv")))
   }
@@ -39,7 +44,8 @@ load_bases <- function(dir = ".") {
 
 # Liste nommée « nom de l'objet R » = données, pour le bac à sable
 base_datasets <- function(base) {
-  stats::setNames(list(BASES[[base]]$data), BASES[[base]]$objet)
+  c(stats::setNames(list(BASES[[base]]$data), BASES[[base]]$objet),
+    BASES[[base]]$extras_data)
 }
 
 DEPARTEMENTS <- NULL

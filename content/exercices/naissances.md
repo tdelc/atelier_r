@@ -479,3 +479,134 @@ BDD_NAIS |>
 
 ## Commentaire
 L'écart moyen est plus grand lorsque la mère est de nationalité étrangère, et la part des écarts d'au moins 10 ans y est nettement plus élevée. Pensez aux limites : les âges sont plafonnés à 46 ans, ce qui réduit artificiellement les grands écarts.
+
+# Naissances multiples selon la nationalité de la mère (en %)
+niveau: 4
+theme: pourcentage en ligne
+
+## Énoncé
+Pour chaque nationalité de la mère (`INDNATM`), calculez la répartition des naissances selon `NBENF` (1, 2 ou 3 enfants), **en pourcentage**. Chaque nationalité doit faire 100 %. Présentez le résultat avec une ligne par nationalité et une colonne par valeur de `NBENF`.
+
+## Indice
+C'est un pourcentage **en ligne** : `count(INDNATM, NBENF)`, puis `group_by(INDNATM)` avant `mutate(PCT = 100 * n / sum(n))`. N'oubliez pas de retirer la colonne `n` avant le `pivot_wider()`.
+
+## Correction
+```r
+BDD_NAIS |>
+  count(INDNATM, NBENF) |>
+  group_by(INDNATM) |>
+  mutate(PCT = 100 * n / sum(n)) |>
+  ungroup() |>
+  select(-n) |>
+  pivot_wider(names_from = NBENF, values_from = PCT, names_prefix = "NBENF_")
+```
+
+## Commentaire
+Chaque **ligne** fait 100 %. Si vous avez écrit `group_by(NBENF)`, vous avez calculé un pourcentage **en colonne** : « parmi les jumeaux, quelle part de mères françaises ? », une autre question. Avec `prop.table(table(BDD_NAIS$INDNATM, BDD_NAIS$NBENF), margin = 1)`, on obtient le même résultat en R base.
+
+# Qui sont les mères des naissances hors mariage ? (en %)
+niveau: 4
+theme: pourcentage en colonne
+
+## Énoncé
+On découpe l'âge de la mère en trois tranches : 24 ans ou moins, 25-34 ans, 35 ans ou plus. **Parmi les naissances hors mariage d'une part, et parmi celles de parents mariés d'autre part**, quelle est la part de chaque tranche d'âge ? Présentez une ligne par tranche d'âge et une colonne par statut (mariés / non mariés) : chaque **colonne** doit faire 100 %.
+
+## Indice
+Créez `TRANCHE` avec `cut()` et `MARIES` avec `if_else(AMAR != "0000", "Mariés", "Non_mariés")`. Le dénominateur est le statut : c'est lui qui va dans le `group_by()`.
+
+## Correction
+```r
+BDD_NAIS |>
+  mutate(TRANCHE = cut(AGEMERE, breaks = c(0, 24, 34, 50),
+                       labels = c("24 ans ou moins", "25-34 ans", "35 ans ou plus")),
+         MARIES = if_else(AMAR != "0000", "Mariés", "Non_mariés")) |>
+  count(TRANCHE, MARIES) |>
+  group_by(MARIES) |>
+  mutate(PCT = 100 * n / sum(n)) |>
+  ungroup() |>
+  select(-n) |>
+  pivot_wider(names_from = MARIES, values_from = PCT)
+```
+
+## Commentaire
+Chaque **colonne** fait 100 % : on décrit la **composition** de chaque groupe de parents. Les mères de 24 ans ou moins sont environ trois fois plus représentées parmi les naissances hors mariage que parmi celles de parents mariés.
+
+# Les naissances par région
+niveau: 4
+theme: left_join
+
+## Énoncé
+La table `INFO_DEPARTEMENTS` donne la région de chaque département (`code_departement`, `nom_region`). Fusionnez-la avec `BDD_NAIS`, puis calculez pour chaque région le nombre de naissances et l'âge moyen de la mère, de la région qui a le plus de naissances à celle qui en a le moins.
+
+## Indice
+`left_join(INFO_DEPARTEMENTS, by = c("DEPNAIS" = "code_departement"))`, puis `group_by(nom_region)`, `summarise()` et `arrange(desc(...))`.
+
+## Correction
+```r
+BDD_NAIS |>
+  left_join(INFO_DEPARTEMENTS, by = c("DEPNAIS" = "code_departement")) |>
+  group_by(nom_region) |>
+  summarise(NB_NAIS = n(),
+            AGE_MERE = mean(AGEMERE)) |>
+  arrange(desc(NB_NAIS))
+```
+
+## Commentaire
+L'Île-de-France compte près d'une naissance sur quatre, avec les mères les plus âgées. Vérifiez toujours qu'aucune ligne n'a perdu sa région : `BDD_NAIS |> anti_join(INFO_DEPARTEMENTS, by = c("DEPNAIS" = "code_departement"))` doit être vide.
+
+# Carte des naissances multiples
+niveau: 5
+theme: carte
+verif: aucune
+
+## Énoncé
+Dessinez une carte de la part des naissances multiples (`NBENF >= 2`) par département. Le fond de carte est la table `CARTE_DEP` (colonnes `code_insee`, `groupe`, `long`, `lat`).
+
+## Indice
+Trois étapes : un indicateur par département (`group_by(DEPNAIS)` + `summarise(mean(NBENF >= 2))`), une fusion avec `CARTE_DEP` (`by = c("code_insee" = "DEPNAIS")`), puis `ggplot()` avec `geom_polygon()` et `coord_quickmap()`.
+
+## Correction
+```r
+SYN <- BDD_NAIS |>
+  group_by(DEPNAIS) |>
+  summarise(PART_MULTIPLES = mean(NBENF >= 2))
+
+CARTE_DEP |>
+  left_join(SYN, by = c("code_insee" = "DEPNAIS")) |>
+  ggplot(aes(x = long, y = lat, group = groupe, fill = PART_MULTIPLES)) +
+  geom_polygon(colour = "white", linewidth = 0.2) +
+  coord_quickmap() +
+  scale_fill_distiller(palette = "Greens", direction = 1, labels = percent) +
+  labs(title = "Part des naissances multiples par département (2021)", fill = NULL) +
+  theme_void()
+```
+
+## Commentaire
+Les écarts entre départements sont faibles, de l'ordre de quelques points de pourcentage : une palette continue les fait paraître importants. Pensez à regarder `summary(SYN$PART_MULTIPLES)` avant d'interpréter une carte.
+
+# Une fonction pour décrire un département
+niveau: 5
+theme: function
+
+## Énoncé
+Écrivez une fonction `fiche_dep` qui prend un code de département (texte) et renvoie un tableau d'une ligne avec le nombre de naissances, l'âge moyen de la mère et la part des naissances hors mariage dans ce département. Appelez-la ensuite pour le Nord (`"59"`).
+
+## Indice
+`fiche_dep <- function(code) { ... }`. À l'intérieur : `BDD_NAIS |> filter(DEPNAIS == code) |> summarise(...)`. La dernière ligne de votre code doit être l'appel `fiche_dep("59")`.
+
+## Correction
+```r
+fiche_dep <- function(code) {
+  BDD_NAIS |>
+    filter(DEPNAIS == code) |>
+    summarise(DEP = code,
+              NB_NAIS = n(),
+              AGE_MERE = mean(AGEMERE),
+              PART_HORS_MARIAGE = mean(AMAR == "0000"))
+}
+
+fiche_dep("59")
+```
+
+## Commentaire
+Une fois la fonction écrite, `fiche_dep("75")` ou `fiche_dep("2A")` donnent la fiche d'un autre département sans recopier le code. Pour plusieurs départements à la fois, une boucle `for` et `bind_rows()` empilent les fiches… mais `group_by(DEPNAIS)` reste plus simple : les fonctions servent surtout quand un même traitement doit être répété sur des **objets différents**.

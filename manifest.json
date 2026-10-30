@@ -3576,6 +3576,9 @@
     "content/cours/meteo/07-mettre-en-forme.md": {
       "checksum": "aec1ba6e20dc65e2e8b9eaa98955bce3"
     },
+    "content/cours/meteo/07-pourcentages-tableaux-croises.md": {
+      "checksum": "4709c2803376d8508e1c6a682f643e1a"
+    },
     "content/cours/meteo/08-traduire-une-phrase.md": {
       "checksum": "a07a23df8aa0485f474808d25f33c648"
     },
@@ -3584,6 +3587,24 @@
     },
     "content/cours/meteo/10-analyse-a-z.md": {
       "checksum": "31daa03dcc07f7f6c161ad1ce29fb62b"
+    },
+    "content/cours/meteo/11-graphiques-ggplot2.md": {
+      "checksum": "a9b96463409a58cc258e913d2fee0e1b"
+    },
+    "content/cours/meteo/12-tableaux-gt.md": {
+      "checksum": "8a258d3be1bca42a41f871c419aeb8f0"
+    },
+    "content/cours/meteo/13-ajouter-fusionner.md": {
+      "checksum": "e4ac080658571cc80db8e067169a7ddd"
+    },
+    "content/cours/meteo/14-cartes.md": {
+      "checksum": "6b033200f6131025d143c6838db471a2"
+    },
+    "content/cours/meteo/15-boucles-fonctions.md": {
+      "checksum": "c57980ee27d72a4ac7797ddd81bd588b"
+    },
+    "content/cours/meteo/16-eurostat.md": {
+      "checksum": "a7ed4c96ec64d7c4bf2d807adaeda749"
     },
     "content/cours/naissances/01-mise-en-route.md": {
       "checksum": "fdad3216e8f66b836f48f3b921f9c1fe"
@@ -3606,6 +3627,9 @@
     "content/cours/naissances/07-mettre-en-forme.md": {
       "checksum": "81094625c9b6e5b43a396d2d094106d9"
     },
+    "content/cours/naissances/07-pourcentages-tableaux-croises.md": {
+      "checksum": "05a91a115893d4a6085ca4a63a9c80bc"
+    },
     "content/cours/naissances/08-traduire-une-phrase.md": {
       "checksum": "f2d9e766f6d633acb9c6204606ddc429"
     },
@@ -3615,11 +3639,29 @@
     "content/cours/naissances/10-analyse-a-z.md": {
       "checksum": "130e0af2c5242cedc43d4302f6b92420"
     },
+    "content/cours/naissances/11-graphiques-ggplot2.md": {
+      "checksum": "04a060d66c9a4ba7135528cc42213a74"
+    },
+    "content/cours/naissances/12-tableaux-gt.md": {
+      "checksum": "d9cd854eeefbb783e2194093678c1622"
+    },
+    "content/cours/naissances/13-ajouter-fusionner.md": {
+      "checksum": "398eb5f0857d12a770fb3e157bfa4caf"
+    },
+    "content/cours/naissances/14-cartes.md": {
+      "checksum": "d9975eb7ecbd24f2c673ff7e380f7d2e"
+    },
+    "content/cours/naissances/15-boucles-fonctions.md": {
+      "checksum": "8ad4e999adc8ba5f511dce68b385501a"
+    },
+    "content/cours/naissances/16-eurostat.md": {
+      "checksum": "a7ed4c96ec64d7c4bf2d807adaeda749"
+    },
     "content/decouverte/meteo.md": {
-      "checksum": "ec966c644a008b0a8825ddc878f4d94d"
+      "checksum": "507f3846d6809e8504dc55653155fbe0"
     },
     "content/decouverte/naissances.md": {
-      "checksum": "a44bb5c919e940f11f664acd1a209bcf"
+      "checksum": "1a94f39c4f6cb7a0744aa7b09d2f74c2"
     },
     "content/dictionnaires/meteo.csv": {
       "checksum": "cf4d80fee07445d3a76b1e8fe10a9927"
@@ -3628,16 +3670,19 @@
       "checksum": "3a730301c7dd45e9150b1303c45f05d0"
     },
     "content/exercices/meteo.md": {
-      "checksum": "0f10c742356f57b18d9ad966e34f4a16"
+      "checksum": "ccb1a59782e84a4cfd8134625cbafa98"
     },
     "content/exercices/naissances.md": {
-      "checksum": "7f4de06d21bcfa6508f0c2fcd84558b8"
+      "checksum": "c9d427c6332b094b4fde90dae0963445"
     },
     "content/tour_fr.md": {
       "checksum": "ade639dec88bcb709ec343b0d2d303c5"
     },
+    "data-raw/departements-france.csv": {
+      "checksum": "f31e6c56fd76bb5dbcb5cfd3c9eaf7ae"
+    },
     "data-raw/preparer_donnees.R": {
-      "checksum": "18ba9780d997672f258c32edf447b774"
+      "checksum": "bdad3bb592bb081476b3e088d9e58e6c"
     },
     "data/BDD_METEO.rds": {
       "checksum": "5e359a0fb07b0c00de289a8384096f9a"
@@ -3645,11 +3690,17 @@
     "data/BDD_NAIS.rds": {
       "checksum": "98e0309bf209800fbd3d4451f45d3abb"
     },
+    "data/CARTE_DEP.rds": {
+      "checksum": "845c22382a5d709fba4d251b7a5d7ba7"
+    },
     "data/departements.csv": {
       "checksum": "0a9405a00b13a621153e80c60e0fc065"
     },
     "data/departements.geojson": {
       "checksum": "7999bd8fa3567d938032da52f6a9bfdf"
+    },
+    "data/INFO_DEPARTEMENTS.rds": {
+      "checksum": "5fca7c25b0c086af5c840a12d91f3c79"
     },
     "R/compare.R": {
       "checksum": "e23c7ba2bc6bcf818c60a0f632803923"
@@ -3661,7 +3712,7 @@
       "checksum": "b41bde6e3f0b3f85e4fcefa279fd0a6d"
     },
     "R/data.R": {
-      "checksum": "f02cbbc68082c5fd2ef36686209e04e2"
+      "checksum": "e263708a794810bcd7304654817dea3d"
     },
     "R/mod_accueil.R": {
       "checksum": "52ca92bde16754bd66ffbac93461f4e5"
@@ -3685,22 +3736,22 @@
       "checksum": "e1ca596ce9be4d532092b14b854075ea"
     },
     "R/sandbox.R": {
-      "checksum": "afecc26d1449e458bd36b24de8497460"
+      "checksum": "ad86458bc72095fcf461db681dfc0e1f"
     },
     "R/ui_helpers.R": {
-      "checksum": "f8e9ba792c81489b75bb7edfec9065c8"
+      "checksum": "240c3cffd930b98987693e28da2fa390"
     },
     "README.md": {
-      "checksum": "5b451a4aad6c073ba136da17f820ed1c"
+      "checksum": "95aa97fd1e4ebacea4e30fe5b7470ddf"
     },
     "tests/test_contenus.R": {
       "checksum": "726c0017db6d822a32301253aa9c87ff"
     },
     "tests/test_sandbox.R": {
-      "checksum": "edb279c934296ebd21d225ca3d2050a1"
+      "checksum": "f193f7e59be8a9c82f312df36b95fc32"
     },
     "tests/test_verification.R": {
-      "checksum": "d6a8ec125a674139942ddefbae189f8c"
+      "checksum": "343185787b34718284a2a833bfa63958"
     },
     "www/atelier.css": {
       "checksum": "32aadd72365497481cd28d097ce0999e"

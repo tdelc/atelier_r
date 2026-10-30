@@ -59,14 +59,16 @@ bad_codes <- c(
   'eval(parse(text = "system(\'ls\')"))', 'get("system")("ls")',
   '"system"("ls")', 'do.call("system", list("ls"))', 'match.fun("system")',
   'Sys.getenv()', 'Sys.setenv(A = 1)', 'setwd("/")', 'library(httr)',
-  'x <<- 1', 'environment(mean)', 'globalenv()', 'f <- function() 1',
+  'x <<- 1', 'environment(mean)', 'globalenv()',
+  'f <- function() system("ls")', 'f <- function(x) get("x")', 'g(1)',
+  'repeat { 1 }',
   '(\\(x) x)(1)', 'BDD$z <- 1', 'names(BDD) <- "a"', 'assign("x", 1)',
   'stat_summary(fun = "system")', 'BDD |> summarise(across(everything(), "system"))',
   'rep(1, 10)', 'x <- 1:1e9', 'seq(1, 10)', 'table(BDD$a, BDD$g, BDD$d)',
   'ggsave("x.png")', 'theme_set(theme_void())', 'quit()', 'q("no")',
   'options(warn = 2)', 'sink("f")', 'list.files("/")', 'BDD[[1]](1)',
   'mean$x(1)', 'write.csv(BDD, "a.csv")', 'invokeRestart("abort")',
-  'while (TRUE) 1', 'for (i in 1:10) i', 'Recall()',
+  'while (TRUE) 1', 'Recall()',
   'paste0("sys", "tem")("ls")', 'BDD |> mutate(x = "base::system")',
   'source("app.R")', 'loadNamespace("utils")', 'tracemem(BDD)',
   'on.exit(1)', 'lapply(1:3, print)', 'sapply(1:3, sqrt)', 'Reduce(`+`, 1:3)',
@@ -75,6 +77,34 @@ bad_codes <- c(
   'slice_sample(BDD, n = 1e9, replace = TRUE)'
 )
 for (cd in bad_codes) expect(paste("doit être bloqué :", cd), blocked(cd))
+
+# --- Boucles, fonctions, jointures (ajoutées pour les leçons complémentaires)
+ok2 <- c(
+  'v <- NULL\nfor (i in 1:20) { s <- slice_sample(BDD, n = 2); v <- c(v, mean(s$a, na.rm = TRUE)) }\nlength(v)',
+  'moyenne_g <- function(base, groupe) { base |> filter(g == groupe) |> summarise(m = mean(a, na.rm = TRUE)) }\nmoyenne_g(BDD, "x")',
+  'carre <- function(x) { return(x^2) }\nsapply_free <- carre(1:5)\nsapply_free',
+  'INFO <- tibble(g = c("x", "y"), libelle = c("groupe X", "groupe Y"))\nBDD |> left_join(INFO, by = "g")',
+  'INFO <- tibble(g = c("x"), libelle = c("groupe X"))\nBDD |> anti_join(INFO, by = "g")'
+)
+for (cd in ok2) expect(paste("doit marcher :", cd), runs_ok(cd))
+e <- sandbox_new_env(list(BDD = df))
+invisible(sandbox_run("double <- function(x) 2 * x", e))
+expect("fonction créée réutilisable à l'exécution suivante", isTRUE(sandbox_run("double(3)", e)$ok))
+r <- run('BDD |> left_join(BDD, by = "g")')
+expect("jointure plusieurs-à-plusieurs refusée", !r$ok &&
+       any(vapply(r$items, function(i) i$type == "error" && grepl("une seule ligne", i$hint %||% ""), TRUE)))
+big <- tibble(g = as.character(1:60000))
+r <- sandbox_run('BDD |> left_join(GROS, by = "g")', sandbox_new_env(list(BDD = df, GROS = big)))
+expect("grande base de droite refusée", !r$ok)
+r <- run('BDD |> left_join(tibble(g = "x"), by = "g", relationship = "many-to-many")')
+expect("relationship imposé", isTRUE(r$ok))
+expect("récursion refusée", blocked('f <- function(n) f(n + 1)\nf(1)'))
+expect("récursion croisée refusée", blocked('f <- function(n) g(n)\ng <- function(n) f(n)\nf(1)'))
+SANDBOX_LIMITS$max_seconds <- 2
+r <- run('x <- 0\nfor (i in 1:1000000) for (j in 1:1000000) x <- x + 1')
+SANDBOX_LIMITS$max_seconds <- 15
+expect("boucle trop longue interrompue", !r$ok && r$seconds < 5)
+expect("fonction utilisateur isolée", inherits(try(eval(quote(system("ls")), e), silent = TRUE), "try-error"))
 
 # Même si une fonction dangereuse était oubliée par la liste blanche, elle
 # serait introuvable dans l'environnement isolé :

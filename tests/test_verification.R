@@ -10,6 +10,7 @@ expect <- function(desc, cond) if (isTRUE(cond)) ok <<- ok + 1 else { ko <<- ko 
 verdict <- function(base, id, code) {
   e <- Filter(function(x) x$id == id, EXERCICES[[base]])[[1]]
   env <- sandbox_new_env(base_datasets(base))
+  if (nzchar(e$preparation)) sandbox_run(e$preparation, env)
   compare_results(sandbox_run(code, env)$value, solution_of(base, e)$value)$status
 }
 # Chaque correction est acceptée par la vérification

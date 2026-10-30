@@ -157,3 +157,54 @@ BDD_METEO |>
 - Écrivez d'abord votre question **en français**, puis traduisez-la avec le dictionnaire de la leçon « Traduire une phrase en R ».
 - Ouvrez le **Dictionnaire** (en haut de l'écran) pour trouver d'autres variables.
 - Pensez à `na.rm = TRUE` et à vérifier chaque variable créée.
+
+# Pourcentages : en ligne ou en colonne ?
+
+Le même tableau croisé, en pourcentage **en ligne** : pour chaque ville, la répartition de ses jours de gel selon le mois. Changez la variable du `group_by()` et observez comment la lecture change.
+
+```r
+BDD_METEO |>
+  filter(tmin < 0) |>
+  mutate(mois = month(date)) |>
+  count(name, mois) |>
+  group_by(name) |>
+  mutate(PCT = round(100 * n / sum(n), 1)) |>
+  ungroup() |>
+  select(-n) |>
+  pivot_wider(names_from = mois, values_from = PCT, values_fill = 0, names_prefix = "M")
+```
+
+## À essayer
+
+- Lisez une ligne : « parmi les jours de gel de Lille, quelle part en janvier ? ».
+- Remplacez `group_by(name)` par `group_by(mois)` : « parmi les jours de gel de janvier, quelle part à Lille ? ».
+- Supprimez le `group_by()` : le pourcentage du total.
+- Remplacez `tmin < 0` par `tmax > 30` pour étudier les jours chauds.
+
+# Une carte des stations
+
+Un indicateur par station, placé sur le fond de carte `CARTE_DEP`. Changez l'indicateur !
+
+```r
+STATIONS <- BDD_METEO |>
+  filter(year(date) < 2026) |>
+  group_by(name, latitude, longitude) |>
+  summarise(INDICATEUR = mean(prcp > 0, na.rm = TRUE)) |>
+  ungroup()
+
+ggplot() +
+  geom_polygon(data = CARTE_DEP, aes(x = long, y = lat, group = groupe),
+               fill = "grey95", colour = "grey70", linewidth = 0.2) +
+  geom_point(data = STATIONS, aes(x = longitude, y = latitude, colour = INDICATEUR), size = 6) +
+  geom_text(data = STATIONS, aes(x = longitude, y = latitude, label = name), size = 3, vjust = -1.4) +
+  scale_colour_distiller(palette = "Blues", direction = 1, labels = percent) +
+  coord_quickmap() +
+  labs(title = "Part des jours de pluie", colour = NULL) +
+  theme_void()
+```
+
+## À essayer
+
+- Remplacez l'indicateur par `mean(temp, na.rm = TRUE)` ou `mean(wspd, na.rm = TRUE)` (vent), et adaptez la palette et `labels`.
+- Changez la taille des points (`size`) selon une autre variable : `aes(size = ...)`.
+- Restreignez à l'été avec `filter(month(date) %in% 6:8)`.

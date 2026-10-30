@@ -32,7 +32,8 @@ SANDBOX_LIMITS <- list(
   max_lines       = 400,    # lignes affichées
   max_out_chars   = 60000,  # caractères affichés
   max_table_vars  = 2,      # variables dans table()
-  max_plots       = 6       # graphiques par exécution
+  max_plots       = 6,      # graphiques par exécution
+  max_join_rows   = 50000   # lignes de la base « de droite » d'une jointure
 )
 
 # --- 1. Les fonctions autorisées ---------------------------------------------
@@ -50,7 +51,7 @@ SANDBOX_ALLOWED <- list(
     "starts_with", "ends_with", "contains", "matches", "where", "all_of",
     "any_of", "last_col", "coalesce", "na_if", "glimpse", "reframe",
     "cummean", "min_rank", "dense_rank", "percent_rank", "ntile", "near",
-    "n_groups", "group_vars", "consecutive_id", "bind_rows"
+    "n_groups", "group_vars", "consecutive_id", "bind_rows", "join_by"
   ),
   tidyr     = c("pivot_wider", "pivot_longer", "replace_na", "drop_na", "fill",
                 "separate", "unite"),
@@ -59,7 +60,8 @@ SANDBOX_ALLOWED <- list(
                 "quarter", "ymd", "dmy", "make_date", "floor_date", "as_date"),
   stringr   = c("str_detect", "str_sub", "str_replace", "str_replace_all",
                 "str_to_upper", "str_to_lower", "str_length", "str_pad",
-                "str_c", "str_starts", "str_ends"),
+                "str_c", "str_starts", "str_ends", "str_to_title", "str_remove",
+                "str_remove_all", "str_trim"),
   forcats   = c("fct_reorder", "fct_infreq", "fct_rev", "fct_relevel",
                 "fct_recode", "fct_lump_n"),
   scales    = c("percent", "comma", "label_percent", "label_number",
@@ -70,6 +72,8 @@ SANDBOX_ALLOWED <- list(
     "(", "{", "+", "-", "*", "/", "^", "%%", "%/%", "==", "!=", "<", ">",
     "<=", ">=", "&", "|", "!", "&&", "||", "%in%", ":", "$", "[", "[[", "~",
     "<-", "=", "if",
+    # boucles et fonctions (les boucles sont bornées par la limite de temps)
+    "for", "function", "return", "break", "next",
     # calculs
     "c", "list", "mean", "min", "max", "sum", "prod", "range", "round",
     "signif", "floor", "ceiling", "trunc", "abs", "sqrt", "log", "log10",
@@ -102,6 +106,29 @@ SANDBOX_GGPLOT_PATTERN <- paste0(
 # … sauf celles qui modifient l'état global ou écrivent des fichiers
 SANDBOX_GGPLOT_EXCLUDE <- c("ggsave", "theme_set", "theme_update",
                             "theme_replace", "theme_get")
+
+# Jointures : versions protégées. La base de droite est limitée en taille et
+# doit avoir une seule ligne par clé (relationship = "many-to-one"), ce qui
+# empêche d'exploser la mémoire en joignant une grande base à elle-même.
+sandbox_join <- function(fun, mutating = TRUE) {
+  force(fun)
+  function(x, y, ...) {
+    if (is.data.frame(y) && nrow(y) > SANDBOX_LIMITS$max_join_rows)
+      stop(sprintf("Dans l'atelier, la base de droite d'une jointure est limitée à %s lignes : elle doit être une petite table d'informations (une ligne par clé).",
+                   format(SANDBOX_LIMITS$max_join_rows, big.mark = " ")), call. = FALSE)
+    args <- list(...)
+    if (mutating) { args$relationship <- NULL; args$relationship <- "many-to-one" }
+    do.call(fun, c(list(x, y), args))
+  }
+}
+SANDBOX_WRAPPERS <- list(
+  left_join  = sandbox_join(dplyr::left_join),
+  inner_join = sandbox_join(dplyr::inner_join),
+  right_join = sandbox_join(dplyr::right_join),
+  full_join  = sandbox_join(dplyr::full_join),
+  semi_join  = sandbox_join(dplyr::semi_join, mutating = FALSE),
+  anti_join  = sandbox_join(dplyr::anti_join, mutating = FALSE)
+)
 
 # Fonctions présentes dans l'environnement isolé pour le fonctionnement
 # interne de R (ex. t.test() reconstruit un appel à stats::model.frame), mais
@@ -162,7 +189,8 @@ SANDBOX_FORBIDDEN_STRINGS <- c(
 sandbox_function_names <- function() {
   gg <- getNamespaceExports("ggplot2")
   gg <- setdiff(gg[grepl(SANDBOX_GGPLOT_PATTERN, gg)], SANDBOX_GGPLOT_EXCLUDE)
-  sort(unique(c(unlist(SANDBOX_ALLOWED, use.names = FALSE), gg)))
+  sort(unique(c(unlist(SANDBOX_ALLOWED, use.names = FALSE), gg,
+                names(SANDBOX_WRAPPERS))))
 }
 
 sandbox_build_funs_env <- function() {
@@ -183,6 +211,7 @@ sandbox_build_funs_env <- function() {
       assign(fn, obj, envir = env)
     }
   }
+  for (fn in names(SANDBOX_WRAPPERS)) assign(fn, SANDBOX_WRAPPERS[[fn]], envir = env)
   for (fn in SANDBOX_INTERNAL) assign(fn, get(fn, envir = baseenv()), envir = env)
   for (nm in names(SANDBOX_VALUES)) assign(nm, SANDBOX_VALUES[[nm]], envir = env)
 
@@ -211,8 +240,66 @@ sandbox_init <- function() {
 
 # --- 2. Analyse du code avant exécution ---------------------------------------
 
+# Fonctions créées par l'étudiant : `nom <- function(...)` dans le code, ou
+# fonctions déjà créées dans son environnement de travail. Elles peuvent être
+# appelées ; leur corps est lui-même contrôlé par la liste blanche.
+sandbox_user_functions <- function(exprs, env = NULL) {
+  found <- character()
+  look <- function(e) {
+    if (!is.call(e)) return(invisible())
+    if (is.symbol(e[[1]]) && as.character(e[[1]]) %in% c("<-", "=") &&
+        length(e) == 3 && is.symbol(e[[2]]) && is.call(e[[3]]) &&
+        identical(e[[3]][[1]], as.symbol("function")))
+      found <<- c(found, as.character(e[[2]]))
+    for (a in as.list(e)[-1]) if (!identical(a, quote(expr = )) && is.call(a)) look(a)
+  }
+  for (ex in exprs) look(ex)
+  if (!is.null(env)) {
+    for (n in ls(env)) {
+      obj <- get(n, envir = env)
+      if (is.function(obj) && !is.primitive(obj) && identical(environment(obj), env))
+        found <- c(found, n)
+    }
+  }
+  unique(found)
+}
+
+# Récursion (une fonction qui s'appelle elle-même, directement ou via une
+# autre) : refusée, car une récursion infinie fait planter l'affichage des
+# erreurs. Renvoie le nom d'une fonction récursive, ou NULL.
+sandbox_recursive <- function(exprs, env = NULL) {
+  bodies <- list()
+  grab <- function(e) {
+    if (!is.call(e)) return(invisible())
+    if (is.symbol(e[[1]]) && as.character(e[[1]]) %in% c("<-", "=") && length(e) == 3 &&
+        is.symbol(e[[2]]) && is.call(e[[3]]) && identical(e[[3]][[1]], as.symbol("function")))
+      bodies[[as.character(e[[2]])]] <<- e[[3]][[3]]
+    for (a in as.list(e)[-1]) if (!identical(a, quote(expr = )) && is.call(a)) grab(a)
+  }
+  for (ex in exprs) grab(ex)
+  if (!is.null(env)) for (n in setdiff(sandbox_user_functions(list(), env), names(bodies)))
+    bodies[[n]] <- body(get(n, envir = env))
+  if (!length(bodies)) return(NULL)
+  calls_in <- function(e) {
+    if (is.call(e)) {
+      h <- if (is.symbol(e[[1]])) as.character(e[[1]]) else character()
+      c(h, unlist(lapply(as.list(e)[-1], function(a) if (identical(a, quote(expr = ))) NULL else calls_in(a))))
+    } else character()
+  }
+  graph <- lapply(bodies, function(b) intersect(unique(calls_in(b)), names(bodies)))
+  for (start in names(graph)) {
+    seen <- character(); todo <- graph[[start]]
+    while (length(todo)) {
+      n <- todo[1]; todo <- todo[-1]
+      if (n == start) return(start)
+      if (!n %in% seen) { seen <- c(seen, n); todo <- c(todo, graph[[n]]) }
+    }
+  }
+  NULL
+}
+
 # Renvoie un vecteur de messages d'erreur (vide = code accepté)
-sandbox_check <- function(code) {
+sandbox_check <- function(code, env = NULL) {
   lim <- SANDBOX_LIMITS
   if (!is.character(code) || length(code) != 1) return("Code invalide.")
   if (nchar(code) > lim$max_chars)
@@ -229,7 +316,7 @@ sandbox_check <- function(code) {
 
   problems <- character()
   add <- function(msg) problems <<- c(problems, msg)
-  allowed <- SANDBOX$allowed
+  allowed <- c(SANDBOX$allowed, sandbox_user_functions(exprs, env))
   is_empty <- function(x) identical(x, quote(expr = ))
 
   walk <- function(e) {
@@ -247,8 +334,8 @@ sandbox_check <- function(code) {
           add(sprintf("%s() n'est pas nécessaire ici : tous les paquets du cours (tidyverse, ggplot2) sont déjà chargés.", fn))
         } else if (fn %in% c("setwd", "read_csv", "read_csv2", "read.csv", "read_delim")) {
           add(sprintf("%s() n'est pas utilisable dans l'atelier : les bases BDD_NAIS et BDD_METEO sont déjà chargées.", fn))
-        } else if (fn == "function") {
-          add("La création de fonctions (function) n'est pas autorisée dans l'atelier.")
+        } else if (fn %in% c("while", "repeat")) {
+          add(sprintf("La boucle %s n'est pas autorisée dans l'atelier : utilisez une boucle for, dont le nombre de tours est connu.", fn))
         } else if (!fn %in% allowed) {
           add(sprintf("La fonction %s() n'est pas disponible dans l'atelier (voir la liste des fonctions autorisées).", fn))
         } else {
@@ -283,6 +370,9 @@ sandbox_check <- function(code) {
     invisible(NULL)
   }
   for (ex in exprs) walk(ex)
+  rec <- sandbox_recursive(exprs, env)
+  if (!is.null(rec))
+    add(sprintf("La fonction %s() s'appelle elle-même (récursion) : ce n'est pas autorisé dans l'atelier. Utilisez une boucle for.", rec))
   unique(problems)
 }
 
@@ -332,6 +422,8 @@ sandbox_error_hint <- function(msg) {
     return("Le résultat d'un calcul n'a pas la bonne longueur : dans mutate(), le calcul doit donner une valeur par ligne ; dans summarise(), une valeur par groupe.")
   if (grepl("Values from .* are not uniquely identified", msg))
     return("pivot_wider() trouve plusieurs valeurs pour une même case : gardez seulement trois colonnes avant de pivoter (select), ou résumez d'abord avec summarise().")
+  if (grepl("must match at most 1 row in `y`", msg))
+    return("La base de droite contient plusieurs lignes pour une même clé de jointure. Elle doit avoir une seule ligne par clé : vérifiez avec count(CLE) |> filter(n > 1).")
   if (grepl("unused argument", msg))
     return("Un argument n'est pas reconnu par la fonction : vérifiez son nom et la position des parenthèses.")
   if (grepl("argument is not numeric or logical", msg))
@@ -362,7 +454,7 @@ sandbox_run <- function(code, env, check = TRUE, plot_width = 7,
   code <- chartr("“”‘’", "\"\"''", code)
 
   if (check) {
-    probs <- sandbox_check(code)
+    probs <- sandbox_check(code, env)
     if (length(probs))
       return(list(ok = FALSE, blocked = probs, items = list(), value = NULL,
                   seconds = 0))

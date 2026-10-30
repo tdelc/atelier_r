@@ -4,9 +4,9 @@ Application Shiny (bslib) pour apprendre l'analyse de bases de données avec R e
 
 | Volet | Contenu |
 |---|---|
-| **Cours** | 10 leçons par base, découpées en cartes (explication → code → résultat réellement calculé → commentaire), des premières commandes jusqu'à une étude de cas complète |
-| **Découverte** | 8 pistes guidées par base (code de départ + idées à tester) et un bac à sable libre. Chaque carte du cours peut y être envoyée pour être modifiée |
-| **Exercices** | 22 exercices (naissances) et 19 (météo) en 5 niveaux, avec indice, vérification automatique du résultat et correction commentée |
+| **Cours** | 17 leçons par base, découpées en cartes (explication → code → résultat réellement calculé → commentaire), des premières commandes jusqu'à une étude de cas complète, puis des compléments (pourcentages d'un tableau croisé, ggplot2, gt, jointures, cartes, boucles et fonctions, Eurostat) |
+| **Découverte** | 10 pistes guidées par base (code de départ + idées à tester) et un bac à sable libre. Chaque carte du cours peut y être envoyée pour être modifiée |
+| **Exercices** | 27 exercices (naissances) et 24 (météo) en 5 niveaux, avec indice, vérification automatique du résultat et correction commentée |
 | **Dashboard** | Un tableau de bord interactif par base. Chaque graphique a un bouton « Voir le code » qui affiche le code R exact qui le produit |
 
 On y trouve aussi une visite guidée (même principe que vizsurvey), un dictionnaire des variables et un sélecteur de base dans la barre du haut.
@@ -28,7 +28,7 @@ Rscript data-raw/preparer_donnees.R FD_NAIS_2021.csv meteo_2010_2026.csv
 
 ## Modifier le contenu (sans toucher au code)
 
-Tout le contenu pédagogique est en markdown, dans `content/` :
+Tout le contenu pédagogique est en markdown, dans `content/` (guide détaillé : `docs/GUIDE_CONTENUS.md`) :
 
 ```
 content/
@@ -49,14 +49,14 @@ content/
 ```
 Rscript tests/test_contenus.R          # toutes les cartes, pistes et corrections
 Rscript tests/test_verification.R      # vérification automatique des exercices
-Rscript tests/test_sandbox.R           # sécurité du bac à sable (89 tests)
+Rscript tests/test_sandbox.R           # sécurité du bac à sable (104 tests)
 ```
 
 ## Sécurité du code exécuté
 
 Le code des étudiants s'exécute sur le serveur. Il est protégé par quatre barrières (voir `R/sandbox.R`) :
 
-1. **Liste blanche, avant exécution.** Le code est analysé avant d'être lancé : chaque fonction appelée doit faire partie des fonctions du cours (verbes du tidyverse, calculs, ggplot2…). Tout le reste est refusé : `system()`, la lecture et l'écriture de fichiers, `eval`, `get`, `library`, `::`, `<<-`, `function`, les boucles, les noms de fonctions passés en texte (`"system"`), etc.
+1. **Liste blanche, avant exécution.** Le code est analysé avant d'être lancé : chaque fonction appelée doit faire partie des fonctions du cours (verbes du tidyverse, calculs, ggplot2…). Tout le reste est refusé : `system()`, la lecture et l'écriture de fichiers, `eval`, `get`, `library`, `::`, `<<-`, les boucles `while` et `repeat`, les fonctions récursives, les noms de fonctions passés en texte (`"system"`), etc. Les boucles `for` et les fonctions créées par l'étudiant sont permises, et leur corps est contrôlé de la même façon. Les jointures passent par des versions protégées : la base de droite est limitée à 50 000 lignes et doit avoir une seule ligne par clé.
 2. **Environnement isolé.** Le code tourne dans un environnement dont le parent est vide : il ne voit que les fonctions autorisées et les bases. Chaque session a son propre environnement, et les bases d'origine ne sont jamais modifiées.
 3. **Limites.** Le calcul est coupé à 15 secondes. La longueur du code, la taille des nombres écrits en dur, le nombre de variables dans `table()` et la longueur de l'affichage sont aussi plafonnés.
 4. **Affichage échappé.** Aucun HTML ni JavaScript ne peut être injecté dans la page.
