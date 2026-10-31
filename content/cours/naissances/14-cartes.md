@@ -125,7 +125,7 @@ CARTE_DEP |>
 
 # Dans RStudio : une carte interactive avec terra et leaflet
 
-Avec les fichiers de contours (`.shp`, `.shx`, `.dbf`, `.prj`, tous dans le même dossier), les paquets **terra** et **leaflet** produisent une carte zoomable sur un fond OpenStreetMap. **Ce code ne s'exécute pas dans l'atelier.**
+Avec les fichiers de contours disponible sur moodle (`.shp`, `.shx`, `.dbf`, `.prj`, tous dans le même dossier), les paquets **terra** et **leaflet** produisent une carte zoomable sur un fond OpenStreetMap. **Ce code ne s'exécute pas dans l'atelier.**
 
 ```r norun
 library(terra)

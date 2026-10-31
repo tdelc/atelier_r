@@ -49,7 +49,7 @@ EXPORT1
 # Étape 2 : le tableau brut, puis le titre et les libellés
 
 ```r norun
-library(gt)   # dans RStudio ; inutile dans l'atelier
+library(gt)
 ```
 
 ```r

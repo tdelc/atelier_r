@@ -169,6 +169,18 @@ BDD_METEO |>
 `facet_wrap(~ A)` répète le graphique pour chaque modalité de `A` ; `facet_grid(A ~ B)` croise deux variables : `A` en lignes, `B` en colonnes.
 :::
 
+Ici, les axes sont "fixés" en abscisse et en ordonnée pour tous les graphiques. Avec l'argument `scales = "free_y"`, on rend libre l'axe des ordonnées sur les quatrelignes :
+
+```r
+BDD_METEO |>
+  filter(name %in% c("Lille", "Strasbourg", "Nice", "Rennes")) |>
+  ggplot(aes(x = rhum)) +
+  geom_histogram(binwidth = 2) +
+  facet_grid(saison ~ name, scales = "free_y") +
+  labs(title = "Humidité de l'air selon la ville et la saison", x = "%", y = "Jours") +
+  theme_minimal()
+```
+
 # Calculer avant de dessiner : l'évolution d'une moyenne
 
 ```r

@@ -115,14 +115,14 @@ ggplot(BDD_NAIS, aes(x = AGEXACTP)) +
 # Variante : la courbe de densité, pour superposer plusieurs groupes
 BDD_NAIS |>
   ggplot(aes(x = AGEXACTM, fill = MARIES)) +
-  geom_density(alpha = 0.4) +
+  geom_density(alpha = 0.4, bw = 0.8) +
   labs(title = "Âge de la mère selon que les parents sont mariés ou non",
        x = "Âge exact de la mère", y = "Densité", fill = NULL) +
   theme_minimal()
 ```
 
 ::: note
-`alpha = 0.4` rend les couleurs transparentes, pour voir les deux courbes superposées. La densité compare des **formes** de distribution, indépendamment de la taille des groupes.
+`alpha = 0.4` rend les couleurs transparentes, pour voir les deux courbes superposées. `bw = 0.8` définit le lissage de la courbe de densité, pour éviter les à-coups de la variable entière. La densité compare des **formes** de distribution, indépendamment de la taille des groupes.
 :::
 
 # Le nuage de points (et ses pièges)
@@ -147,6 +147,8 @@ La droite rouge (`geom_abline`) marque l'égalité des âges : la plupart des po
 
 # Des graphiques par groupe : facet_wrap() et facet_grid()
 
+Pour comparer plusieurs groupes, plutôt que superposer les graphiques, il est possible de répliquer le graphique pour chaque groupe. `facet_wrap()` et `facet_grid()` réalisent cela facilement à partir d'un graphique existant.
+
 ```r
 BDD_NAIS |>
   filter(DEPNAIS %in% c("59", "75", "13", "69")) |>
@@ -160,6 +162,18 @@ BDD_NAIS |>
 ::: usage
 `facet_wrap(~ A)` répète le graphique pour chaque modalité de `A` ; `facet_grid(A ~ B)` croise deux variables : `A` en lignes, `B` en colonnes.
 :::
+
+Ici, les axes sont "fixés" en abscisse et en ordonnée pour tous les graphiques. Avec l'argument `scales = "free_y"`, on rend libre l'axe des ordonnées sur les deux lignes :
+
+```r
+BDD_NAIS |>
+  filter(DEPNAIS %in% c("59", "75", "13", "69")) |>
+  ggplot(aes(x = AGEXACTM)) +
+  geom_histogram(binwidth = 1) +
+  facet_grid(MARIES ~ DEPNAIS, scales = "free_y") +
+  labs(x = "Âge de la mère", y = "Naissances") +
+  theme_minimal()
+```
 
 # Calculer avant de dessiner : l'aire à 100 %
 

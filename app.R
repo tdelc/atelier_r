@@ -27,6 +27,7 @@ suppressPackageStartupMessages({
   library(plotly)
   library(shinyAce)
   library(gt)
+  library(eurostat)
 })
 
 options(shiny.maxRequestSize = 1e6)

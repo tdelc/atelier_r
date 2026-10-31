@@ -109,7 +109,8 @@ SANDBOX_ALLOWED <- list(
                "cells_column_spanners", "cells_title", "cells_stub",
                "cells_row_groups", "md", "px", "pct", "opt_stylize",
                "opt_row_striping", "opt_align_table_header", "summary_rows",
-               "grand_summary_rows", "row_group_order")
+               "grand_summary_rows", "row_group_order"),
+  eurostat = c("search_eurostat", "label_eurostat", "get_eurostat")
 )
 
 # ggplot2 : on prend les fonctions exportées qui suivent ces motifs…

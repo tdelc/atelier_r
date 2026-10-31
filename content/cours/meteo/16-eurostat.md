@@ -8,10 +8,6 @@ partie: Compléments
 
 Eurostat, l'office statistique de l'Union européenne, met à disposition des milliers de tableaux : pauvreté, chômage, PIB, démographie, environnement… Le paquet **eurostat** permet de les chercher et de les télécharger directement depuis R.
 
-::: piege
-Ces commandes téléchargent des données sur Internet : **elles ne fonctionnent pas dans l'atelier**. Recopiez-les dans RStudio. La démarche, elle, est exactement celle du cours : comprendre chaque variable avant de calculer.
-:::
-
 ```r norun
 install.packages("eurostat")   # une seule fois
 library(eurostat)
@@ -20,7 +16,7 @@ library(tidyverse)
 
 # 1. Trouver les données
 
-```r norun
+```r
 search_poverty <- search_eurostat("poverty")
 View(search_poverty)
 ```
@@ -29,7 +25,7 @@ View(search_poverty)
 `search_eurostat("mot-clé")` renvoie la liste des tableaux dont le titre contient le mot-clé (en anglais), avec leur **code**. Ici, un tableau intéressant : *People at risk of poverty or social exclusion by age and sex*, code `ilc_peps01`.
 :::
 
-```r norun
+```r
 bdd_poverty <- get_eurostat("ilc_peps01")
 ```
 
@@ -37,7 +33,7 @@ bdd_poverty <- get_eurostat("ilc_peps01")
 
 On applique la démarche habituelle : `glimpse()`, puis `table()` sur chaque variable catégorielle.
 
-```r norun
+```r
 glimpse(bdd_poverty)
 
 table(bdd_poverty$freq)        # toujours la même valeur : annuelle
@@ -55,7 +51,7 @@ summary(bdd_poverty$values)    # la valeur, dont l'unité dépend de unit
 
 # Des libellés lisibles : label_eurostat()
 
-```r norun
+```r
 bdd_poverty_FR <- label_eurostat(bdd_poverty, lang = "fr")
 table(bdd_poverty_FR$unit)
 ```
@@ -68,7 +64,7 @@ table(bdd_poverty_FR$unit)
 
 « Taux de pauvreté ou d'exclusion sociale en France, par âge, depuis 2015 » : on retrouve exactement les verbes du cours.
 
-```r norun
+```r
 bdd_poverty |>
   filter(unit == "PC", sex == "T", geo == "FR", year(TIME_PERIOD) >= 2015,
          age %in% c("TOTAL", "Y_LT16", "Y16-24", "Y25-49", "Y50-64", "Y_GE65")) |>
@@ -84,7 +80,7 @@ bdd_poverty |>
 
 # 4. Le graphique
 
-```r norun
+```r
 bdd_poverty |>
   filter(unit == "PC", sex == "T", geo == "FR", year(TIME_PERIOD) >= 2015,
          age %in% c("TOTAL", "Y_LT16", "Y16-24", "Y25-49", "Y50-64", "Y_GE65")) |>

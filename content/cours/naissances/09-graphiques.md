@@ -18,6 +18,8 @@ partie: Pour aller plus loin
 Entre les couches, c'est `+` et non `|>`. Le pipe sert à enchaîner des **calculs** ; le `+` assemble les **couches** d'un graphique.
 :::
 
+Pour info, le complément de cours **12. Graphiques avec ggplot2 - la suite** permet d'approfondir la création de graphiques.
+
 # Un histogramme
 
 ```r
@@ -28,6 +30,8 @@ ggplot(BDD_NAIS, aes(x = AGEMERE)) +
        y = "Nombre de naissances") +
   theme_minimal()
 ```
+
+`geom_histogram` permet de définir un histogramme à partir d'une variable `x` définie dans l'étape `aes`. On appelle les arguments dans `aes` les esthétiques du graphique, et `geom_` la géométrie choisie pour ce graphique. Vous pouvez visiter le site [https://www.r-graph-gallery.com/]https://www.r-graph-gallery.com/ pour découvrir tout les types de graphiques réalisables.
 
 # Un diagramme en barres à partir d'un tableau
 
@@ -49,6 +53,8 @@ ggplot(NAIS_MOIS, aes(x = MNAIS, y = n)) +
 
 # Corriger : des naissances par jour
 
+Pour corriger le nombre de naissances par le nombre de jours du mois, on ajoute à notre tableau de synthèse une colonne `NB_JOURS` directement avec un vecteur du nombre de jours de chaque mois. Il est important ici de respecter l'ordre des lignes obtenu avec la variable de regroupement `MNAIS`.
+
 ```r
 NAIS_MOIS <- BDD_NAIS |>
   count(MNAIS) |>
@@ -62,6 +68,8 @@ ggplot(NAIS_MOIS, aes(x = MNAIS, y = NAIS_PAR_JOUR)) +
        x = "Mois", y = "Naissances par jour") +
   theme_minimal()
 ```
+
+La géométrie `geom_hline` ajoute une ligne horizontale sur le graphique. Elle nécessite l'argument `yintercept` pour placer la ligne. Ici, on ajoute la moyenne de la variable `NAIS_PAR_JOUR` obtenu lors du tableau de synthèse.
 
 ::: note
 Rapporté au nombre de jours, février dépasse janvier : le creux est en **janvier**, et le pic en septembre-octobre ressort encore plus nettement. Un même phénomène peut donner deux images différentes selon l'indicateur : c'est un **choix** à expliciter dans votre rapport.
@@ -105,3 +113,5 @@ BDD_NAIS |>
 ::: note
 `facet_wrap(~ VARIABLE)` répète le graphique pour chaque modalité. Pour aller plus loin, l'onglet **Dashboard** montre ce que l'on peut construire avec ces mêmes outils.
 :::
+
+Le complément de cours **12. Graphiques avec ggplot2 - la suite** permet d'approfondir la création de graphiques.
