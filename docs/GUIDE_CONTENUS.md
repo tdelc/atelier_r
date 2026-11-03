@@ -79,7 +79,7 @@ Commentaire affiché sous le résultat.
 | Écriture | Exécuté ? | Affiché ? | Usage |
 |---|---|---|---|
 | ```` ```r ```` | oui | oui, avec le résultat | le cas normal |
-| ```` ```r norun ```` | non | oui, avec un badge « Non exécuté dans l'atelier » | `setwd()`, `read_csv()`, `library()`, `ggsave()`, gt, leaflet, eurostat… |
+| ```` ```r norun ```` | non | oui, avec un badge « Non exécuté dans l'atelier » | `setwd()`, `read_csv()`, `library()`, `ggsave()`, `gtsave()`, leaflet, eurostat… |
 | ```` ```r setup ```` | oui | non | préparer discrètement des objets utilisés plus loin |
 
 Points importants :
@@ -88,6 +88,7 @@ Points importants :
 - Le bouton « Modifier ce code dans Découverte » rejoue en silence le code des cartes précédentes : l'étudiant retrouve le même état.
 - Une carte peut contenir plusieurs blocs de code, entrecoupés de texte.
 - Gardez un temps de calcul raisonnable : chaque bloc est interrompu au-delà de **15 secondes**.
+- Un tableau **gt** s'affiche automatiquement dans le Viewer, sous le code, comme dans RStudio (§7) : un bloc ```` ```r ```` normal suffit.
 
 ### Les encadrés
 
@@ -219,7 +220,8 @@ L'explication affichée sous la correction.
 - l'ordre des lignes peut différer ;
 - un tableau d'une case équivaut à un nombre (`summarise(mean(X))` = `mean(BDD$X)`) ;
 - `table()` équivaut à `count()` ;
-- des colonnes en plus chez l'étudiant sont acceptées.
+- des colonnes en plus chez l'étudiant sont acceptées ;
+- un tableau **gt** est comparé par les données qu'il présente : titres, libellés et formats peuvent différer, et un tibble sans `gt()` est aussi accepté.
 
 Il faut en revanche le **même nombre de lignes** et retrouver **chaque colonne de la correction** avec les mêmes valeurs (à 10⁻⁶ près).
 
@@ -325,14 +327,38 @@ Pensez à la mémoire : chaque table est chargée une fois pour tous les étudia
 
 ---
 
-## 7. Le dictionnaire et la visite guidée
+## 7. Le Viewer (tableaux gt)
+
+Dans RStudio, un tableau gt ne s'affiche pas dans la console mais dans le **Viewer**. L'atelier fait de même : dès qu'une commande **affiche** un tableau gt, il apparaît sous le code, dans un cadre blanc à la place du texte de la console. Cela vaut **partout, sans aucun réglage** : leçons, pistes de découverte, exercices (énoncé et correction) et code libre des étudiants.
+
+```r
+EXPORT1 |>
+  gt() |>
+  tab_header(title = "Part des naissances hors mariage") |>
+  fmt_percent(columns = c(francaise, etrangere), decimals = 1, locale = "fr")
+```
+
+- Comme dans RStudio, `TAB <- gt(…)` n'affiche rien : écrivez `TAB` sur la ligne suivante pour voir le tableau.
+- Pas de `library(gt)` dans l'atelier (le paquet est déjà chargé). Pour le montrer aux étudiants, mettez-le dans un bloc `norun`.
+- Les fonctions gt autorisées sont dans le bloc `gt` de `SANDBOX_ALLOWED` (`R/sandbox.R`) et dans la fenêtre « Fonctions autorisées ». Ne sont **pas** autorisées : `gtsave()` (écrit un fichier, à mettre en `norun`), `html()`, `web_image()` et `local_image()`.
+- Pour colorer les cases, écrivez `data_color(columns = …, palette = c("#f7fbff", "#08306b"), domain = c(0, 1))` plutôt que `fn = scales::col_numeric(…)` : l'opérateur `::` est refusé dans l'atelier.
+- Avec `fmt_number(dec_mark = ",")`, ajoutez `sep_mark = " "` : sinon la virgule sert aussi de séparateur des milliers et R affiche un avertissement.
+- Un tableau trop grand (plus de 400 000 caractères de HTML, soit quelques milliers de lignes) n'est pas affiché : faites d'abord un tableau de synthèse.
+
+**Sécurité.** Le tableau est affiché dans un cadre isolé (`iframe`) qui n'exécute aucun JavaScript et ne charge rien depuis Internet. Même si un texte du tableau contient du HTML (par exemple via `md()`), il ne peut pas agir sur la page de l'atelier.
+
+**Ajouter un autre type d'objet au Viewer.** Le mécanisme est dans `R/viewer.R`. Pour un nouvel objet qui produit du HTML **statique** (sans JavaScript), ajoutez une ligne à `VIEWER_TYPES` (« classe R = fonction qui renvoie le HTML »), puis autorisez ses fonctions dans `SANDBOX_ALLOWED` et chargez le paquet dans `app.R`. Les objets qui ont besoin de JavaScript (htmlwidgets : leaflet, plotly, DT…) ne peuvent pas s'afficher dans ce cadre : laissez leur code en `norun`.
+
+---
+
+## 8. Le dictionnaire et la visite guidée
 
 - **Dictionnaire** : `content/dictionnaires/naissances.csv` et `meteo.csv`, quatre colonnes (`variable,libelle,type,modalites`). Les valeurs contenant une virgule s'écrivent entre guillemets.
 - **Visite guidée** : `content/tour_fr.md`. Une étape par titre `#`, avec `tab:` (l'onglet à ouvrir : `accueil`, `cours`, `decouverte`, `exercices`, `dashboard`) et `target:` (un sélecteur CSS de l'élément à entourer, facultatif). Le fichier est relu à chaque lancement de la visite : pas besoin de redémarrer.
 
 ---
 
-## 8. Aide-mémoire des erreurs du test
+## 9. Aide-mémoire des erreurs du test
 
 | Message dans `test_contenus.R` | Cause probable | Correction |
 |---|---|---|
@@ -342,4 +368,5 @@ Pensez à la mémoire : chaque table est chargée une fois pour tous les étudia
 | `Seule l'écriture NOM <- valeur est autorisée` | `BDD$X <- …` ou `names(BDD) <- …` | passer par `mutate()` ou `rename()` |
 | `La base de droite contient plusieurs lignes pour une même clé` | jointure plusieurs-à-plusieurs | dédoublonner la table de droite |
 | `exercice incomplet` | il manque `## Énoncé` ou `## Correction` | compléter |
+| `⚠ 'big.mark' et 'decimal.mark' sont tous deux ','` | `fmt_number(dec_mark = ",")` sans `sep_mark` | ajouter `sep_mark = " "` (§7) |
 | `⚠ la correction ne produit pas de valeur à comparer` | la correction finit par une assignation ou un graphique | finir par l'affichage du résultat, ou `verif: aucune` |

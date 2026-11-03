@@ -7,7 +7,8 @@
 #  - l'ordre des lignes et des colonnes aussi ;
 #  - un tableau d'une case équivaut à un nombre (summarise() ou mean(BDD$X)) ;
 #  - table() équivaut à count() ;
-#  - les colonnes en plus chez l'étudiant sont acceptées.
+#  - les colonnes en plus chez l'étudiant sont acceptées ;
+#  - un tableau gt est comparé par les données qu'il présente.
 # Chaque colonne de la correction doit retrouver une colonne de l'étudiant
 # avec exactement les mêmes valeurs (à 1e-6 près pour les nombres).
 # ============================================================================
@@ -15,6 +16,7 @@
 as_comparable <- function(x) {
   if (is.null(x)) return(NULL)
   if (inherits(x, c("ggplot", "recordedplot", "histogram"))) return(NULL)
+  if (inherits(x, "gt_tbl")) x <- x[["_data"]]
   if (inherits(x, "table")) {
     x <- as.data.frame(x, stringsAsFactors = FALSE, responseName = "n")
   } else if (inherits(x, "htest")) {
