@@ -73,7 +73,7 @@ def _figures():
 # --- Messages d'erreur ------------------------------------------------------------
 
 AIDES = {
-    "UnicodeDecodeError": "Le fichier n'est pas dans l'encodage supposé (UTF-8 par défaut) : essayez encoding=\"latin-1\".",
+    "UnicodeDecodeError": "Le fichier n'est pas dans l'encodage supposé (UTF-8 par défaut) : essayez encoding=\"cp1252\" (Windows) ou \"latin-1\".",
     "FileNotFoundError": "Le fichier est introuvable : vérifiez le dossier (donnees/, referentiels/, sortie/) et l'orthographe du nom.",
     "NameError": "Ce nom n'existe pas (encore) : faute de frappe, ou cellule précédente pas exécutée ?",
     "KeyError": "Cette clé ou cette colonne n'existe pas : vérifiez l'orthographe exacte (majuscules, espaces) avec .columns ou .keys().",
@@ -84,6 +84,11 @@ AIDES = {
     "IndexError": "Cette position n'existe pas : les positions commencent à 0 et la dernière est len(...) - 1.",
     "ZeroDivisionError": "Division par zéro.",
     "ModuleNotFoundError": "Ce module n'est pas disponible dans l'atelier.",
+    "MergeError": "La jointure ne respecte pas validate= : une clé apparaît plusieurs fois. Repérez les doublons avec .duplicated(subset=...) et filtrez la table.",
+    "AssertionError": "Un contrôle assert a échoué : la condition vérifiée est fausse (lisez le message après « AssertionError »).",
+    "AttributeError": "Cet objet n'a pas cet attribut ou cette méthode : vérifiez l'orthographe et le type de l'objet avec type().",
+    "BinderException": "DuckDB ne trouve pas une colonne ou une table de la requête : vérifiez les noms (SELECT, FROM, GROUP BY).",
+    "ParserException": "La requête SQL est mal écrite : virgule, guillemet ou mot-clé manquant ?",
 }
 
 

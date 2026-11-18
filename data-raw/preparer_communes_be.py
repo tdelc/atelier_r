@@ -67,7 +67,7 @@ print("communes :", communes.shape, "| provinces :", prov.shape,
 
 import numpy as np
 
-ref = pd.read_csv(D + "referentiels/nuts_lau_2027.txt", sep="|", encoding="latin-1", dtype=str)
+ref = pd.read_csv(D + "referentiels/nuts_lau_2027.txt", sep="|", encoding="cp1252", dtype=str)
 actives = ref[(ref["CD_LVL"] == "4") & (ref["DT_VLDT_STOP"] == "31/12/9999")]
 region_nuts = dict(zip(actives["CD_MUNTY_REFNIS"], actives["CD_LVL_SUP"].str[:3]))
 noms_regions = {"BE1": "Bruxelles", "BE2": "Flandre", "BE3": "Wallonie"}

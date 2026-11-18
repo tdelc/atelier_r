@@ -8,6 +8,9 @@
 #
 #   python tests/test_python.py            (depuis le dossier de l'application)
 #
+# Le même contenu s'exécute aussi dans un vrai navigateur, avec Pyodide
+# (la version utilisée par les étudiants) : tests/test_python_navigateur.js.
+#
 # Paquets nécessaires : pandas, pyarrow, numpy, matplotlib, seaborn, openpyxl,
 # duckdb (les mêmes que dans le navigateur).
 # ============================================================================
@@ -68,7 +71,32 @@ def read(path):
     return lines
 
 
+def export_json():
+    """Le contenu à exécuter, pour tests/test_python_navigateur.js."""
+    out = []
+    for dir in sorted(glob.glob(os.path.join(APP, "bases", "*"))):
+        f = os.path.join(dir, "base.txt")
+        if not os.path.exists(f) or base_txt(f).get("langage", "r").lower() != "python":
+            continue
+        base = {"base": os.path.basename(dir), "lecons": [], "exercices": []}
+        for path in sorted(glob.glob(os.path.join(dir, "cours", "*.md"))):
+            base["lecons"].append([{"code": c, "mode": m, "where": f"{os.path.basename(path)} carte {k}"}
+                                   for k, card in enumerate(sections(read(path)), 1)
+                                   for c, m in code_blocks(card["lines"]) if m != "norun"])
+        fx = os.path.join(dir, "exercices.md")
+        for i, e in enumerate(sections(read(fx)) if os.path.exists(fx) else [], 1):
+            subs = {s["title"].lower(): s["lines"] for s in sections(e["lines"], 2)}
+            code_of = lambda n: "\n".join(c for c, _ in code_blocks(subs.get(n, [])))
+            verif = "aucune" if re.search(r"^verif:\s*aucune", "\n".join(e["lines"]), re.M) else "valeur"
+            base["exercices"].append({"id": f"ex{i:02d}", "titre": e["title"], "verif": verif,
+                                      "prep": code_of("préparation"), "correction": code_of("correction")})
+        out.append(base)
+    print(json.dumps(out))
+
+
 def main():
+    if "--json" in sys.argv:
+        return export_json()
     import runner
     fails, n = 0, 0
 

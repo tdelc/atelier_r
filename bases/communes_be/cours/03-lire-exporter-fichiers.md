@@ -13,7 +13,7 @@ Votre dossier de travail contient trois dossiers. Les fichiers sont ceux de **St
 | `donnees/population_communes_2026.csv` | population des 565 communes | CSV, séparateur `;` |
 | `donnees/population_2026.txt` | le fichier Statbel d'origine : communes, arrondissements, provinces, régions | texte tabulé, points des milliers |
 | `donnees/population_provinces_2026.xlsx` | population des provinces | Excel, deux lignes de titre |
-| `referentiels/nuts_lau_2027.txt` | nomenclature des territoires (codes NUTS 2027) | séparateur `\|`, encodage latin-1 |
+| `referentiels/nuts_lau_2027.txt` | nomenclature des territoires (codes NUTS 2027) | séparateur `\|`, encodage Windows-1252 |
 | `sortie/` | vos résultats | vide au départ |
 
 Le CSV et l'Excel ont été tirés du fichier d'origine, pour pratiquer d'autres formats : les chiffres sont identiques. Les autres fichiers de `donnees/` (un par région, et deux fichiers `.parquet`) et `outils_cours.py` servent à partir de la demi-journée 2.
@@ -57,7 +57,7 @@ pop.head(3)
 | Paramètre | Rôle | Valeurs courantes | Symptôme s'il est mal réglé |
 |---|---|---|---|
 | `sep` | séparateur de colonnes | `";"`, `"\t"`, `"\|"` | une seule colonne lue |
-| `encoding` | encodage des caractères | `"utf-8"`, `"latin-1"` | erreur `UnicodeDecodeError` ou accents illisibles |
+| `encoding` | encodage des caractères | `"utf-8"`, `"cp1252"`, `"latin-1"` | erreur `UnicodeDecodeError` ou accents illisibles |
 | `header`, `skiprows` | ligne des en-têtes, lignes à sauter | `0` (par défaut), `2` | lignes de titre ou lignes vides prises pour des données |
 | `decimal`, `thousands` | séparateur décimal, des milliers | `","`, `"."` | nombres lus comme du texte |
 | `dtype` | type imposé à une colonne | `{"code_ins": str}` | zéros initiaux perdus (`04000` devient `4000`) |
@@ -79,7 +79,7 @@ faux.head(2)
 
 # Une erreur d'encodage : la lire
 
-La nomenclature NUTS de Statbel est encodée en **latin-1**. pandas suppose **UTF-8** par défaut et s'arrête au premier caractère accentué (ici le « ü » de *Brüssel*).
+La nomenclature NUTS de Statbel est encodée en **Windows-1252** (`cp1252`), l'encodage historique de Windows, très proche de latin-1. pandas suppose **UTF-8** par défaut et s'arrête au premier caractère accentué (ici le « ü » de *Brüssel*).
 
 **Erreur volontaire** : lisez la dernière ligne du message, elle nomme le problème.
 
@@ -90,16 +90,29 @@ ref = pd.read_csv("referentiels/nuts_lau_2027.txt", sep="|",
 
 # … puis la corriger
 
-Correction : préciser `encoding="latin-1"`. Le séparateur de ce fichier est la barre verticale `|`.
+Correction : préciser `encoding="cp1252"`. Le séparateur de ce fichier est la barre verticale `|`.
 
 ```python
 ref = pd.read_csv("referentiels/nuts_lau_2027.txt", sep="|",
-                  encoding="latin-1", dtype_backend="pyarrow")
+                  encoding="cp1252", dtype_backend="pyarrow")
 print(ref.shape)
 ref.head(4)
 ```
 
 **Lecture :** 919 lignes. Chaque territoire a un code NUTS (`CD_LAU`), un code INS (`CD_MUNTY_REFNIS`), un nom en quatre langues, des dates de validité et un niveau (`CD_LVL` : 1 = région, 2 = province, 3 = arrondissement, 4 = commune). Les communes qui ont disparu (fusions de 2019 et de 2025) y sont encore, avec leur date de fin.
+
+::: piege
+**Latin-1 ou Windows-1252 ?** Avec `encoding="latin-1"`, la lecture réussit aussi… mais « Province d’Anvers » devient « Province d\x92Anvers » : l'apostrophe typographique ’ (octet 0x92) n'existe pas en latin-1, elle devient un caractère invisible. Pas de message d'erreur : seul un contrôle des libellés le révèle.
+:::
+
+Comparez les deux lectures sur la ligne de la province d'Anvers :
+
+```python
+for enc in ["latin-1", "cp1252"]:
+    essai = pd.read_csv("referentiels/nuts_lau_2027.txt", sep="|",
+                        encoding=enc, dtype_backend="pyarrow")
+    print(enc, repr(essai.loc[4, "TX_DESCR_FR"]))
+```
 
 ::: note
 `CD_MUNTY_REFNIS` est lu comme du texte (`"04000"` garde son zéro) parce que la colonne contient aussi des `-` : pandas ne peut pas en faire des nombres.

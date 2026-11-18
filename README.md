@@ -58,7 +58,7 @@ libelle: Chômage
 titre: Taux de chômage par région, 2000-2024
 ```
 
-Une base peut aussi avoir un cours en **Python** (`langage: python`) : le code s'exécute alors dans le navigateur de l'étudiant (Pyodide), avec pandas, NumPy, PyArrow, DuckDB, Matplotlib et Seaborn. Exemple : `bases/communes_be/` (population des communes belges, Statbel), dont la demi-journée 1 est écrite. Voir le guide, section « Une base en Python ».
+Une base peut aussi avoir un cours en **Python** (`langage: python`) : le code s'exécute alors dans le navigateur de l'étudiant (Pyodide), avec pandas, NumPy, PyArrow, DuckDB, Matplotlib et Seaborn. Exemple : `bases/communes_be/` (population des communes belges, Statbel) : cinq demi-journées, des fondamentaux de Python aux jointures et à DuckDB. Voir le guide, section « Une base en Python ».
 
 Au redémarrage, la base apparaît sur l'accueil et dans le sélecteur du haut (boutons jusqu'à trois bases, liste déroulante au-delà), utilisable dans le bac à sable. Les leçons, pistes, exercices et dashboard s'ajoutent ensuite, quand on veut.
 
@@ -77,7 +77,8 @@ Rscript tests/test_bases.R             # description des bases, dashboards, ajou
 Rscript tests/test_contenus.R          # toutes les cartes, pistes et corrections (ou : … meteo)
 Rscript tests/test_verification.R      # vérification automatique des exercices
 Rscript tests/test_sandbox.R           # sécurité du bac à sable (113 tests)
-python tests/test_python.py            # contenu des bases en Python
+python tests/test_python.py            # contenu des bases en Python (Python du poste)
+node tests/test_python_navigateur.js   # le même, dans un navigateur avec Pyodide (application lancée)
 ```
 
 ## Sécurité du code exécuté

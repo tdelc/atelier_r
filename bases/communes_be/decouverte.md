@@ -46,7 +46,7 @@ Le référentiel de Statbel décrit tous les territoires belges, des régions au
 import pandas as pd
 
 ref = pd.read_csv("referentiels/nuts_lau_2027.txt", sep="|",
-                  encoding="latin-1", dtype_backend="pyarrow")
+                  encoding="cp1252", dtype_backend="pyarrow")
 print(ref.shape)
 print(list(ref.columns))
 ref.head(10)
@@ -55,5 +55,5 @@ ref.head(10)
 ## À essayer
 - Affichez les dernières lignes avec `ref.tail()`.
 - Le code NUTS de Liège (province) est `BE33` : que donnent `"BE332"[:3]` et `"BE332"[:4]` ?
-- Que se passe-t-il sans `encoding="latin-1"` ? Et avec `encoding="utf-8"` ?
+- Que se passe-t-il sans `encoding="cp1252"` ? Et avec `encoding="latin-1"` : regardez la ligne 4, `ref.loc[4, "TX_DESCR_FR"]`.
 - Comptez les niveaux avec `ref["CD_LVL"].value_counts()` (une fonction de la demi-journée 4).

@@ -138,7 +138,7 @@ def verifier_attendus(lignes, attendus, champ):
         presents.add(ligne[champ])
     return presents - attendus
 
-ref = pd.read_csv("referentiels/nuts_lau_2027.txt", sep="|", encoding="latin-1")
+ref = pd.read_csv("referentiels/nuts_lau_2027.txt", sep="|", encoding="cp1252")
 codes_communes = set()
 for code, niveau, fin in zip(ref["CD_MUNTY_REFNIS"], ref["CD_LVL"], ref["DT_VLDT_STOP"]):
     if niveau == 4 and fin == "31/12/9999":

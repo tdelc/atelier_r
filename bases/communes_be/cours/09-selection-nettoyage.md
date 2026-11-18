@@ -158,6 +158,12 @@ Une nouvelle colonne se crée par affectation : `df["nouvelle"] = ...`.
 
 `.map(dictionnaire)` recode des modalités : chaque valeur est remplacée par la valeur associée. Ici, le premier chiffre du code INS donne la province.
 
+`.str.slice(0, 1)` garde le premier caractère de chaque valeur, comme `code[:1]` sur un texte.
+
+::: note
+L'écriture courte `df["code_ins"].str[:1]` existe aussi, mais avec la version de pandas de l'atelier (3.0) et les types PyArrow elle provoque une erreur `AttributeError` : préférez `.str.slice(début, fin)`, qui fait la même chose.
+:::
+
 ```python
 df["pop_milliers"] = (df["population"] / 1000).round(2)
 
@@ -165,7 +171,7 @@ provinces = {"1": "Anvers", "3": "Flandre occidentale", "4": "Flandre orientale"
              "5": "Hainaut", "6": "Liège", "7": "Limbourg",
              "8": "Luxembourg", "9": "Namur",
              "2": "Bruxelles ou Brabant"}
-df["province"] = df["code_ins"].str[:1].map(provinces)
+df["province"] = df["code_ins"].str.slice(0, 1).map(provinces)
 
 df[["commune", "population", "pop_milliers", "province"]].head(3)
 ```

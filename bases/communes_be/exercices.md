@@ -199,7 +199,7 @@ brut = pd.read_csv("donnees/population_2026.txt", sep="\t",
 prov = pd.read_excel("donnees/population_provinces_2026.xlsx", header=2,
                      dtype={"code_ins": str}, dtype_backend="pyarrow")
 ref = pd.read_csv("referentiels/nuts_lau_2027.txt", sep="|",
-                  encoding="latin-1", dtype_backend="pyarrow")
+                  encoding="cp1252", dtype_backend="pyarrow")
 print(pop.dtypes)
 [pop.shape, brut.shape, prov.shape, ref.shape]
 ```
@@ -265,7 +265,7 @@ import pandas as pd
 pop = pd.read_csv("donnees/population_communes_2026.csv", sep=";",
                   dtype={"code_ins": str}, dtype_backend="pyarrow")
 ref = pd.read_csv("referentiels/nuts_lau_2027.txt", sep="|",
-                  encoding="latin-1", dtype_backend="pyarrow")
+                  encoding="cp1252", dtype_backend="pyarrow")
 ```
 
 ## Correction
@@ -998,3 +998,248 @@ relu.shape
 - Écrivez `nettoyer(df)` qui renvoie la table nettoyée, les rejets et le bilan.
 - Ajoutez aux rejets une colonne `motif` : « population manquante » ou « population négative ».
 - Comparez avec les sorties de l'atelier 3 : quelle différence, et pourquoi ? (indice : le doublon de Gand).
+
+# Des agrégats par région et par sexe
+niveau: 2
+groupe: Demi-journée 5 · À vous
+theme: groupby, agg
+
+## Énoncé
+La table nettoyée `propre` est chargée.
+
+1. Calculez la population totale par région, triée par ordre décroissant.
+2. Calculez, pour chaque région, la population des femmes et la population totale.
+3. Sur la dernière ligne, affichez la part des femmes par région, en %, arrondie à 1 décimale.
+
+## Indice
+Filtrez les femmes **avant** de regrouper : `propre[propre["sexe"] == "F"].groupby("region")["population"].sum()`. Deux Series qui ont le même index (les régions) se divisent directement.
+
+## Préparation
+```python
+import pandas as pd
+propre = pd.read_parquet("donnees/population_nettoyee.parquet", dtype_backend="pyarrow")
+```
+
+## Correction
+```python
+total = propre.groupby("region")["population"].sum()
+print(total.sort_values(ascending=False))
+femmes = propre[propre["sexe"] == "F"].groupby("region")["population"].sum()
+(femmes / total * 100).round(1)
+```
+
+## Commentaire
+51,0 % de femmes à Bruxelles et en Wallonie, 50,5 % en Flandre. La Flandre est de loin la région la plus peuplée : 6,9 millions d'habitants.
+
+# Repérer ce qui n'est pas apparié
+niveau: 3
+groupe: Demi-journée 5 · À vous
+theme: merge, indicator
+
+## Énoncé
+La table `propre` et la table `en_vigueur` (les communes en vigueur de la nomenclature, avec `code_ins` et `nuts3`) sont chargées.
+
+1. Joignez `propre` à `en_vigueur` avec `how="inner"`, puis `how="left"` : comparez le nombre de lignes.
+2. Avec `indicator=True`, listez sur la dernière ligne les codes INS non appariés.
+
+## Indice
+`controle["_merge"] == "left_only"`, puis `.unique().tolist()` sur la colonne `code_ins`.
+
+## Préparation
+```python
+import pandas as pd
+propre = pd.read_parquet("donnees/population_nettoyee.parquet", dtype_backend="pyarrow")
+ref = pd.read_csv("referentiels/nuts_lau_2027.txt", sep="|", encoding="cp1252",
+                  dtype_backend="pyarrow")
+en_vigueur = (ref[(ref["CD_LVL"] == 4) & (ref["DT_VLDT_STOP"] == "31/12/9999")]
+              .rename(columns={"CD_MUNTY_REFNIS": "code_ins", "CD_LVL_SUP": "nuts3"})
+              [["code_ins", "nuts3"]])
+```
+
+## Correction
+```python
+print(len(propre.merge(en_vigueur, on="code_ins", how="inner")),
+      len(propre.merge(en_vigueur, on="code_ins", how="left")))
+controle = propre.merge(en_vigueur, on="code_ins", how="left",
+                        indicator=True, validate="many_to_one")
+controle.loc[controle["_merge"] == "left_only", "code_ins"].unique().tolist()
+```
+
+## Commentaire
+1 128 lignes avec `inner`, 1 129 avec `left` : la ligne de la commune « 99999 » n'existe pas dans la nomenclature. Elle doit être signalée à la source des données, pas supprimée en silence.
+
+# Atelier de synthèse · Étape 1 : importer et empiler
+niveau: 3
+groupe: Atelier de synthèse · Consolidation complète
+theme: read_*, concat
+
+## Énoncé
+**Objectif de l'atelier** : enchaîner toutes les étapes de la formation, des fichiers bruts au fichier consolidé.
+
+1. Importez les trois fichiers régionaux avec les bons paramètres (`code_ins` en texte), et ajoutez à chacun une colonne `region`.
+2. Empilez-les dans `empile` et contrôlez la structure : colonnes, types, nombre de lignes.
+3. Sur la dernière ligne, affichez `(len(empile), empile["region"].nunique())`.
+
+## Indice
+`bxl["region"] = "Bruxelles"` ajoute une colonne constante. `pd.concat([bxl, fla, wal], ignore_index=True)`.
+
+## Correction
+```python
+import pandas as pd
+
+bxl = pd.read_csv("donnees/population_bruxelles_2026.csv", sep=";",
+                  dtype={"code_ins": str}, dtype_backend="pyarrow")
+fla = pd.read_excel("donnees/population_flandre_2026.xlsx", header=2,
+                    dtype={"code_ins": str}, dtype_backend="pyarrow")
+wal = pd.read_csv("donnees/population_wallonie_2026.txt", sep="\t",
+                  dtype={"code_ins": str}, dtype_backend="pyarrow")
+bxl["region"] = "Bruxelles"
+fla["region"] = "Flandre"
+wal["region"] = "Wallonie"
+empile = pd.concat([bxl, fla, wal], ignore_index=True)
+print(empile.dtypes)
+(len(empile), empile["region"].nunique())
+```
+
+## Commentaire
+1 132 lignes (38 + 571 + 523) et 3 régions : c'est exactement le contenu de `population_brut.parquet`.
+
+# Atelier de synthèse · Étape 2 : nettoyer et fusionner
+niveau: 4
+groupe: Atelier de synthèse · Consolidation complète
+theme: nettoyage, merge, contrôles
+
+## Énoncé
+`empile` est prêt (étape 1), ainsi que `en_vigueur` (les communes en vigueur de la nomenclature).
+
+1. Nettoyez avec les règles des ateliers 3 et 4 : doublons, `code_ins` et `sexe` harmonisés, populations manquantes ou négatives écartées.
+2. Joignez `en_vigueur` (`how="left"`, `indicator=True`, `validate="many_to_one"`).
+3. Vérifiez que la jointure ne change ni le nombre de lignes ni le total de population.
+4. Sur la dernière ligne, affichez `(len(consolide), nb_non_apparies)`, où `nb_non_apparies` est le nombre de lignes `left_only`.
+
+## Indice
+Reprenez l'étape 2 de l'atelier 4 pour le nettoyage. Pour compter : `(consolide["_merge"] == "left_only").sum()`.
+
+## Préparation
+```python
+import pandas as pd
+from outils_cours import harmoniser_code
+empile = pd.read_parquet("donnees/population_brut.parquet", dtype_backend="pyarrow")
+ref = pd.read_csv("referentiels/nuts_lau_2027.txt", sep="|", encoding="cp1252",
+                  dtype_backend="pyarrow")
+en_vigueur = (ref[(ref["CD_LVL"] == 4) & (ref["DT_VLDT_STOP"] == "31/12/9999")]
+              .rename(columns={"CD_MUNTY_REFNIS": "code_ins", "CD_LVL_SUP": "nuts3"})
+              [["code_ins", "nuts3"]])
+```
+
+## Correction
+```python
+df = empile.drop_duplicates().copy()
+df["code_ins"] = df["code_ins"].map(harmoniser_code)
+df["sexe"] = df["sexe"].str.strip().str.upper()
+df = df[df["population"].notna() & (df["population"] >= 0)].copy()
+df["population"] = df["population"].astype("int64[pyarrow]")
+
+consolide = df.merge(en_vigueur, on="code_ins", how="left",
+                     indicator=True, validate="many_to_one")
+assert len(consolide) == len(df), "lignes ajoutées par la jointure"
+assert consolide["population"].sum() == df["population"].sum(), "total modifié"
+nb_non_apparies = int((consolide["_merge"] == "left_only").sum())
+(len(consolide), nb_non_apparies)
+```
+
+## Commentaire
+1 129 lignes, dont 1 non appariée (« 99999 »). Les deux `assert` sont des contrôles **automatiques** : si une prochaine livraison contient une clé en double, le traitement s'arrêtera au lieu de produire des totaux faux.
+
+# Atelier de synthèse · Étape 3 : contrôler la complétude
+niveau: 4
+groupe: Atelier de synthèse · Consolidation complète
+theme: groupby, size
+
+## Énoncé
+Chaque commune doit compter **2 lignes** (hommes et femmes). Sur la table `consolide` (étape 2), listez sur la dernière ligne les codes INS des communes qui n'ont pas 2 lignes, triés.
+
+## Indice
+`consolide.groupby("code_ins").size()` donne le nombre de lignes par commune ; gardez celles `!= 2`, puis `sorted(... .index)`.
+
+## Préparation
+```python
+import pandas as pd
+from outils_cours import harmoniser_code
+df = pd.read_parquet("donnees/population_nettoyee.parquet", dtype_backend="pyarrow")
+ref = pd.read_csv("referentiels/nuts_lau_2027.txt", sep="|", encoding="cp1252",
+                  dtype_backend="pyarrow")
+en_vigueur = (ref[(ref["CD_LVL"] == 4) & (ref["DT_VLDT_STOP"] == "31/12/9999")]
+              .rename(columns={"CD_MUNTY_REFNIS": "code_ins", "CD_LVL_SUP": "nuts3"})
+              [["code_ins", "nuts3"]])
+consolide = df.merge(en_vigueur, on="code_ins", how="left",
+                     indicator=True, validate="many_to_one")
+```
+
+## Correction
+```python
+lignes = consolide.groupby("code_ins").size()
+incomplets = lignes[lignes != 2]
+print(consolide[consolide["code_ins"].isin(incomplets.index)][["code_ins", "commune", "sexe"]])
+sorted(incomplets.index)
+```
+
+## Commentaire
+Trois communes : Martelange (`81013`) et Daverdisse (`84016`), dont une ligne a été rejetée, et « 99999 », inconnue. Les indicateurs des provinces de ces communes portent sur des observations incomplètes : il faut le dire dans toute publication.
+
+# Atelier de synthèse · Étape 4 : indicateurs par province et export
+niveau: 5
+groupe: Atelier de synthèse · Consolidation complète
+theme: agg, merge, to_parquet, DuckDB
+
+## Énoncé
+1. Ajoutez la province à `consolide` : `nuts2` = les 4 premiers caractères de `nuts3` (remplacez d'abord le `nuts3` manquant de la commune inconnue par `"-"` avec `.fillna("-")`), puis jointure avec `provinces` ; nommez « Région de Bruxelles-Capitale » les lignes `BE10`.
+2. Pour les lignes appariées, calculez par province : `communes` (nombre de communes distinctes), `population` et `part_femmes` (en %, 1 décimale).
+3. Exportez `consolide` (sans `_merge`) en Parquet dans `sortie/population_consolidee.parquet` et vérifiez avec DuckDB que la somme de la population est la même.
+4. Sur la dernière ligne, affichez le tableau des indicateurs.
+
+## Indice
+`.str.slice(0, 4)` ; `agg(communes=("code_ins", "nunique"), population=("population", "sum"))` ; pour les femmes, filtrez `sexe == "F"` puis regroupez. En SQL : `SELECT SUM(population) FROM 'sortie/population_consolidee.parquet'`.
+
+## Préparation
+```python
+import pandas as pd
+import duckdb
+df = pd.read_parquet("donnees/population_nettoyee.parquet", dtype_backend="pyarrow")
+ref = pd.read_csv("referentiels/nuts_lau_2027.txt", sep="|", encoding="cp1252",
+                  dtype_backend="pyarrow")
+en_vigueur = (ref[(ref["CD_LVL"] == 4) & (ref["DT_VLDT_STOP"] == "31/12/9999")]
+              .rename(columns={"CD_MUNTY_REFNIS": "code_ins", "CD_LVL_SUP": "nuts3"})
+              [["code_ins", "nuts3"]])
+provinces = (ref[(ref["CD_LVL"] == 2) & (ref["DT_VLDT_STOP"] == "31/12/9999")]
+             .rename(columns={"CD_LAU": "nuts2", "TX_DESCR_FR": "province"})
+             [["nuts2", "province"]])
+consolide = df.merge(en_vigueur, on="code_ins", how="left",
+                     indicator=True, validate="many_to_one")
+```
+
+## Correction
+```python
+consolide["nuts2"] = consolide["nuts3"].fillna("-").str.slice(0, 4)
+consolide = consolide.merge(provinces, on="nuts2", how="left", validate="many_to_one")
+consolide.loc[consolide["nuts2"] == "BE10", "province"] = "Région de Bruxelles-Capitale"
+
+ok = consolide[consolide["_merge"] == "both"]
+indic = ok.groupby("province").agg(communes=("code_ins", "nunique"),
+                                   population=("population", "sum"))
+femmes = ok[ok["sexe"] == "F"].groupby("province")["population"].sum()
+indic["part_femmes"] = (femmes / indic["population"] * 100).round(1)
+
+consolide.drop(columns="_merge").to_parquet("sortie/population_consolidee.parquet", index=False)
+total_sql = duckdb.sql("SELECT SUM(population) AS p FROM 'sortie/population_consolidee.parquet'").fetchone()[0]
+assert total_sql == consolide["population"].sum()
+indic
+```
+
+## Commentaire
+Onze lignes : les dix provinces et la Région de Bruxelles-Capitale. La part des femmes va de 50,2 % (Limbourg, Luxembourg) à 51,5 % (Brabant wallon). Le Luxembourg, incomplet, est à interpréter avec prudence.
+
+**Pour aller plus loin**
+- Écrivez `consolider(fichiers, chemin_ref)` qui enchaîne les étapes et renvoie la table, les indicateurs et le bilan.
+- Recalculez les indicateurs par une requête DuckDB et comparez avec le `groupby()` pandas.
+- Ajoutez la région à partir du code NUTS : les 3 premiers caractères de `nuts3` (`BE1`, `BE2`, `BE3`).
