@@ -810,3 +810,191 @@ Bilan attendu : `[(38, 0), (571, 0), (521, 2)]`. Les deux rejets sont Daverdisse
 - Ajoutez un paramètre `seuil_min=0` à `controler_ligne()` pour paramétrer la règle R3.
 - Tenez un journal : un dictionnaire qui compte les rejets par règle et par fichier.
 - Signalez le doublon de Flandre avec un ensemble de clés `(code_ins, sexe)` déjà vues.
+
+# Inspecter la table brute
+niveau: 2
+groupe: Demi-journée 4 · À vous
+theme: info, describe, unique
+
+## Énoncé
+La table `brut` est déjà chargée.
+
+1. Combien de lignes et de colonnes compte `brut` ?
+2. Quelle colonne contient des valeurs manquantes, et combien ?
+3. Quelles modalités prend `sexe` ?
+4. Sur la dernière ligne, affichez la plus petite population. Que signifie-t-elle ?
+
+## Indice
+`.shape`, `.info()` (ou `.isna().sum()`), `.unique()`, puis `brut["population"].min()`.
+
+## Préparation
+```python
+import pandas as pd
+brut = pd.read_parquet("donnees/population_brut.parquet", dtype_backend="pyarrow")
+```
+
+## Correction
+```python
+print(brut.shape)
+print(brut.isna().sum())
+print(brut["sexe"].unique().tolist())
+brut["population"].min()
+```
+
+## Commentaire
+1 132 lignes et 6 colonnes ; une population manquante ; trois modalités pour `sexe` (`"H"`, `"F"` et `"f"`). Le minimum, -1 059, est impossible : c'est une erreur de saisie (Martelange, femmes) à écarter et à signaler.
+
+# Nettoyer une région
+niveau: 2
+groupe: Demi-journée 4 · À vous
+theme: filtrer, isna, str
+
+## Énoncé
+1. À partir de `brut`, gardez uniquement la Wallonie dans `wal`.
+2. Comptez les lignes dont la population est manquante, puis celles dont elle est négative.
+3. Créez `nettoye_wal` sans ces lignes, et harmonisez `sexe` avec `.str.strip().str.upper()`.
+4. Vérifiez que `sexe` ne prend plus que les valeurs H et F. Sur la dernière ligne, affichez le nombre de lignes de `nettoye_wal`.
+
+## Indice
+`wal["population"].isna().sum()` ; `(wal["population"] < 0).sum()`. Pour garder les populations renseignées et positives : `wal[wal["population"].notna() & (wal["population"] >= 0)]`.
+
+## Préparation
+```python
+import pandas as pd
+brut = pd.read_parquet("donnees/population_brut.parquet", dtype_backend="pyarrow")
+```
+
+## Correction
+```python
+wal = brut[brut["region"] == "Wallonie"]
+print(wal["population"].isna().sum(), (wal["population"] < 0).sum())
+nettoye_wal = wal[wal["population"].notna() & (wal["population"] >= 0)].copy()
+nettoye_wal["sexe"] = nettoye_wal["sexe"].str.strip().str.upper()
+print(nettoye_wal["sexe"].unique().tolist())
+len(nettoye_wal)
+```
+
+## Commentaire
+Une population manquante et une négative : il reste 521 lignes sur 523. `.copy()` évite l'avertissement de pandas quand on modifie une table extraite d'une autre.
+
+# Atelier 4 · Étape 1 : inspecter et filtrer
+niveau: 3
+groupe: Atelier 4 · Produire une table nettoyée
+theme: inspection, filtre
+
+## Énoncé
+**Objectif de l'atelier** : produire une table nettoyée, documentée par un bilan chiffré, à partir de `donnees/population_brut.parquet`.
+
+1. Importez le fichier dans `brut` et inspectez-le : `shape`, `info()`, `describe()`, `unique()`.
+2. Extrayez dans `namur_arr` les lignes de l'arrondissement de Namur : code INS commençant par `92`.
+3. Sur la dernière ligne, affichez les dimensions de `namur_arr`.
+
+## Indice
+`brut["code_ins"].str.startswith("92")` donne une Series de booléens, à placer entre crochets.
+
+## Code de départ
+```python
+import pandas as pd
+
+brut = pd.read_parquet(...)
+```
+
+## Correction
+```python
+import pandas as pd
+
+brut = pd.read_parquet("donnees/population_brut.parquet", dtype_backend="pyarrow")
+print(brut.shape)
+brut.info()
+print(brut["sexe"].unique().tolist())
+namur_arr = brut[brut["code_ins"].str.startswith("92")]
+namur_arr.shape
+```
+
+## Commentaire
+L'arrondissement de Namur compte 16 communes, soit 32 lignes (hommes et femmes). La ligne de Namur écrite `"f"` y est bien : le filtre porte sur le code, pas sur le sexe.
+
+# Atelier 4 · Étape 2 : doublons, harmonisation et rejets
+niveau: 4
+groupe: Atelier 4 · Produire une table nettoyée
+theme: drop_duplicates, map, rejets
+
+## Énoncé
+1. Supprimez les doublons de `brut` dans une nouvelle table `df` (gardez la première occurrence).
+2. Harmonisez `code_ins` avec `.map(harmoniser_code)` et `sexe` avec `.str`.
+3. Règle donnée : une population manquante ou négative fait **écarter** la ligne, qui va dans une table `rejets`.
+4. Sur la dernière ligne, affichez `(len(df), len(rejets))`.
+
+## Indice
+Calculez d'abord le masque des lignes à rejeter : `a_rejeter = df["population"].isna() | (df["population"] < 0)`. Puis `rejets = df[a_rejeter]` et `df = df[~a_rejeter]`.
+
+## Préparation
+```python
+import pandas as pd
+from outils_cours import harmoniser_code
+brut = pd.read_parquet("donnees/population_brut.parquet", dtype_backend="pyarrow")
+```
+
+## Correction
+```python
+df = brut.drop_duplicates().copy()
+df["code_ins"] = df["code_ins"].map(harmoniser_code)
+df["sexe"] = df["sexe"].str.strip().str.upper()
+a_rejeter = df["population"].isna() | (df["population"] < 0)
+rejets = df[a_rejeter]
+df = df[~a_rejeter].copy()
+print(rejets[["code_ins", "commune", "sexe", "population"]])
+(len(df), len(rejets))
+```
+
+## Commentaire
+1 132 lignes lues, 1 doublon supprimé, 2 lignes rejetées : il en reste 1 129. Attention : `isna() | (... < 0)` fonctionne car une comparaison avec une valeur manquante donne `<NA>`, que `|` combine correctement avec `True`.
+
+# Atelier 4 · Étape 3 : types, variables et export
+niveau: 4
+groupe: Atelier 4 · Produire une table nettoyée
+theme: astype, to_datetime, to_parquet
+
+## Énoncé
+La table nettoyée `df` (étape 2) est prête.
+
+1. Convertissez `population` en `int64[pyarrow]` et créez `date_reference` (1er janvier de `annee`) avec `pd.to_datetime()`.
+2. Créez `pop_milliers`, la population en milliers arrondie à 2 décimales.
+3. Exportez la table dans `sortie/population_nettoyee.parquet` (sans index), puis relisez-la.
+4. Sur la dernière ligne, affichez les dimensions du fichier relu.
+
+## Indice
+`df["annee"].astype(str) + "-01-01"` construit le texte de la date ; `df.to_parquet(chemin, index=False)` ; `pd.read_parquet(chemin)`.
+
+## Préparation
+```python
+import pandas as pd
+from outils_cours import harmoniser_code
+brut = pd.read_parquet("donnees/population_brut.parquet", dtype_backend="pyarrow")
+df = brut.drop_duplicates().copy()
+df["code_ins"] = df["code_ins"].map(harmoniser_code)
+df["sexe"] = df["sexe"].str.strip().str.upper()
+a_rejeter = df["population"].isna() | (df["population"] < 0)
+rejets = df[a_rejeter]
+df = df[~a_rejeter].copy()
+```
+
+## Correction
+```python
+df["population"] = df["population"].astype("int64[pyarrow]")
+df["date_reference"] = pd.to_datetime(df["annee"].astype(str) + "-01-01")
+df["pop_milliers"] = (df["population"] / 1000).round(2)
+df.to_parquet("sortie/population_nettoyee.parquet", index=False)
+rejets.to_csv("sortie/rejets.csv", sep=";", index=False)
+relu = pd.read_parquet("sortie/population_nettoyee.parquet", dtype_backend="pyarrow")
+print(relu.dtypes)
+relu.shape
+```
+
+## Commentaire
+1 129 lignes et 8 colonnes, mêmes types après relecture : c'est l'intérêt du Parquet. La table est **nettoyée, pas complète** : Daverdisse et Martelange n'ont plus qu'une ligne sur deux. On le contrôlera en demi-journée 5.
+
+**Pour aller plus loin**
+- Écrivez `nettoyer(df)` qui renvoie la table nettoyée, les rejets et le bilan.
+- Ajoutez aux rejets une colonne `motif` : « population manquante » ou « population négative ».
+- Comparez avec les sorties de l'atelier 3 : quelle différence, et pourquoi ? (indice : le doublon de Gand).
