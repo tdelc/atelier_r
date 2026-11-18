@@ -1,0 +1,566 @@
+code_ins;commune;arrondissement;province;region;hommes;femmes;total
+11001;Aartselaar;Anvers;Anvers;Flandre;7531;7554;15085
+11002;Anvers;Anvers;Anvers;Flandre;283630;281985;565615
+11004;Boechout;Anvers;Anvers;Flandre;6868;7238;14106
+11005;Boom;Anvers;Anvers;Flandre;10017;9946;19963
+11008;Brasschaat;Anvers;Anvers;Flandre;18450;20079;38529
+11009;Brecht;Anvers;Anvers;Flandre;15313;15442;30755
+11013;Edegem;Anvers;Anvers;Flandre;11406;12292;23698
+11016;Essen;Anvers;Anvers;Flandre;9778;9893;19671
+11018;Hemiksem;Anvers;Anvers;Flandre;6198;6268;12466
+11021;Hove;Anvers;Anvers;Flandre;4044;4356;8400
+11022;Kalmthout;Anvers;Anvers;Flandre;9708;10118;19826
+11023;Kapellen;Anvers;Anvers;Flandre;13804;14386;28190
+11024;Kontich;Anvers;Anvers;Flandre;10637;11257;21894
+11025;Lint;Anvers;Anvers;Flandre;4242;4326;8568
+11029;Mortsel;Anvers;Anvers;Flandre;13066;13895;26961
+11030;Niel;Anvers;Anvers;Flandre;5484;5575;11059
+11035;Ranst;Anvers;Anvers;Flandre;9862;10005;19867
+11037;Rumst;Anvers;Anvers;Flandre;7729;7840;15569
+11038;Schelle;Anvers;Anvers;Flandre;4232;4545;8777
+11039;Schilde;Anvers;Anvers;Flandre;9923;10553;20476
+11040;Schoten;Anvers;Anvers;Flandre;16908;17941;34849
+11044;Stabroek;Anvers;Anvers;Flandre;9503;9623;19126
+11050;Wijnegem;Anvers;Anvers;Flandre;5147;5556;10703
+11052;Wommelgem;Anvers;Anvers;Flandre;6690;6952;13642
+11053;Wuustwezel;Anvers;Anvers;Flandre;10925;10977;21902
+11054;Zandhoven;Anvers;Anvers;Flandre;6738;6791;13529
+11055;Zoersel;Anvers;Anvers;Flandre;11348;11875;23223
+11057;Malle;Anvers;Anvers;Flandre;8064;8192;16256
+12002;Berlaar;Malines;Anvers;Flandre;5982;6169;12151
+12005;Bonheiden;Malines;Anvers;Flandre;7694;8011;15705
+12007;Bornem;Malines;Anvers;Flandre;10977;11356;22333
+12009;Duffel;Malines;Anvers;Flandre;8964;9239;18203
+12014;Heist-op-den-Berg;Malines;Anvers;Flandre;22220;22771;44991
+12021;Lierre;Malines;Anvers;Flandre;18865;19882;38747
+12025;Malines;Malines;Anvers;Flandre;44365;45990;90355
+12026;Nijlen;Malines;Anvers;Flandre;11730;12151;23881
+12029;Putte;Malines;Anvers;Flandre;9498;9705;19203
+12035;Sint-Katelijne-Waver;Malines;Anvers;Flandre;10835;11102;21937
+12040;Willebroek;Malines;Anvers;Flandre;14354;14569;28923
+12041;Puurs-Sint-Amands;Malines;Anvers;Flandre;13554;13835;27389
+13001;Arendonk;Turnhout;Anvers;Flandre;6739;6687;13426
+13002;Baerle-Duc;Turnhout;Anvers;Flandre;1596;1507;3103
+13003;Balen;Turnhout;Anvers;Flandre;11969;11947;23916
+13004;Beerse;Turnhout;Anvers;Flandre;9365;9415;18780
+13006;Dessel;Turnhout;Anvers;Flandre;5074;5117;10191
+13008;Geel;Turnhout;Anvers;Flandre;21450;21200;42650
+13010;Grobbendonk;Turnhout;Anvers;Flandre;5856;5752;11608
+13011;Herentals;Turnhout;Anvers;Flandre;14448;14715;29163
+13012;Herenthout;Turnhout;Anvers;Flandre;4658;4806;9464
+13013;Herselt;Turnhout;Anvers;Flandre;7398;7379;14777
+13014;Hoogstraten;Turnhout;Anvers;Flandre;11412;11113;22525
+13016;Hulshout;Turnhout;Anvers;Flandre;5323;5329;10652
+13017;Kasterlee;Turnhout;Anvers;Flandre;9905;9930;19835
+13019;Lille;Turnhout;Anvers;Flandre;8655;8520;17175
+13021;Meerhout;Turnhout;Anvers;Flandre;5250;5115;10365
+13023;Merksplas;Turnhout;Anvers;Flandre;4481;4493;8974
+13025;Mol;Turnhout;Anvers;Flandre;19299;19494;38793
+13029;Olen;Turnhout;Anvers;Flandre;6515;6430;12945
+13031;Oud-Turnhout;Turnhout;Anvers;Flandre;7551;7660;15211
+13035;Ravels;Turnhout;Anvers;Flandre;8075;7878;15953
+13036;Retie;Turnhout;Anvers;Flandre;6052;6024;12076
+13037;Rijkevorsel;Turnhout;Anvers;Flandre;6335;6217;12552
+13040;Turnhout;Turnhout;Anvers;Flandre;24257;24233;48490
+13044;Vorselaar;Turnhout;Anvers;Flandre;4034;4022;8056
+13046;Vosselaar;Turnhout;Anvers;Flandre;5932;6001;11933
+13049;Westerlo;Turnhout;Anvers;Flandre;12929;12794;25723
+13053;Laakdal;Turnhout;Anvers;Flandre;8482;8550;17032
+21001;Anderlecht;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;64783;64817;129600
+21002;Auderghem;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;16972;18687;35659
+21003;Berchem-Sainte-Agathe;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;12482;13280;25762
+21004;Bruxelles;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;101023;97651;198674
+21005;Etterbeek;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;23796;25842;49638
+21006;Evere;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;22265;23719;45984
+21007;Forest;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;28618;30286;58904
+21008;Ganshoren;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;12408;13323;25731
+21009;Ixelles;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;42764;46398;89162
+21010;Jette;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;26358;27972;54330
+21011;Koekelberg;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;11286;11292;22578
+21012;Molenbeek-Saint-Jean;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;48988;49423;98411
+21013;Saint-Gilles;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;24297;24459;48756
+21014;Saint-Josse-ten-Noode;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;14127;12876;27003
+21015;Schaerbeek;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;64029;65249;129278
+21016;Uccle;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;40742;46806;87548
+21017;Watermael-Boitsfort;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;11679;13592;25271
+21018;Woluwe-Saint-Lambert;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;28412;32567;60979
+21019;Woluwe-Saint-Pierre;Bruxelles-Capitale;Bruxelles-Capitale;Bruxelles;19979;22587;42566
+23002;Asse;Hal-Vilvorde;Brabant flamand;Flandre;17759;18259;36018
+23003;Beersel;Hal-Vilvorde;Brabant flamand;Flandre;13199;13601;26800
+23009;Biévène;Hal-Vilvorde;Brabant flamand;Flandre;1135;1144;2279
+23016;Dilbeek;Hal-Vilvorde;Brabant flamand;Flandre;21890;23221;45111
+23025;Grimbergen;Hal-Vilvorde;Brabant flamand;Flandre;19721;20770;40491
+23027;Hal;Hal-Vilvorde;Brabant flamand;Flandre;21080;22051;43131
+23033;Hoeilaart;Hal-Vilvorde;Brabant flamand;Flandre;5605;5916;11521
+23038;Kampenhout;Hal-Vilvorde;Brabant flamand;Flandre;6215;6385;12600
+23039;Kapelle-op-den-Bos;Hal-Vilvorde;Brabant flamand;Flandre;4781;5067;9848
+23044;Liedekerke;Hal-Vilvorde;Brabant flamand;Flandre;6859;7254;14113
+23045;Londerzeel;Hal-Vilvorde;Brabant flamand;Flandre;9622;9976;19598
+23047;Machelen;Hal-Vilvorde;Brabant flamand;Flandre;8404;8711;17115
+23050;Meise;Hal-Vilvorde;Brabant flamand;Flandre;10060;10532;20592
+23052;Merchtem;Hal-Vilvorde;Brabant flamand;Flandre;9030;9437;18467
+23060;Opwijk;Hal-Vilvorde;Brabant flamand;Flandre;7465;7678;15143
+23062;Overijse;Hal-Vilvorde;Brabant flamand;Flandre;12997;13455;26452
+23064;Pepingen;Hal-Vilvorde;Brabant flamand;Flandre;2269;2277;4546
+23077;Sint-Pieters-Leeuw;Hal-Vilvorde;Brabant flamand;Flandre;18188;18867;37055
+23081;Steenokkerzeel;Hal-Vilvorde;Brabant flamand;Flandre;6207;6530;12737
+23086;Ternat;Hal-Vilvorde;Brabant flamand;Flandre;8208;8534;16742
+23088;Vilvorde;Hal-Vilvorde;Brabant flamand;Flandre;23659;24754;48413
+23094;Zaventem;Hal-Vilvorde;Brabant flamand;Flandre;18296;19222;37518
+23096;Zemst;Hal-Vilvorde;Brabant flamand;Flandre;11456;11911;23367
+23097;Roosdaal;Hal-Vilvorde;Brabant flamand;Flandre;6001;6162;12163
+23098;Drogenbos;Hal-Vilvorde;Brabant flamand;Flandre;2879;3188;6067
+23099;Kraainem;Hal-Vilvorde;Brabant flamand;Flandre;6799;7186;13985
+23100;Linkebeek;Hal-Vilvorde;Brabant flamand;Flandre;2268;2405;4673
+23101;Rhode-Saint-Genèse;Hal-Vilvorde;Brabant flamand;Flandre;9038;9584;18622
+23102;Wemmel;Hal-Vilvorde;Brabant flamand;Flandre;8899;9371;18270
+23103;Wezembeek-Oppem;Hal-Vilvorde;Brabant flamand;Flandre;7182;7748;14930
+23104;Lennik;Hal-Vilvorde;Brabant flamand;Flandre;4592;4808;9400
+23105;Affligem;Hal-Vilvorde;Brabant flamand;Flandre;6860;7040;13900
+23106;Pajottegem;Hal-Vilvorde;Brabant flamand;Flandre;12631;12870;25501
+24001;Aarschot;Louvain;Brabant flamand;Flandre;15664;16284;31948
+24007;Begijnendijk;Louvain;Brabant flamand;Flandre;5201;5467;10668
+24008;Bekkevoort;Louvain;Brabant flamand;Flandre;3432;3533;6965
+24009;Bertem;Louvain;Brabant flamand;Flandre;5130;5264;10394
+24011;Bierbeek;Louvain;Brabant flamand;Flandre;5459;5467;10926
+24014;Boortmeerbeek;Louvain;Brabant flamand;Flandre;6656;6791;13447
+24016;Boutersem;Louvain;Brabant flamand;Flandre;4254;4424;8678
+24020;Diest;Louvain;Brabant flamand;Flandre;12463;12733;25196
+24028;Geetbets;Louvain;Brabant flamand;Flandre;3141;3168;6309
+24033;Haacht;Louvain;Brabant flamand;Flandre;7682;8129;15811
+24038;Herent;Louvain;Brabant flamand;Flandre;11387;11900;23287
+24041;Hoegaarden;Louvain;Brabant flamand;Flandre;3515;3501;7016
+24043;Holsbeek;Louvain;Brabant flamand;Flandre;5107;5176;10283
+24045;Huldenberg;Louvain;Brabant flamand;Flandre;4951;5181;10132
+24048;Keerbergen;Louvain;Brabant flamand;Flandre;6585;6862;13447
+24054;Kortenaken;Louvain;Brabant flamand;Flandre;3988;4058;8046
+24055;Kortenberg;Louvain;Brabant flamand;Flandre;10595;10830;21425
+24059;Landen;Louvain;Brabant flamand;Flandre;8054;8404;16458
+24062;Louvain;Louvain;Brabant flamand;Flandre;52601;52756;105357
+24066;Lubbeek;Louvain;Brabant flamand;Flandre;7575;7715;15290
+24086;Oud-Heverlee;Louvain;Brabant flamand;Flandre;5598;5816;11414
+24094;Rotselaar;Louvain;Brabant flamand;Flandre;8802;9005;17807
+24104;Tervuren;Louvain;Brabant flamand;Flandre;11219;11960;23179
+24107;Tirlemont;Louvain;Brabant flamand;Flandre;18020;18942;36962
+24109;Tremelo;Louvain;Brabant flamand;Flandre;7642;7730;15372
+24130;Léau;Louvain;Brabant flamand;Flandre;4315;4490;8805
+24133;Linter;Louvain;Brabant flamand;Flandre;3639;3771;7410
+24134;Montaigu-Zichem;Louvain;Brabant flamand;Flandre;12101;12436;24537
+24135;Tielt-Winge;Louvain;Brabant flamand;Flandre;5750;5835;11585
+24137;Glabbeek;Louvain;Brabant flamand;Flandre;2708;2767;5475
+25005;Beauvechain;Nivelles;Brabant wallon;Wallonie;3533;3715;7248
+25014;Braine-l’Alleud;Nivelles;Brabant wallon;Wallonie;19551;21264;40815
+25015;Braine-le-Château;Nivelles;Brabant wallon;Wallonie;5200;5410;10610
+25018;Chaumont-Gistoux;Nivelles;Brabant wallon;Wallonie;5832;6086;11918
+25023;Court-Saint-Etienne;Nivelles;Brabant wallon;Wallonie;5405;5676;11081
+25031;Genappe;Nivelles;Brabant wallon;Wallonie;8095;8204;16299
+25037;Grez-Doiceau;Nivelles;Brabant wallon;Wallonie;6851;7198;14049
+25043;Incourt;Nivelles;Brabant wallon;Wallonie;2822;2888;5710
+25044;Ittre;Nivelles;Brabant wallon;Wallonie;3377;3541;6918
+25048;Jodoigne;Nivelles;Brabant wallon;Wallonie;7316;7714;15030
+25050;La Hulpe;Nivelles;Brabant wallon;Wallonie;3606;3933;7539
+25068;Mont-Saint-Guibert;Nivelles;Brabant wallon;Wallonie;4173;4330;8503
+25072;Nivelles;Nivelles;Brabant wallon;Wallonie;14176;15654;29830
+25084;Perwez;Nivelles;Brabant wallon;Wallonie;4760;5050;9810
+25091;Rixensart;Nivelles;Brabant wallon;Wallonie;10970;12003;22973
+25105;Tubize;Nivelles;Brabant wallon;Wallonie;14157;14886;29043
+25107;Villers-la-Ville;Nivelles;Brabant wallon;Wallonie;5483;5571;11054
+25110;Waterloo;Nivelles;Brabant wallon;Wallonie;14383;16003;30386
+25112;Wavre;Nivelles;Brabant wallon;Wallonie;17304;18431;35735
+25117;Chastre;Nivelles;Brabant wallon;Wallonie;3805;4012;7817
+25118;Hélécine;Nivelles;Brabant wallon;Wallonie;1960;1966;3926
+25119;Lasne;Nivelles;Brabant wallon;Wallonie;6877;7274;14151
+25120;Orp-Jauche;Nivelles;Brabant wallon;Wallonie;4526;4650;9176
+25121;Ottignies-Louvain-la-Neuve;Nivelles;Brabant wallon;Wallonie;15391;16432;31823
+25122;Ramillies;Nivelles;Brabant wallon;Wallonie;3352;3355;6707
+25123;Rebecq;Nivelles;Brabant wallon;Wallonie;5504;5726;11230
+25124;Walhain;Nivelles;Brabant wallon;Wallonie;3725;3841;7566
+31003;Beernem;Bruges;Flandre occidentale;Flandre;8264;8070;16334
+31004;Blankenberge;Bruges;Flandre occidentale;Flandre;10238;10503;20741
+31005;Bruges;Bruges;Flandre occidentale;Flandre;59020;61438;120458
+31006;Damme;Bruges;Flandre occidentale;Flandre;5623;5698;11321
+31012;Jabbeke;Bruges;Flandre occidentale;Flandre;7440;7550;14990
+31022;Oostkamp;Bruges;Flandre occidentale;Flandre;12006;12096;24102
+31033;Torhout;Bruges;Flandre occidentale;Flandre;10602;10552;21154
+31040;Zedelgem;Bruges;Flandre occidentale;Flandre;11812;11935;23747
+31042;Zuienkerke;Bruges;Flandre occidentale;Flandre;1343;1298;2641
+31043;Knokke-Heist;Bruges;Flandre occidentale;Flandre;15558;16605;32163
+32003;Dixmude;Dixmude;Flandre occidentale;Flandre;8671;8715;17386
+32006;Houthulst;Dixmude;Flandre occidentale;Flandre;5312;5231;10543
+32010;Koekelare;Dixmude;Flandre occidentale;Flandre;4417;4469;8886
+32011;Kortemark;Dixmude;Flandre occidentale;Flandre;6543;6541;13084
+32030;Lo-Reninge;Dixmude;Flandre occidentale;Flandre;1578;1560;3138
+33011;Ypres;Ypres;Flandre occidentale;Flandre;17611;18018;35629
+33016;Messines;Ypres;Flandre occidentale;Flandre;531;537;1068
+33021;Poperinge;Ypres;Flandre occidentale;Flandre;9866;10024;19890
+33029;Wervik;Ypres;Flandre occidentale;Flandre;9685;9549;19234
+33037;Zonnebeke;Ypres;Flandre occidentale;Flandre;6445;6339;12784
+33039;Heuvelland;Ypres;Flandre occidentale;Flandre;4132;3917;8049
+33040;Langemark-Poelkapelle;Ypres;Flandre occidentale;Flandre;4157;4101;8258
+33041;Vleteren;Ypres;Flandre occidentale;Flandre;1844;1737;3581
+34002;Anzegem;Courtrai;Flandre occidentale;Flandre;7669;7625;15294
+34003;Avelgem;Courtrai;Flandre occidentale;Flandre;5179;5247;10426
+34009;Deerlijk;Courtrai;Flandre occidentale;Flandre;6279;6448;12727
+34013;Harelbeke;Courtrai;Flandre occidentale;Flandre;15220;15385;30605
+34022;Courtrai;Courtrai;Flandre occidentale;Flandre;40503;41020;81523
+34023;Kuurne;Courtrai;Flandre occidentale;Flandre;7018;7290;14308
+34025;Lendelede;Courtrai;Flandre occidentale;Flandre;2917;2946;5863
+34027;Menin;Courtrai;Flandre occidentale;Flandre;17250;17390;34640
+34040;Waregem;Courtrai;Flandre occidentale;Flandre;19995;20742;40737
+34041;Wevelgem;Courtrai;Flandre occidentale;Flandre;15844;16245;32089
+34042;Zwevegem;Courtrai;Flandre occidentale;Flandre;12927;13108;26035
+34043;Espierres-Helchin;Courtrai;Flandre occidentale;Flandre;1002;1049;2051
+35002;Bredene;Ostende;Flandre occidentale;Flandre;8924;9133;18057
+35005;Gistel;Ostende;Flandre occidentale;Flandre;6003;6095;12098
+35006;Ichtegem;Ostende;Flandre occidentale;Flandre;7413;7268;14681
+35011;Middelkerke;Ostende;Flandre occidentale;Flandre;9983;10086;20069
+35013;Ostende;Ostende;Flandre occidentale;Flandre;35949;37051;73000
+35014;Oudenburg;Ostende;Flandre occidentale;Flandre;5208;5241;10449
+35029;De Haan;Ostende;Flandre occidentale;Flandre;6166;6516;12682
+36006;Hooglede;Roulers;Flandre occidentale;Flandre;5216;5032;10248
+36007;Ingelmunster;Roulers;Flandre occidentale;Flandre;5788;5875;11663
+36008;Izegem;Roulers;Flandre occidentale;Flandre;14542;14902;29444
+36010;Ledegem;Roulers;Flandre occidentale;Flandre;4894;4903;9797
+36011;Lichtervelde;Roulers;Flandre occidentale;Flandre;4757;4693;9450
+36012;Moorslede;Roulers;Flandre occidentale;Flandre;5840;5691;11531
+36015;Roulers;Roulers;Flandre occidentale;Flandre;33973;33724;67697
+36019;Staden;Roulers;Flandre occidentale;Flandre;5951;5808;11759
+37002;Dentergem;Tielt;Flandre occidentale;Flandre;4430;4394;8824
+37010;Oostrozebeke;Tielt;Flandre occidentale;Flandre;4006;3966;7972
+37011;Pittem;Tielt;Flandre occidentale;Flandre;3496;3507;7003
+37017;Wielsbeke;Tielt;Flandre occidentale;Flandre;5172;5110;10282
+37020;Ardooie;Tielt;Flandre occidentale;Flandre;4752;4794;9546
+37021;Wingene;Tielt;Flandre occidentale;Flandre;10470;10449;20919
+37022;Tielt;Tielt;Flandre occidentale;Flandre;16060;15913;31973
+38002;Alveringem;Furnes;Flandre occidentale;Flandre;2539;2428;4967
+38008;La Panne;Furnes;Flandre occidentale;Flandre;5316;5513;10829
+38014;Koksijde;Furnes;Flandre occidentale;Flandre;10275;10797;21072
+38016;Nieuport;Furnes;Flandre occidentale;Flandre;5560;5871;11431
+38025;Furnes;Furnes;Flandre occidentale;Flandre;6241;6508;12749
+41002;Alost;Alost;Flandre orientale;Flandre;45723;47371;93094
+41011;Denderleeuw;Alost;Flandre orientale;Flandre;10474;10928;21402
+41018;Grammont;Alost;Flandre orientale;Flandre;17369;17969;35338
+41024;Haaltert;Alost;Flandre orientale;Flandre;9650;10017;19667
+41027;Herzele;Alost;Flandre orientale;Flandre;9548;9743;19291
+41034;Lede;Alost;Flandre orientale;Flandre;9619;9909;19528
+41048;Ninove;Alost;Flandre orientale;Flandre;20137;20742;40879
+41063;Sint-Lievens-Houtem;Alost;Flandre orientale;Flandre;5331;5419;10750
+41081;Zottegem;Alost;Flandre orientale;Flandre;13766;14577;28343
+41082;Erpe-Mere;Alost;Flandre orientale;Flandre;10403;10808;21211
+42003;Berlare;Termonde;Flandre orientale;Flandre;7659;7821;15480
+42004;Buggenhout;Termonde;Flandre orientale;Flandre;7517;7686;15203
+42006;Termonde;Termonde;Flandre orientale;Flandre;23439;24389;47828
+42008;Hamme;Termonde;Flandre orientale;Flandre;12728;13035;25763
+42010;Laarne;Termonde;Flandre orientale;Flandre;6200;6325;12525
+42011;Lebbeke;Termonde;Flandre orientale;Flandre;10057;10323;20380
+42023;Waasmunster;Termonde;Flandre orientale;Flandre;5770;5762;11532
+42025;Wetteren;Termonde;Flandre orientale;Flandre;13291;13780;27071
+42026;Wichelen;Termonde;Flandre orientale;Flandre;6029;6142;12171
+42028;Zele;Termonde;Flandre orientale;Flandre;10774;10813;21587
+43002;Assenede;Eeklo;Flandre orientale;Flandre;7286;7340;14626
+43005;Eeklo;Eeklo;Flandre orientale;Flandre;11364;11547;22911
+43007;Kaprijke;Eeklo;Flandre orientale;Flandre;3333;3377;6710
+43010;Maldegem;Eeklo;Flandre orientale;Flandre;12409;12518;24927
+43014;Sint-Laureins;Eeklo;Flandre orientale;Flandre;3555;3452;7007
+43018;Zelzate;Eeklo;Flandre orientale;Flandre;6969;6776;13745
+44013;Destelbergen;Gand;Flandre orientale;Flandre;9448;9775;19223
+44019;Evergem;Gand;Flandre orientale;Flandre;18441;18930;37371
+44020;Gavere;Gand;Flandre orientale;Flandre;6675;6762;13437
+44021;Gand;Gand;Flandre orientale;Flandre;136579;137463;274042
+44052;Oosterzele;Gand;Flandre orientale;Flandre;7124;7026;14150
+44064;Sint-Martens-Latem;Gand;Flandre orientale;Flandre;3961;4196;8157
+44081;Zulte;Gand;Flandre orientale;Flandre;8161;8099;16260
+44083;Deinze;Gand;Flandre orientale;Flandre;22868;23512;46380
+44084;Aalter;Gand;Flandre orientale;Flandre;14925;14937;29862
+44085;Lievegem;Gand;Flandre orientale;Flandre;13528;13974;27502
+44086;Nazareth-De Pinte;Gand;Flandre orientale;Flandre;11574;12059;23633
+44087;Lochristi;Gand;Flandre orientale;Flandre;15355;15627;30982
+44088;Merelbeke-Melle;Gand;Flandre orientale;Flandre;18452;19223;37675
+45035;Audenarde;Audenarde;Flandre orientale;Flandre;16404;16701;33105
+45041;Renaix;Audenarde;Flandre orientale;Flandre;13621;14110;27731
+45059;Brakel;Audenarde;Flandre orientale;Flandre;7530;7639;15169
+45060;Kluisbergen;Audenarde;Flandre orientale;Flandre;3427;3512;6939
+45061;Wortegem-Petegem;Audenarde;Flandre orientale;Flandre;3267;3275;6542
+45062;Horebeke;Audenarde;Flandre orientale;Flandre;966;1054;2020
+45063;Lierde;Audenarde;Flandre orientale;Flandre;3438;3442;6880
+45064;Maarkedal;Audenarde;Flandre orientale;Flandre;3064;3225;6289
+45065;Zwalin;Audenarde;Flandre orientale;Flandre;4153;4221;8374
+45068;Kruisem;Audenarde;Flandre orientale;Flandre;7955;8080;16035
+46020;Sint-Gillis-Waas;Saint-Nicolas;Flandre orientale;Flandre;10025;10247;20272
+46021;Sint-Niklaas;Saint-Nicolas;Flandre orientale;Flandre;41016;42384;83400
+46024;Stekene;Saint-Nicolas;Flandre orientale;Flandre;9879;10076;19955
+46025;Tamise;Saint-Nicolas;Flandre orientale;Flandre;15947;15867;31814
+46029;Lokeren;Saint-Nicolas;Flandre orientale;Flandre;25270;25627;50897
+46030;Beveren-Kruibeke-Zwijndrecht;Saint-Nicolas;Flandre orientale;Flandre;43610;44734;88344
+51004;Ath;Ath;Hainaut;Wallonie;14649;15586;30235
+51008;Beloeil;Ath;Hainaut;Wallonie;7103;7248;14351
+51009;Bernissart;Ath;Hainaut;Wallonie;5829;6015;11844
+51012;Brugelette;Ath;Hainaut;Wallonie;1928;1961;3889
+51014;Chièvres;Ath;Hainaut;Wallonie;3553;3580;7133
+51017;Ellezelles;Ath;Hainaut;Wallonie;2953;2931;5884
+51019;Flobecq;Ath;Hainaut;Wallonie;1727;1726;3453
+51065;Frasnes-lez-Anvaing;Ath;Hainaut;Wallonie;6025;6186;12211
+51067;Enghien;Ath;Hainaut;Wallonie;7148;7554;14702
+51068;Silly;Ath;Hainaut;Wallonie;4184;4247;8431
+51069;Lessines;Ath;Hainaut;Wallonie;9326;9575;18901
+52010;Chapelle-lez-Herlaimont;Charleroi;Hainaut;Wallonie;7238;7795;15033
+52011;Charleroi;Charleroi;Hainaut;Wallonie;101754;105146;206900
+52012;Châtelet;Charleroi;Hainaut;Wallonie;17392;18583;35975
+52015;Courcelles;Charleroi;Hainaut;Wallonie;15388;16285;31673
+52018;Farciennes;Charleroi;Hainaut;Wallonie;5570;5883;11453
+52021;Fleurus;Charleroi;Hainaut;Wallonie;11150;11887;23037
+52022;Fontaine-l’Evêque;Charleroi;Hainaut;Wallonie;8748;9313;18061
+52025;Gerpinnes;Charleroi;Hainaut;Wallonie;6180;6656;12836
+52048;Montigny-le-Tilleul;Charleroi;Hainaut;Wallonie;4765;5345;10110
+52055;Pont-à-Celles;Charleroi;Hainaut;Wallonie;8622;9001;17623
+52074;Aiseau-Presles;Charleroi;Hainaut;Wallonie;5298;5666;10964
+52075;Les Bons Villers;Charleroi;Hainaut;Wallonie;4717;5040;9757
+53014;Boussu;Mons;Hainaut;Wallonie;9834;10682;20516
+53020;Dour;Mons;Hainaut;Wallonie;8079;8532;16611
+53028;Frameries;Mons;Hainaut;Wallonie;10251;11221;21472
+53039;Hensies;Mons;Hainaut;Wallonie;3267;3561;6828
+53044;Jurbise;Mons;Hainaut;Wallonie;5351;5561;10912
+53046;Lens;Mons;Hainaut;Wallonie;2232;2376;4608
+53053;Mons;Mons;Hainaut;Wallonie;48113;49632;97745
+53065;Quaregnon;Mons;Hainaut;Wallonie;9136;9882;19018
+53068;Quiévrain;Mons;Hainaut;Wallonie;3312;3511;6823
+53070;Saint-Ghislain;Mons;Hainaut;Wallonie;11583;12386;23969
+53082;Colfontaine;Mons;Hainaut;Wallonie;10044;10717;20761
+53083;Honnelles;Mons;Hainaut;Wallonie;2515;2580;5095
+53084;Quévy;Mons;Hainaut;Wallonie;4049;4203;8252
+55004;Braine-le-Comte;Soignies;Hainaut;Wallonie;11609;12152;23761
+55035;Le Roeulx;Soignies;Hainaut;Wallonie;4307;4409;8716
+55040;Soignies;Soignies;Hainaut;Wallonie;14306;15091;29397
+55050;Ecaussinnes;Soignies;Hainaut;Wallonie;5729;5895;11624
+55085;Seneffe;Soignies;Hainaut;Wallonie;5638;5930;11568
+55086;Manage;Soignies;Hainaut;Wallonie;11965;12284;24249
+56001;Anderlues;Thuin;Hainaut;Wallonie;6488;6619;13107
+56005;Beaumont;Thuin;Hainaut;Wallonie;3529;3575;7104
+56016;Chimay;Thuin;Hainaut;Wallonie;4807;4799;9606
+56022;Erquelinnes;Thuin;Hainaut;Wallonie;4901;5040;9941
+56029;Froidchapelle;Thuin;Hainaut;Wallonie;2002;1997;3999
+56044;Lobbes;Thuin;Hainaut;Wallonie;2914;3036;5950
+56049;Merbes-le-Château;Thuin;Hainaut;Wallonie;2113;2080;4193
+56051;Momignies;Thuin;Hainaut;Wallonie;2573;2641;5214
+56078;Thuin;Thuin;Hainaut;Wallonie;7259;7657;14916
+56086;Ham-sur-Heure-Nalinnes;Thuin;Hainaut;Wallonie;6653;7203;13856
+56088;Sivry-Rance;Thuin;Hainaut;Wallonie;2396;2432;4828
+57003;Antoing;Tournai-Mouscron;Hainaut;Wallonie;3740;3862;7602
+57018;Celles;Tournai-Mouscron;Hainaut;Wallonie;2864;2868;5732
+57027;Estaimpuis;Tournai-Mouscron;Hainaut;Wallonie;5397;5518;10915
+57062;Pecq;Tournai-Mouscron;Hainaut;Wallonie;2890;3077;5967
+57064;Péruwelz;Tournai-Mouscron;Hainaut;Wallonie;8494;8856;17350
+57072;Rumes;Tournai-Mouscron;Hainaut;Wallonie;2647;2704;5351
+57081;Tournai;Tournai-Mouscron;Hainaut;Wallonie;34064;35002;69066
+57093;Brunehaut;Tournai-Mouscron;Hainaut;Wallonie;4010;4084;8094
+57094;Leuze-en-Hainaut;Tournai-Mouscron;Hainaut;Wallonie;6886;7331;14217
+57095;Mont-de-l’Enclus;Tournai-Mouscron;Hainaut;Wallonie;1947;1892;3839
+57096;Mouscron;Tournai-Mouscron;Hainaut;Wallonie;29466;30944;60410
+57097;Comines-Warneton;Tournai-Mouscron;Hainaut;Wallonie;8942;9344;18286
+58001;La Louvière;La Louvière;Hainaut;Wallonie;39887;41864;81751
+58002;Binche;La Louvière;Hainaut;Wallonie;16198;17643;33841
+58003;Estinnes;La Louvière;Hainaut;Wallonie;3887;4016;7903
+58004;Morlanwelz;La Louvière;Hainaut;Wallonie;9291;9852;19143
+61003;Amay;Huy;Liège;Wallonie;7135;7353;14488
+61010;Burdinne;Huy;Liège;Wallonie;1654;1646;3300
+61012;Clavier;Huy;Liège;Wallonie;2507;2520;5027
+61019;Ferrières;Huy;Liège;Wallonie;2642;2572;5214
+61024;Hamoir;Huy;Liège;Wallonie;1867;1911;3778
+61028;Héron;Huy;Liège;Wallonie;2793;2846;5639
+61031;Huy;Huy;Liège;Wallonie;10571;11342;21913
+61039;Marchin;Huy;Liège;Wallonie;2813;2877;5690
+61041;Modave;Huy;Liège;Wallonie;2088;2088;4176
+61043;Nandrin;Huy;Liège;Wallonie;2784;2951;5735
+61048;Ouffet;Huy;Liège;Wallonie;1399;1445;2844
+61063;Verlaine;Huy;Liège;Wallonie;2184;2200;4384
+61068;Villers-Le-Bouillet;Huy;Liège;Wallonie;3403;3530;6933
+61072;Wanze;Huy;Liège;Wallonie;6835;7218;14053
+61079;Anthisnes;Huy;Liège;Wallonie;2064;2099;4163
+61080;Engis;Huy;Liège;Wallonie;3170;3154;6324
+61081;Tinlot;Huy;Liège;Wallonie;1368;1445;2813
+62003;Ans;Liège;Liège;Wallonie;14016;15252;29268
+62006;Awans;Liège;Liège;Wallonie;4507;4866;9373
+62009;Aywaille;Liège;Liège;Wallonie;6427;6572;12999
+62011;Bassenge;Liège;Liège;Wallonie;4475;4584;9059
+62015;Beyne-Heusay;Liège;Liège;Wallonie;5797;6181;11978
+62022;Chaudfontaine;Liège;Liège;Wallonie;9810;10715;20525
+62026;Comblain-au-Pont;Liège;Liège;Wallonie;2621;2782;5403
+62027;Dalhem;Liège;Liège;Wallonie;3760;3940;7700
+62032;Esneux;Liège;Liège;Wallonie;6164;6615;12779
+62038;Fléron;Liège;Liège;Wallonie;7752;8699;16451
+62051;Herstal;Liège;Liège;Wallonie;19838;21071;40909
+62060;Juprelle;Liège;Liège;Wallonie;4888;5024;9912
+62063;Liège;Liège;Liège;Wallonie;98484;99618;198102
+62079;Oupeye;Liège;Liège;Wallonie;12614;13422;26036
+62093;Saint-Nicolas;Liège;Liège;Wallonie;11762;12767;24529
+62096;Seraing;Liège;Liège;Wallonie;31511;33253;64764
+62099;Soumagne;Liège;Liège;Wallonie;8418;8864;17282
+62100;Sprimont;Liège;Liège;Wallonie;7335;7751;15086
+62108;Visé;Liège;Liège;Wallonie;8779;9318;18097
+62118;Grâce-Hollogne;Liège;Liège;Wallonie;11534;11819;23353
+62119;Blegny;Liège;Liège;Wallonie;6651;6969;13620
+62120;Flémalle;Liège;Liège;Wallonie;13129;14038;27167
+62121;Neupré;Liège;Liège;Wallonie;4829;5135;9964
+62122;Trooz;Liège;Liège;Wallonie;4083;4207;8290
+63001;Amblève;Verviers - Communes germanophones;Liège;Wallonie;2867;2779;5646
+63003;Aubel;Verviers - Communes francophones;Liège;Wallonie;2085;2147;4232
+63004;Baelen;Verviers - Communes francophones;Liège;Wallonie;2268;2246;4514
+63012;Bullange;Verviers - Communes germanophones;Liège;Wallonie;2828;2651;5479
+63013;Butgenbach;Verviers - Communes germanophones;Liège;Wallonie;2808;2777;5585
+63020;Dison;Verviers - Communes francophones;Liège;Wallonie;7577;7769;15346
+63023;Eupen;Verviers - Communes germanophones;Liège;Wallonie;9821;10324;20145
+63035;Herve;Verviers - Communes francophones;Liège;Wallonie;8766;9056;17822
+63038;Jalhay;Verviers - Communes francophones;Liège;Wallonie;4383;4450;8833
+63040;La Calamine;Verviers - Communes germanophones;Liège;Wallonie;5524;5808;11332
+63045;Lierneux;Verviers - Communes francophones;Liège;Wallonie;1848;1798;3646
+63046;Limbourg;Verviers - Communes francophones;Liège;Wallonie;2798;2871;5669
+63048;Lontzen;Verviers - Communes germanophones;Liège;Wallonie;3062;3018;6080
+63049;Malmedy;Verviers - Communes francophones;Liège;Wallonie;6270;6703;12973
+63057;Olne;Verviers - Communes francophones;Liège;Wallonie;2090;2089;4179
+63058;Pepinster;Verviers - Communes francophones;Liège;Wallonie;4636;4745;9381
+63061;Raeren;Verviers - Communes germanophones;Liège;Wallonie;5506;5608;11114
+63067;Saint-Vith;Verviers - Communes germanophones;Liège;Wallonie;5096;5095;10191
+63072;Spa;Verviers - Communes francophones;Liège;Wallonie;4799;5124;9923
+63073;Stavelot;Verviers - Communes francophones;Liège;Wallonie;3632;3589;7221
+63075;Stoumont;Verviers - Communes francophones;Liège;Wallonie;1613;1630;3243
+63076;Theux;Verviers - Communes francophones;Liège;Wallonie;5983;6202;12185
+63079;Verviers;Verviers - Communes francophones;Liège;Wallonie;27449;28733;56182
+63080;Waimes;Verviers - Communes francophones;Liège;Wallonie;3811;3713;7524
+63084;Welkenraedt;Verviers - Communes francophones;Liège;Wallonie;5147;5384;10531
+63086;Trois-Ponts;Verviers - Communes francophones;Liège;Wallonie;1273;1267;2540
+63087;Burg-Reuland;Verviers - Communes germanophones;Liège;Wallonie;2008;1935;3943
+63088;Plombières;Verviers - Communes francophones;Liège;Wallonie;5284;5418;10702
+63089;Thimister-Clermont;Verviers - Communes francophones;Liège;Wallonie;2789;2825;5614
+64008;Berloz;Waremme;Liège;Wallonie;1729;1697;3426
+64015;Braives;Waremme;Liège;Wallonie;3272;3255;6527
+64021;Crisnée;Waremme;Liège;Wallonie;1802;1793;3595
+64023;Donceel;Waremme;Liège;Wallonie;1539;1588;3127
+64025;Fexhe-le-Haut-Clocher;Waremme;Liège;Wallonie;1702;1706;3408
+64029;Geer;Waremme;Liège;Wallonie;1778;1800;3578
+64034;Hannut;Waremme;Liège;Wallonie;8379;8916;17295
+64047;Lincent;Waremme;Liège;Wallonie;1683;1736;3419
+64056;Oreye;Waremme;Liège;Wallonie;2008;2083;4091
+64063;Remicourt;Waremme;Liège;Wallonie;2908;3040;5948
+64065;Saint-Georges-sur-Meuse;Waremme;Liège;Wallonie;3528;3648;7176
+64074;Waremme;Waremme;Liège;Wallonie;7313;8114;15427
+64075;Wasseiges;Waremme;Liège;Wallonie;1586;1611;3197
+64076;Faimes;Waremme;Liège;Wallonie;2159;2032;4191
+71002;As;Hasselt;Limbourg;Flandre;4077;4172;8249
+71004;Beringen;Hasselt;Limbourg;Flandre;24483;24551;49034
+71011;Diepenbeek;Hasselt;Limbourg;Flandre;9853;10014;19867
+71016;Genk;Hasselt;Limbourg;Flandre;33671;34430;68101
+71017;Gingelom;Hasselt;Limbourg;Flandre;4356;4399;8755
+71020;Halen;Hasselt;Limbourg;Flandre;4772;4812;9584
+71024;Herck-la-Ville;Hasselt;Limbourg;Flandre;6454;6550;13004
+71034;Bourg-Léopold;Hasselt;Limbourg;Flandre;8470;8503;16973
+71037;Lummen;Hasselt;Limbourg;Flandre;7814;7638;15452
+71045;Nieuwerkerken;Hasselt;Limbourg;Flandre;3583;3757;7340
+71053;Saint-Trond;Hasselt;Limbourg;Flandre;20765;21222;41987
+71066;Zonhoven;Hasselt;Limbourg;Flandre;10882;11148;22030
+71067;Zutendaal;Hasselt;Limbourg;Flandre;3798;3679;7477
+71070;Heusden-Zolder;Hasselt;Limbourg;Flandre;17360;17672;35032
+71071;Tessenderlo-Ham;Hasselt;Limbourg;Flandre;15372;15455;30827
+71072;Hasselt;Hasselt;Limbourg;Flandre;44616;46298;90914
+72003;Bocholt;Maaseik;Limbourg;Flandre;6972;6912;13884
+72004;Bree;Maaseik;Limbourg;Flandre;8591;8780;17371
+72018;Kinrooi;Maaseik;Limbourg;Flandre;6373;6183;12556
+72020;Lommel;Maaseik;Limbourg;Flandre;17835;17616;35451
+72021;Maaseik;Maaseik;Limbourg;Flandre;12913;12983;25896
+72030;Peer;Maaseik;Limbourg;Flandre;8394;8394;16788
+72037;Hamont-Achel;Maaseik;Limbourg;Flandre;7376;7196;14572
+72038;Hechtel-Eksel;Maaseik;Limbourg;Flandre;6669;6420;13089
+72039;Houthalen-Helchteren;Maaseik;Limbourg;Flandre;15478;15401;30879
+72041;Dilsen-Stokkem;Maaseik;Limbourg;Flandre;10760;10917;21677
+72042;Oudsbergen;Maaseik;Limbourg;Flandre;12057;11948;24005
+72043;Pelt;Maaseik;Limbourg;Flandre;17368;17330;34698
+73001;Alken;Tongres;Limbourg;Flandre;5960;5983;11943
+73022;Heers;Tongres;Limbourg;Flandre;3781;3814;7595
+73028;Herstappe;Tongres;Limbourg;Flandre;41;37;78
+73042;Lanaken;Tongres;Limbourg;Flandre;13361;13152;26513
+73066;Riemst;Tongres;Limbourg;Flandre;8446;8444;16890
+73098;Wellen;Tongres;Limbourg;Flandre;3782;3774;7556
+73107;Maasmechelen;Tongres;Limbourg;Flandre;20368;20285;40653
+73109;Fourons;Tongres;Limbourg;Flandre;2177;2218;4395
+73110;Bilzen-Hoeselt;Tongres;Limbourg;Flandre;21389;21839;43228
+73111;Tongres-Looz;Tongres;Limbourg;Flandre;21866;22373;44239
+81001;Arlon;Arlon;Luxembourg;Wallonie;15647;15793;31440
+81003;Attert;Arlon;Luxembourg;Wallonie;2934;2890;5824
+81004;Aubange;Arlon;Luxembourg;Wallonie;8816;9029;17845
+81013;Martelange;Arlon;Luxembourg;Wallonie;1083;1059;2142
+81015;Messancy;Arlon;Luxembourg;Wallonie;4274;4363;8637
+82009;Fauvillers;Bastogne;Luxembourg;Wallonie;1261;1275;2536
+82014;Houffalize;Bastogne;Luxembourg;Wallonie;2783;2602;5385
+82032;Vielsalm;Bastogne;Luxembourg;Wallonie;3960;3928;7888
+82036;Vaux-sur-Sûre;Bastogne;Luxembourg;Wallonie;3161;3223;6384
+82037;Gouvy;Bastogne;Luxembourg;Wallonie;2706;2717;5423
+82038;Sainte-Ode;Bastogne;Luxembourg;Wallonie;1373;1333;2706
+82039;Bastogne;Bastogne;Luxembourg;Wallonie;10442;10568;21010
+83012;Durbuy;Marche-en-Famenne;Luxembourg;Wallonie;5673;5691;11364
+83013;Erezée;Marche-en-Famenne;Luxembourg;Wallonie;1699;1669;3368
+83028;Hotton;Marche-en-Famenne;Luxembourg;Wallonie;2817;2882;5699
+83031;La Roche-en-Ardenne;Marche-en-Famenne;Luxembourg;Wallonie;2044;2011;4055
+83034;Marche-en-Famenne;Marche-en-Famenne;Luxembourg;Wallonie;8846;9161;18007
+83040;Nassogne;Marche-en-Famenne;Luxembourg;Wallonie;2915;2799;5714
+83044;Rendeux;Marche-en-Famenne;Luxembourg;Wallonie;1389;1354;2743
+83049;Tenneville;Marche-en-Famenne;Luxembourg;Wallonie;1421;1451;2872
+83055;Manhay;Marche-en-Famenne;Luxembourg;Wallonie;1940;1838;3778
+84009;Bertrix;Neufchâteau;Luxembourg;Wallonie;4491;4619;9110
+84010;Bouillon;Neufchâteau;Luxembourg;Wallonie;2619;2673;5292
+84016;Daverdisse;Neufchâteau;Luxembourg;Wallonie;717;680;1397
+84029;Herbeumont;Neufchâteau;Luxembourg;Wallonie;901;830;1731
+84033;Léglise;Neufchâteau;Luxembourg;Wallonie;3002;2901;5903
+84035;Libin;Neufchâteau;Luxembourg;Wallonie;2685;2706;5391
+84043;Neufchâteau;Neufchâteau;Luxembourg;Wallonie;4197;4191;8388
+84050;Paliseul;Neufchâteau;Luxembourg;Wallonie;2767;2810;5577
+84059;Saint-Hubert;Neufchâteau;Luxembourg;Wallonie;2856;2885;5741
+84068;Tellin;Neufchâteau;Luxembourg;Wallonie;1241;1278;2519
+84075;Wellin;Neufchâteau;Luxembourg;Wallonie;1609;1632;3241
+84077;Libramont-Chevigny;Neufchâteau;Luxembourg;Wallonie;6020;6045;12065
+85007;Chiny;Virton;Luxembourg;Wallonie;2602;2620;5222
+85009;Etalle;Virton;Luxembourg;Wallonie;2992;3048;6040
+85011;Florenville;Virton;Luxembourg;Wallonie;2758;2923;5681
+85024;Meix-devant-Virton;Virton;Luxembourg;Wallonie;1391;1433;2824
+85026;Musson;Virton;Luxembourg;Wallonie;2314;2401;4715
+85034;Saint-Léger;Virton;Luxembourg;Wallonie;1882;1924;3806
+85039;Tintigny;Virton;Luxembourg;Wallonie;2354;2281;4635
+85045;Virton;Virton;Luxembourg;Wallonie;5599;5857;11456
+85046;Habay;Virton;Luxembourg;Wallonie;4308;4411;8719
+85047;Rouvroy;Virton;Luxembourg;Wallonie;1025;1072;2097
+91005;Anhée;Dinant;Namur;Wallonie;3507;3587;7094
+91013;Beauraing;Dinant;Namur;Wallonie;4652;4822;9474
+91015;Bièvre;Dinant;Namur;Wallonie;1724;1758;3482
+91030;Ciney;Dinant;Namur;Wallonie;8327;8813;17140
+91034;Dinant;Dinant;Namur;Wallonie;6587;6825;13412
+91054;Gedinne;Dinant;Namur;Wallonie;2339;2350;4689
+91059;Hamois;Dinant;Namur;Wallonie;3734;3768;7502
+91064;Havelange;Dinant;Namur;Wallonie;2666;2778;5444
+91072;Houyet;Dinant;Namur;Wallonie;2567;2659;5226
+91103;Onhaye;Dinant;Namur;Wallonie;1634;1628;3262
+91114;Rochefort;Dinant;Namur;Wallonie;6303;6453;12756
+91120;Somme-Leuze;Dinant;Namur;Wallonie;3172;3121;6293
+91141;Yvoir;Dinant;Namur;Wallonie;4604;4608;9212
+91142;Hastière;Dinant;Namur;Wallonie;3160;2917;6077
+91143;Vresse-sur-Semois;Dinant;Namur;Wallonie;1303;1163;2466
+92003;Andenne;Namur;Namur;Wallonie;13881;14358;28239
+92006;Assesse;Namur;Namur;Wallonie;3716;3670;7386
+92035;Eghezée;Namur;Namur;Wallonie;8378;8592;16970
+92045;Floreffe;Namur;Namur;Wallonie;3992;4095;8087
+92048;Fosses-la-Ville;Namur;Namur;Wallonie;5206;5307;10513
+92054;Gesves;Namur;Namur;Wallonie;3701;3772;7473
+92087;Mettet;Namur;Namur;Wallonie;6693;6975;13668
+92094;Namur;Namur;Namur;Wallonie;56248;59209;115457
+92097;Ohey;Namur;Namur;Wallonie;2701;2695;5396
+92101;Profondeville;Namur;Namur;Wallonie;6017;6270;12287
+92114;Sombreffe;Namur;Namur;Wallonie;4124;4260;8384
+92137;Sambreville;Namur;Namur;Wallonie;13885;14702;28587
+92138;Fernelmont;Namur;Namur;Wallonie;4043;4167;8210
+92140;Jemeppe-sur-Sambre;Namur;Namur;Wallonie;9589;9655;19244
+92141;La Bruyère;Namur;Namur;Wallonie;4618;4810;9428
+92142;Gembloux;Namur;Namur;Wallonie;13075;13498;26573
+93010;Cerfontaine;Philippeville;Namur;Wallonie;2526;2490;5016
+93014;Couvin;Philippeville;Namur;Wallonie;6834;7093;13927
+93018;Doische;Philippeville;Namur;Wallonie;1470;1477;2947
+93022;Florennes;Philippeville;Namur;Wallonie;5697;5737;11434
+93056;Philippeville;Philippeville;Namur;Wallonie;4789;4810;9599
+93088;Walcourt;Philippeville;Namur;Wallonie;9013;9325;18338
+93090;Viroinval;Philippeville;Namur;Wallonie;2764;2815;5579

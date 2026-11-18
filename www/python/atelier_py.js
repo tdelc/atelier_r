@@ -54,7 +54,7 @@
     // adresses absolues : le worker résoudrait les adresses relatives
     // depuis son propre dossier (python/)
     const files = (conf.files || []).map((f) => ({ path: f.path, url: new URL(f.url, document.baseURI).href }));
-    w.ready = w.call("init", { files: files });
+    w.ready = w.call("init", { files: files, demarrage: conf.demarrage || null });
     w.ready.catch((e) => setStatus("Python n'a pas pu démarrer : " + e.message));
     workers[base] = w;
     return w;

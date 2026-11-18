@@ -1,0 +1,11 @@
+variable,libelle,type,modalites
+code_ins,"Code INS (aussi appelé code NIS ou REFNIS) de la commune",Texte,"5 chiffres : le 1er désigne la province, les deux premiers l'arrondissement. Ex. 62063 = Liège"
+commune,Nom de la commune en français,Texte,565 communes au 1er janvier 2026
+arrondissement,Arrondissement (nomenclature NUTS 2027),Texte,"44 : les 43 arrondissements administratifs, Verviers étant coupé en communes francophones et germanophones"
+province,Province,Texte,"10 provinces, plus Bruxelles-Capitale, qui n'appartient à aucune province"
+region,Région,Texte,"Bruxelles, Flandre, Wallonie"
+hommes,Nombre d'hommes résidant dans la commune au 1er janvier 2026,Numérique (entier),
+femmes,Nombre de femmes résidant dans la commune au 1er janvier 2026,Numérique (entier),
+total,Population totale de la commune au 1er janvier 2026,Numérique (entier),hommes + femmes
+sexe,"Table pop_sexe : sexe",Texte,"H = hommes, F = femmes"
+population,"Table pop_sexe : population de la commune pour ce sexe",Numérique (entier),

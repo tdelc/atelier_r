@@ -125,6 +125,10 @@ def main():
         os.chdir(travail)
         sys.path.insert(0, travail)              # import outils_cours
         sys.modules.pop("outils_cours", None)
+        runner.DEMARRAGE = None                  # tables préchargées de la base
+        if meta.get("demarrage_python"):
+            runner.set_demarrage(meta["demarrage_python"])
+        runner.NAMESPACES.clear(); runner.SOLUTIONS.clear()
         os.makedirs("sortie", exist_ok=True)
         print(f"\n========== Base : {base} ==========")
 

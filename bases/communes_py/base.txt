@@ -1,0 +1,29 @@
+# ============================================================================
+# Base « communes_py » : un cours de Python « par la table », pour passer de
+# SAS à Python sans être programmeur. On part tout de suite des tableaux
+# (pandas), comme le cours R part du tidyverse. Voir docs/GUIDE_CONTENUS.md.
+# ============================================================================
+
+langage: python
+
+# Table affichée sur l'accueil et dans le dictionnaire
+objet: communes
+fichier: fichiers/donnees/communes_2026.csv
+separateur: ;
+
+libelle: Python
+titre: Python par la table : les communes belges, 2026
+description: Apprendre pandas en partant des tableaux, pour les habitués de SAS : filtrer, compter, regrouper, croiser, représenter, puis importer, fusionner et nettoyer ses fichiers.
+source: Statbel (population au 1er janvier 2026, nomenclature NUTS 2027)
+ligne: une commune
+icone: python
+ordre: 3
+nom_lignes: communes
+compter: provinces = province, arrondissements = arrondissement
+
+# Python : dossier copié dans le dossier de travail de l'étudiant, et code
+# exécuté en silence au début de chaque exercice ou leçon (tables préchargées)
+dossier_python: fichiers
+demarrage_python: demarrage.py
+
+code_libre: communes.head()

@@ -28,7 +28,7 @@ const base = self.location.href.replace(/py_worker\.js.*$/, "");
 
 function status(text) { self.postMessage({ status: text }); }
 
-async function init(files) {
+async function init(files, demarrage) {
   status("Chargement de Python…");
   py = await loadPyodide({ indexURL: PYODIDE_URL });
   status("Chargement de pandas, NumPy, PyArrow, Matplotlib…");
@@ -56,6 +56,7 @@ async function init(files) {
   await py.runPythonAsync(
     "import sys, os, matplotlib\nmatplotlib.use('Agg')\nsys.path.insert(0, '/tmp')\nsys.path.insert(0, '/home/pyodide')\nimport atelier_runner\nos.environ['MPLBACKEND'] = 'Agg'");
   runner = py.pyimport("atelier_runner");
+  if (demarrage) runner.set_demarrage(home + "/" + demarrage);
   status("");
 }
 
@@ -68,7 +69,7 @@ self.onmessage = async (ev) => {
   const m = ev.data;
   try {
     if (m.cmd === "init") {
-      if (!ready) ready = init(m.files || []);
+      if (!ready) ready = init(m.files || [], m.demarrage || null);
       await ready;
       self.postMessage({ id: m.id, ok: true, result: "ready" });
       return;

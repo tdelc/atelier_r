@@ -217,7 +217,8 @@ register_python <- function() {
     files <- if (dir.exists(dir)) list.files(dir, recursive = TRUE) else character()
     if (dir.exists(dir)) shiny::addResourcePath(py_resource(b), normalizePath(dir))
     conf[[b]] <- list(files = lapply(files, function(f)
-      list(path = f, url = paste0(py_resource(b), "/", utils::URLencode(f)))))
+      list(path = f, url = paste0(py_resource(b), "/", utils::URLencode(f)))),
+      demarrage = BASES[[b]]$meta$demarrage_python %||% "")
   }
   conf
 }

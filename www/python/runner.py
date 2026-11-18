@@ -21,9 +21,29 @@ SOLUTIONS = {}
 MAX_TEXT = 20000
 
 
+# Code exécuté en silence au début de chaque espace de noms : il précharge
+# les tables de la base (clé « demarrage_python » de base.txt), comme les
+# bases R sont déjà chargées dans le bac à sable.
+DEMARRAGE = None
+
+
+def set_demarrage(chemin):
+    global DEMARRAGE
+    with open(chemin, encoding="utf-8") as f:
+        DEMARRAGE = f.read()
+
+
 def _ns(name):
     if name not in NAMESPACES:
-        NAMESPACES[name] = {"__name__": "__main__"}
+        g = {"__name__": "__main__"}
+        NAMESPACES[name] = g
+        if DEMARRAGE:
+            old = sys.stdout, sys.stderr
+            sys.stdout = sys.stderr = io.StringIO()
+            try:
+                exec(compile(DEMARRAGE, "<demarrage>", "exec"), g)
+            finally:
+                sys.stdout, sys.stderr = old
     return NAMESPACES[name]
 
 
@@ -37,6 +57,21 @@ def _display(value):
     """Une sortie à afficher pour la valeur de la dernière ligne."""
     if value is None:
         return None
+    # objets de graphique (Axes, Figure, listes de tracés) : le graphique
+    # lui-même est affiché, pas sa description « <Axes: ...> »
+    probe = value[0] if isinstance(value, (list, tuple)) and value else value
+    if type(probe).__module__.startswith(("matplotlib", "seaborn")):
+        return None
+    # nombres NumPy (np.int64(42)) : affichés comme des nombres ordinaires
+    if type(value).__module__ == "numpy" and hasattr(value, "item") and getattr(value, "ndim", 1) == 0:
+        value = value.item()
+    # valeurs uniques d'une colonne (pandas .unique()) : une liste lisible
+    try:
+        import pandas as pd
+        if isinstance(value, pd.api.extensions.ExtensionArray):
+            return {"type": "output", "text": (repr(value.tolist()) + f"\n({len(value)} valeurs)")[:MAX_TEXT]}
+    except ImportError:
+        pass
     # tableaux pandas : HTML échappé (les textes ne peuvent pas injecter de HTML)
     if hasattr(value, "_repr_html_") and type(value).__module__.startswith("pandas"):
         try:
