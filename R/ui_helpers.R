@@ -109,15 +109,19 @@ dico_modal <- function(base) {
 fonctions_modal <- function() {
   groupes <- list(
     "Verbes du tidyverse" = c(SANDBOX_ALLOWED$dplyr, SANDBOX_ALLOWED$tidyr),
+    "Jointures" = names(SANDBOX_WRAPPERS),
+    "Boucles et fonctions" = c("for", "function", "return", "break", "next"),
     "Dates (lubridate)" = SANDBOX_ALLOWED$lubridate,
     "Texte et facteurs" = c(SANDBOX_ALLOWED$stringr, SANDBOX_ALLOWED$forcats),
     "R base et statistiques" = setdiff(c(SANDBOX_ALLOWED$base, SANDBOX_ALLOWED$stats,
                                          SANDBOX_ALLOWED$utils),
-                                       c("(", "{", "<-", "=", "if", "[", "[[", "$")),
+                                       c("(", "{", "<-", "=", "if", "[", "[[", "$",
+                                         "for", "function", "return", "break", "next")),
     "Graphiques de base" = SANDBOX_ALLOWED$graphics,
     "ggplot2" = c("ggplot", "aes", "geom_*", "stat_*", "scale_*", "labs",
                   "theme_*", "facet_wrap", "facet_grid", "coord_*", "..."),
-    "Échelles (scales)" = SANDBOX_ALLOWED$scales
+    "Échelles (scales)" = SANDBOX_ALLOWED$scales,
+    "Tableaux (gt, affichés dans le Viewer)" = SANDBOX_ALLOWED$gt
   )
   shiny::modalDialog(
     title = "Les fonctions disponibles dans l'atelier",
@@ -131,7 +135,7 @@ fonctions_modal <- function() {
       )
     }),
     htmltools::div(class = "callout callout-piege mt-3",
-                   htmltools::HTML("<p>Non disponibles ici : lire ou écrire des fichiers, <code>library()</code>, <code>::</code>, <code>function()</code>, les boucles, <code>&lt;&lt;-</code>. Le calcul est interrompu au-delà de 15 secondes.</p>"))
+                   htmltools::HTML("<p>Non disponibles ici : lire ou écrire des fichiers, <code>library()</code>, <code>::</code>, les boucles <code>while</code> et <code>repeat</code>, les fonctions récursives, <code>&lt;&lt;-</code>. La base de droite d\'une jointure doit avoir une seule ligne par clé. Le calcul est interrompu au-delà de 15 secondes.</p>"))
   )
 }
 
