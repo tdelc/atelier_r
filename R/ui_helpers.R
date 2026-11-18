@@ -191,3 +191,23 @@ base_selector <- function(input_id = "base") {
                                       choices = stats::setNames(ids, vapply(BASES, `[[`, "", "libelle"))))
   }
 }
+
+# Fenêtre « Python dans l'atelier » (à la place des fonctions autorisées)
+python_modal <- function() {
+  shiny::modalDialog(
+    title = "Python dans l'atelier",
+    size = "l", easyClose = TRUE, footer = shiny::modalButton("Fermer"),
+    htmltools::p("Pour cette base, le code Python s'exécute ", htmltools::strong("dans votre navigateur"),
+                 " (avec Pyodide), et non sur le serveur : toutes les fonctions de Python sont disponibles."),
+    htmltools::h6(class = "mt-3", "Paquets disponibles"),
+    htmltools::div(class = "fn-list", lapply(c("pandas", "numpy", "pyarrow", "duckdb", "matplotlib",
+                                               "seaborn", "openpyxl", "datetime", "math", "pathlib"),
+                                             htmltools::tags$code)),
+    htmltools::h6(class = "mt-3", "Vos fichiers"),
+    htmltools::p("Les fichiers du cours sont dans ", htmltools::tags$code("donnees/"), " et ",
+                 htmltools::tags$code("referentiels/"), ". Ce que vous écrivez va dans ",
+                 htmltools::tags$code("sortie/"), " : ces fichiers restent dans votre navigateur et disparaissent quand vous fermez la page."),
+    htmltools::div(class = "callout callout-piege mt-3",
+                   htmltools::HTML("<p>Le premier lancement télécharge Python et ses paquets (environ 10 secondes). Une boucle qui ne s'arrête jamais bloque Python : rechargez alors la page.</p>"))
+  )
+}

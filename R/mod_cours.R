@@ -14,10 +14,41 @@ load_cours <- function() {
   for (b in names(BASES)) COURS[[b]] <- read_course(base_path(b, "cours"))
 }
 
+# Leçon en Python : le code s'exécute dans le navigateur (www/python/). Les
+# cartes contiennent des emplacements <div class="py-out"> que le navigateur
+# remplit ; py_lesson_chunks() donne la liste des blocs à exécuter, dans le
+# même ordre que ces emplacements.
+py_lesson_key <- function(base, lesson) paste("cours", base, lesson$id, sep = "/")
+
+py_lesson_chunks <- function(lesson) {
+  segs <- unlist(lapply(lesson$cards, `[[`, "segments"), recursive = FALSE)
+  segs <- Filter(function(s) s$type == "code" && s$mode != "norun", segs)
+  lapply(segs, function(s) list(code = s$code, mode = s$mode))
+}
+
+render_lesson_py <- function(base, lesson) {
+  key <- py_lesson_key(base, lesson)
+  idx <- -1L
+  lapply(lesson$cards, function(card) {
+    parts <- lapply(card$segments, function(s) {
+      if (s$type == "text") return(htmltools::div(class = "card-text", md_to_html(s$md)))
+      if (s$mode == "norun")
+        return(htmltools::div(class = "chunk chunk-norun", code_block(s$code, lang = "python"),
+                              htmltools::div(class = "chunk-badge", "Non exécuté dans l'atelier")))
+      idx <<- idx + 1L
+      if (s$mode == "setup") return(NULL)
+      htmltools::div(class = "chunk", code_block(s$code, copy = TRUE, lang = "python"),
+                     htmltools::div(class = "py-out", `data-key` = key, `data-idx` = idx))
+    })
+    as.character(htmltools::tagList(parts))
+  })
+}
+
 # Exécute toute une leçon et renvoie le HTML de chaque carte
 render_lesson <- function(base, lesson) {
   key <- paste(base, lesson$id, sep = "/")
   if (!is.null(COURS_CACHE[[key]])) return(COURS_CACHE[[key]])
+  if (est_python(base)) return(COURS_CACHE[[key]] <- render_lesson_py(base, lesson))
   env <- sandbox_new_env(base_datasets(base))
   cards <- lapply(lesson$cards, function(card) {
     parts <- lapply(card$segments, function(s) {
@@ -74,8 +105,17 @@ mod_cours_server <- function(id, base, bus, main_session) {
     })
     n_cards <- reactive(length(current()$cards))
 
+    # Python : le navigateur exécute la leçon (une fois) dès qu'elle s'ouvre
+    observeEvent(current(), {
+      if (est_python(base()))
+        main_session$sendCustomMessage("py_chunks", list(
+          base = base(), key = py_lesson_key(base(), current()),
+          chunks = py_lesson_chunks(current())))
+    })
+
     rendered <- reactive({
       L <- current()
+      if (est_python(base())) return(render_lesson(base(), L))
       shiny::withProgress(message = "Exécution du code de la leçon…", value = 0.5,
                           render_lesson(base(), L))
     })
@@ -102,7 +142,7 @@ mod_cours_server <- function(id, base, bus, main_session) {
       idx <- which(names(lessons()) == rv$lesson)
       div(class = "lesson-head",
           div(class = "lesson-kicker",
-              sprintf("Leçon %d / %d · %s", idx, length(lessons()), BASES[[base()]]$objet)),
+              sprintf("Leçon %d / %d · %s", idx, length(lessons()), base_kicker(base()))),
           h2(L$titre),
           p(class = "lead-sub", L$resume),
           div(class = "card-dots",

@@ -121,6 +121,8 @@ pre.code-out { background: #fff; border: 1px solid var(--line); border-radius: .
 .callout-usage { background: #f4f6fa; border-left: 4px solid var(--ink-2); }
 .callout-piege { background: #fff6ec; border-left: 4px solid var(--amber); }
 .callout-note { background: #f1f7f1; border-left: 4px solid #4a8a4a; }
+.callout-sas { background: #f6f3fa; border-left: 4px solid #6f5a9c; }
+.callout-sas::before { content: "Passerelle SAS"; display: block; font-size: .75rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #6f5a9c; margin-bottom: .25rem; }
 .callout pre { background: #fff; border: 1px solid var(--line); padding: .5rem .8rem; border-radius: .3rem; font-size: .85rem; }
 
 /* --- Éditeur ---------------------------------------------------------------- */
@@ -216,3 +218,16 @@ details.prep summary { cursor: pointer; color: var(--muted); }
   pre.code-r, pre.code-out { font-size: .78rem; }
   #base label span, #base .form-check-label { padding: .25rem .6rem; }
 }
+
+/* ---- Python (bases en Python, exécutées dans le navigateur) ---- */
+.py-status { position: fixed; right: 16px; bottom: 16px; z-index: 2000; display: none; background: var(--ink); color: #fff; padding: .5rem .9rem; border-radius: .6rem; font-size: .85rem; box-shadow: 0 6px 18px rgba(0,0,0,.18); max-width: calc(100vw - 32px); }
+.py-wait { color: var(--muted); font-size: .88rem; padding: .4rem 0; }
+.py-text { white-space: pre-wrap; }
+.py-table { overflow-x: auto; margin: .4rem 0 .8rem; }
+.py-table table.dataframe { border: none; border-collapse: collapse; font-size: .82rem; font-family: var(--bs-font-monospace); background: #fff; }
+.py-table table.dataframe th, .py-table table.dataframe td { border-bottom: 1px solid var(--line); padding: .2rem .6rem; text-align: right; white-space: nowrap; }
+.py-table table.dataframe thead th { background: #f4f2ec; font-weight: 600; }
+.py-table table.dataframe tbody th { color: var(--muted); font-weight: 400; }
+.py-table p { font-size: .78rem; color: var(--muted); margin: .3rem 0 0; }
+.py-where { font-size: .8rem; margin: .3rem 0; padding: .3rem .5rem; background: rgba(0,0,0,.03); }
+.py-result:not(:empty) { margin: .8rem 0; padding: .9rem 1rem; background: #fff; border: 1px solid var(--line); border-radius: .5rem; }

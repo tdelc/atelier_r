@@ -67,6 +67,7 @@ mod_exercices_ui <- function(id) {
           ),
           uiOutput(ns("feedback")),
           uiOutput(ns("result")),
+          div(id = ns("pyres"), class = "py-target py-result"),
           uiOutput(ns("correction")),
           uiOutput(ns("nav"))
       )
@@ -108,8 +109,12 @@ mod_exercices_server <- function(id, base, main_session) {
       shinyAce::updateAceEditor(session, "code",
                                 value = if (nzchar(e$depart)) e$depart else "")
       rv$run <- NULL; rv$feedback <- NULL; rv$show_hint <- FALSE; rv$show_corr <- FALSE
+      main_session$sendCustomMessage("py_clear", ns("pyres"))
     }
     observeEvent(base(), {
+      shinyAce::updateAceEditor(session, "code", mode = base_lang(base()),
+                                tabSize = if (est_python(base())) 4 else 2)
+      main_session$sendCustomMessage("py_clear", ns("pyres"))
       rv$i <- 1
       if (length(exs())) reset_view()
       else { shinyAce::updateAceEditor(session, "code", value = ""); rv$run <- NULL; rv$feedback <- NULL }
@@ -126,10 +131,36 @@ mod_exercices_server <- function(id, base, main_session) {
       if (nzchar(e$preparation)) sandbox_run(e$preparation, env)
       sandbox_run(code %||% "", env)
     }
-    observeEvent(input$run, { rv$run <- run_student(input$run$code); rv$feedback <- NULL; set_status("tente") })
+    # Python : exécution dans le navigateur (www/python/atelier_py.js)
+    py_run_student <- function(code) {
+      e <- ex()
+      main_session$sendCustomMessage("py_run", list(
+        base = base(), ns = "exercice", code = code %||% "", fresh = TRUE,
+        setup = e$preparation, target = ns("pyres")))
+    }
+    observeEvent(input$run, {
+      rv$feedback <- NULL; set_status("tente")
+      if (est_python(base())) return(py_run_student(input$run$code))
+      rv$run <- run_student(input$run$code)
+    })
+    observeEvent(input$py_fb, {
+      rv$feedback <- list(status = input$py_fb$status, message = input$py_fb$message)
+      set_status(if (identical(rv$feedback$status, "ok")) "reussi" else "tente")
+    })
 
     observeEvent(input$check, {
       e <- ex()
+      if (est_python(base())) {
+        if (e$verif == "aucune") {
+          py_run_student(input$check$code)
+          rv$feedback <- list(status = "na", message = "Pas de vérification automatique pour cet exercice : comparez avec la correction.")
+          return(set_status("tente"))
+        }
+        main_session$sendCustomMessage("py_check", list(
+          base = base(), key = pkey(), prep = e$preparation, correction = e$correction,
+          code = input$check$code %||% "", target = ns("pyres"), reply = ns("py_fb")))
+        return(invisible())
+      }
       r <- run_student(input$check$code); rv$run <- r
       if (length(r$blocked) || !r$ok) {
         rv$feedback <- list(status = "ko", message = "Votre code produit une erreur : corrigez-la d'abord (voir le résultat ci-dessous).")
@@ -165,7 +196,9 @@ mod_exercices_server <- function(id, base, main_session) {
         num = ifelse(st == "reussi", "✓", sprintf("%02d", seq_along(E))),
         label = vapply(E, `[[`, "", "title"),
         sub = vapply(E, `[[`, "", "theme"),
-        group = NIVEAUX[as.character(vapply(E, `[[`, 1L, "niveau"))],
+        group = ifelse(nzchar(vapply(E, function(e) e$groupe %||% "", "")),
+                       vapply(E, function(e) e$groupe %||% "", ""),
+                       NIVEAUX[as.character(vapply(E, `[[`, 1L, "niveau"))]),
         status = ifelse(nzchar(st), st, "aucun"),
         stringsAsFactors = FALSE
       )
@@ -192,7 +225,7 @@ mod_exercices_server <- function(id, base, main_session) {
           if (nzchar(e$preparation))
             tags$details(class = "prep",
                          tags$summary("Code déjà exécuté avant le vôtre"),
-                         code_block(e$preparation, copy = FALSE)),
+                         code_block(e$preparation, copy = FALSE, lang = base_lang(base()))),
           div(class = "d-flex flex-wrap gap-2 mt-2",
               actionButton(ns("hint"), tagList(icon("lightbulb"),
                                                if (rv$show_hint) "Masquer l'indice" else "Indice"),
@@ -229,7 +262,19 @@ mod_exercices_server <- function(id, base, main_session) {
 
     output$correction <- renderUI({
       if (!rv$show_corr) return(NULL)
-      e <- ex(); sol <- solution_of(base(), e)
+      e <- ex()
+      if (est_python(base())) {
+        key <- paste("correction", pkey(), sep = "/")
+        main_session$sendCustomMessage("py_chunks", list(
+          base = base(), key = key,
+          chunks = list(list(code = e$preparation, mode = "setup"),
+                        list(code = e$correction, mode = "run"))))
+        corps <- div(class = "run-output",
+                     code_block(e$correction, copy = TRUE, lang = "python"),
+                     div(class = "py-out", `data-key` = key, `data-idx` = 1))
+      } else {
+        corps <- div(class = "run-output", render_run(solution_of(base(), e), show_source = TRUE, copy = TRUE))
+      }
       bslib::card(
         class = "correction-card",
         bslib::card_header(
@@ -237,7 +282,7 @@ mod_exercices_server <- function(id, base, main_session) {
               span(class = "fw-semibold", icon("graduation-cap"), " Correction"),
               actionButton(ns("hide_corr"), "Masquer", class = "btn-link btn-sm ms-auto"))),
         bslib::card_body(
-          div(class = "run-output", render_run(sol, show_source = TRUE, copy = TRUE)),
+          corps,
           if (nzchar(e$commentaire))
             div(class = "callout callout-note mt-3", md_to_html(e$commentaire)))
       )

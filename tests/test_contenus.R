@@ -15,6 +15,8 @@ sandbox_init(); load_bases()
 # facultatif : ne tester qu'une base -> Rscript tests/test_contenus.R meteo
 args <- setdiff(commandArgs(TRUE), "--verbose")
 bases_testees <- if (length(args)) intersect(args, names(BASES)) else names(BASES)
+# les bases en Python sont testées par tests/test_python.py
+bases_testees <- Filter(function(b) !est_python(b), bases_testees)
 verbose <- "--verbose" %in% commandArgs(TRUE)
 
 fails <- 0; n_runs <- 0; t_total <- 0

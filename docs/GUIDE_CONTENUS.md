@@ -97,6 +97,8 @@ Une ligne = `clé: valeur`. Les lignes qui commencent par `#` sont des commentai
 | `extras` | tables complémentaires disponibles dans le bac à sable (§6), séparées par des virgules | aucune |
 | `code_libre` | code proposé dans le bac à sable libre ; `\n` = retour à la ligne | `<objet> \|> glimpse()` |
 | `dashboard_titre` | titre du tableau de bord | `titre` |
+| `langage` | `r` ou `python` (voir « Une base en Python ») | `r` |
+| `dossier_python` | base Python : dossier copié dans le dossier de travail de l'étudiant | `fichiers` |
 
 Exemple complet : `bases/naissances/base.txt`.
 
@@ -118,6 +120,18 @@ Pensez à la mémoire : chaque base est chargée une fois, pour tous les étudia
 | `dashboard.R` | le tableau de bord | §4 |
 
 Le plus simple est de copier les fichiers d'une base existante et de les adapter. Lancez ensuite `Rscript tests/test_bases.R` et `Rscript tests/test_contenus.R chomage`.
+
+### Une base en Python
+
+Une base peut avoir un cours en **Python** plutôt qu'en R : ajoutez `langage: python` dans son `base.txt` (exemple complet : `bases/communes_be/`).
+
+- **Où s'exécute le code ?** Dans le **navigateur** de l'étudiant, avec [Pyodide](https://pyodide.org) (Python compilé pour le web), et non sur le serveur. Il n'y a donc pas de liste de fonctions autorisées : tout Python est disponible. Paquets : pandas, NumPy, PyArrow, DuckDB, Matplotlib (chargés depuis le CDN jsdelivr), Seaborn et openpyxl (fournis dans `www/python/wheels/`). Le premier chargement prend une dizaine de secondes.
+- **Les fichiers** : le dossier `fichiers/` de la base (clé `dossier_python`) est copié dans le dossier de travail Python de l'étudiant. On y range `donnees/`, `referentiels/`… ; l'étudiant écrit dans `sortie/`, en mémoire dans son navigateur.
+- **Les blocs de code** s'écrivent ```` ```python ````, avec les mêmes options : ```` ```python norun ````, ```` ```python setup ````, et ```` ```python erreur ```` pour une **erreur volontaire** (le bloc s'affiche normalement ; le test vérifie qu'il produit bien une erreur). Comme dans un notebook, la dernière ligne d'un bloc s'affiche sans `print()`, et les tableaux pandas s'affichent en tableau.
+- **Les encadrés** `::: sas` affichent une « Passerelle SAS ».
+- **Les exercices** ont le même format. La vérification compare la **valeur de la dernière ligne** à celle de la correction (nombre, texte, liste, tuple, ensemble, dictionnaire, Series ou DataFrame), avec les mêmes tolérances qu'en R. La clé `groupe:` remplace le titre de niveau dans la liste (« Atelier 1 · … »).
+- **Le test** : `python tests/test_python.py` exécute tout le contenu Python avec le Python de votre poste (il faut les mêmes paquets), avec le même moteur que dans le navigateur (`www/python/runner.py`).
+- **Pas de dashboard** pour l'instant dans une base Python, ni de boucle infinie à exécuter : une boucle qui ne s'arrête pas bloque Python dans le navigateur (l'étudiant doit recharger la page). Montrez-la en ```` ```python norun ````.
 
 ### Avec plus de trois bases
 

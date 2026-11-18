@@ -14,7 +14,7 @@ verdict <- function(base, id, code) {
   compare_results(sandbox_run(code, env)$value, solution_of(base, e)$value)$status
 }
 # Chaque correction est acceptée par la vérification
-for (b in names(BASES)) for (e in EXERCICES[[b]]) if (e$verif == "valeur")
+for (b in Filter(function(b) !est_python(b), names(BASES))) for (e in EXERCICES[[b]]) if (e$verif == "valeur")
   expect(paste("correction acceptée", b, e$id), verdict(b, e$id, e$correction) == "ok")
 
 # Réponses équivalentes écrites autrement

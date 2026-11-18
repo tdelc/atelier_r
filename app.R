@@ -36,6 +36,7 @@ options(shiny.maxRequestSize = 1e6)
 # --- Chargement unique, partagé par toutes les sessions -------------------------
 sandbox_init()
 load_bases()
+PY_CONF <- register_python()   # bases en Python : fichiers servis au navigateur
 load_dashboards()
 load_cours()
 load_pistes()
@@ -51,6 +52,10 @@ ui <- atelier_page_navbar(
     tags$head(
       tags$link(rel = "stylesheet", href = "atelier.css"),
       tags$script(src = "atelier.js"),
+      if (length(PY_CONF)) tagList(
+        tags$script(HTML(paste0("window.ATELIER_PY = ",
+                                jsonlite::toJSON(PY_CONF, auto_unbox = TRUE), ";"))),
+        tags$script(src = "python/atelier_py.js")),
       tags$meta(name = "description",
                 content = "Apprendre l'analyse de bases de données avec R : cours, découverte, exercices et dashboard.")
     ),
@@ -88,6 +93,11 @@ server <- function(input, output, session) {
   mod_dashboard_server("dashboard", base)
 
   observeEvent(input$btn_dico, showModal(dico_modal(base())))
+
+  # Base en Python : on prépare Python dans le navigateur dès qu'elle est choisie
+  observeEvent(base(), {
+    if (est_python(base())) session$sendCustomMessage("py_init", list(base = base()))
+  })
 
   tour_start <- reactiveVal(0)
   observeEvent(input$btn_tour, tour_start(tour_start() + 1))

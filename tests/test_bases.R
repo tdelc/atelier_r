@@ -22,7 +22,13 @@ for (b in names(BASES)) {
   expect(paste(b, ": dictionnaire"), is.data.frame(B$dico) && "variable" %in% names(B$dico))
   expect(paste(b, ": colonnes à compter présentes"), all(B$compter %in% names(B$data)))
   expect(paste(b, ": objet dans le bac à sable"), B$objet %in% names(base_datasets(b)))
-  expect(paste(b, ": code libre exécutable"),
+  if (est_python(b)) {
+    expect(paste(b, ": dossier Python"), dir.exists(base_path(b, B$dossier_python)))
+    expect(paste(b, ": leçons en Python"), all(vapply(unlist(lapply(COURS[[b]], function(L)
+      Filter(function(s) s$type == "code", unlist(lapply(L$cards, `[[`, "segments"), recursive = FALSE))),
+      recursive = FALSE), function(s) s$lang == "python", TRUE)))
+  }
+  if (!est_python(b)) expect(paste(b, ": code libre exécutable"),
          { r <- sandbox_run(B$code_libre, sandbox_new_env(base_datasets(b))); isTRUE(r$ok) && !length(r$blocked) })
   if (!is.null(B$dash_env)) {
     ui <- tryCatch(B$dash_env$dashboard_ui(b), error = function(e) e)
@@ -34,6 +40,7 @@ for (b in names(BASES)) {
               length(PISTES[[b]]), length(EXERCICES[[b]])))
 }
 expect("interface de l'onglet Dashboard", !inherits(tryCatch(mod_dashboard_ui("dashboard"), error = function(e) e), "error"))
+expect("configuration Python", is.list(register_python()))
 expect("sélecteur de base", !inherits(tryCatch(base_selector("base"), error = function(e) e), "error"))
 
 # --- Une nouvelle base minimale, dans un dossier temporaire ---------------------

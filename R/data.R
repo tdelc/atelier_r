@@ -102,6 +102,8 @@ read_base_info <- function(dir, app_dir = ".") {
     extras    = vapply(extras, function(f) find_base_file(dir, f, app_dir), ""),
     code_libre = gsub("\\n", "\n", m$code_libre %||% paste0(objet, " |>\n  glimpse()"), fixed = TRUE),
     dashboard_titre = m$dashboard_titre %||% m$titre %||% id,
+    langage   = tolower(m$langage %||% "r"),
+    dossier_python = m$dossier_python %||% "fichiers",
     meta      = m,
     dash_env  = NULL       # rempli par load_dashboards()
   )
@@ -187,4 +189,35 @@ load_dashboards <- function() {
     BASES[[b]]$dash_env <<- env
   }
   invisible(NULL)
+}
+
+# --- Bases en Python ----------------------------------------------------------
+# Une base dont le base.txt contient « langage: python » a un cours en Python.
+# Le code s'exécute dans le navigateur de l'étudiant (Pyodide : voir
+# www/python/). Le dossier « dossier_python » de la base (par défaut
+# fichiers/) est copié dans son dossier de travail Python.
+
+est_python <- function(base) identical(BASES[[base]]$langage, "python")
+base_lang <- function(base) if (est_python(base)) "python" else "r"
+
+# Petit libellé en tête des pages : l'objet R (BDD_NAIS) ou « Python · … »
+base_kicker <- function(base)
+  if (est_python(base)) paste("Python ·", BASES[[base]]$libelle) else BASES[[base]]$objet
+
+# Adresse web des fichiers d'une base Python
+py_resource <- function(base) paste0("pyfiles-", base)
+
+# Rend les fichiers des bases Python accessibles au navigateur, et renvoie la
+# configuration lue par www/python/atelier_py.js
+register_python <- function() {
+  conf <- list()
+  for (b in names(BASES)) {
+    if (!est_python(b)) next
+    dir <- base_path(b, BASES[[b]]$dossier_python)
+    files <- if (dir.exists(dir)) list.files(dir, recursive = TRUE) else character()
+    if (dir.exists(dir)) shiny::addResourcePath(py_resource(b), normalizePath(dir))
+    conf[[b]] <- list(files = lapply(files, function(f)
+      list(path = f, url = paste0(py_resource(b), "/", utils::URLencode(f)))))
+  }
+  conf
 }

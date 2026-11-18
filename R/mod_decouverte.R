@@ -62,7 +62,8 @@ mod_decouverte_ui <- function(id) {
                 class = "result-card",
                 bslib::card_header(span(class = "fw-semibold", icon("terminal"), " Résultat"),
                                    uiOutput(ns("timing"), inline = TRUE)),
-                bslib::card_body(uiOutput(ns("result")))
+                bslib::card_body(uiOutput(ns("result")),
+                                 div(id = ns("pyres"), class = "py-target"))
               )
             ),
             div(
@@ -71,6 +72,7 @@ mod_decouverte_ui <- function(id) {
                 bslib::card_header(span(class = "fw-semibold", icon("box-archive"), " Objets disponibles")),
                 bslib::card_body(
                   uiOutput(ns("objets")),
+                  div(id = ns("objets_py"), class = "py-target"),
                   div(class = "d-flex flex-wrap gap-2",
                       actionButton(ns("dico"), tagList(icon("table-list"), "Dictionnaire"),
                                    class = "btn-outline-primary btn-sm"),
@@ -88,11 +90,18 @@ mod_decouverte_server <- function(id, base, bus, main_session) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     rv <- reactiveValues(piste = "1", env = NULL, run = NULL, from_cours = NULL,
-                         env_version = 0, notice = NULL)
+                         env_version = 0, notice = NULL, py_ran = FALSE, py_sec = NULL)
 
     pistes <- reactive(PISTES[[base()]])
 
     new_env <- function(setup = "") {
+      if (est_python(base())) {
+        # Python : l'environnement vit dans le navigateur
+        main_session$sendCustomMessage("py_reset", list(
+          base = base(), ns = "decouverte", setup = setup, objets = ns("objets_py")))
+        rv$env <- NULL; rv$py_ran <- FALSE
+        return(invisible())
+      }
       env <- sandbox_new_env(base_datasets(base()))
       if (nzchar(setup)) sandbox_run(setup, env)
       rv$env <- env
@@ -105,6 +114,10 @@ mod_decouverte_server <- function(id, base, bus, main_session) {
                     description = "Code importé depuis le cours. Les cartes précédentes de la leçon ont été exécutées en arrière-plan : les variables qu'elles créent sont disponibles.",
                     code = rv$from_cours$code, setup = rv$from_cours$setup, idees = ""))
       }
+      if (identical(rv$piste, "libre") && est_python(base()))
+        return(list(title = "Bac à sable libre",
+                    description = "Un espace pour écrire votre propre code Python. Les fichiers du cours sont dans `donnees/` et `referentiels/` ; ce que vous créez reste disponible tant que vous ne cliquez pas sur « Nouvel environnement ».",
+                    code = libre_code(base()), setup = "", idees = ""))
       if (identical(rv$piste, "libre"))
         return(list(title = "Bac à sable libre",
                     description = sprintf("Un espace pour écrire votre propre code sur `%s`. Les objets que vous créez restent disponibles tant que vous ne cliquez pas sur « Nouvel environnement ».", BASES[[base()]]$objet),
@@ -124,9 +137,12 @@ mod_decouverte_server <- function(id, base, bus, main_session) {
       new_env(p$setup)
       shinyAce::updateAceEditor(session, "code", value = p$code)
       rv$run <- NULL
+      main_session$sendCustomMessage("py_clear", list(ns("pyres"), ns("objets_py")))
     }
 
     observeEvent(base(), {
+      shinyAce::updateAceEditor(session, "code", mode = base_lang(base()),
+                                tabSize = if (est_python(base())) 4 else 2)
       rv$piste <- if (length(pistes())) "1" else "libre"; rv$from_cours <- NULL
       load_piste()
     })
@@ -160,7 +176,7 @@ mod_decouverte_server <- function(id, base, bus, main_session) {
     output$head <- renderUI({
       p <- current()
       div(class = "lesson-head",
-          div(class = "lesson-kicker", paste("Découverte ·", BASES[[base()]]$objet)),
+          div(class = "lesson-kicker", paste("Découverte ·", base_kicker(base()))),
           h2(p$title),
           div(class = "lead-sub", md_to_html(p$description)))
     })
@@ -177,11 +193,18 @@ mod_decouverte_server <- function(id, base, bus, main_session) {
     })
 
     do_run <- function(code) {
+      if (est_python(base())) {
+        main_session$sendCustomMessage("py_run", list(
+          base = base(), ns = "decouverte", code = code, target = ns("pyres"),
+          objets = ns("objets_py"), reply = ns("py_done")))
+        return(invisible())
+      }
       req(rv$env)
       rv$run <- sandbox_run(code, rv$env)
       rv$env_version <- rv$env_version + 1
     }
     observeEvent(input$run, do_run(input$run$code %||% ""))
+    observeEvent(input$py_done, { rv$py_ran <- TRUE; rv$py_sec <- input$py_done$seconds })
 
     observeEvent(input$reset_code, {
       shinyAce::updateAceEditor(session, "code", value = current()$code)
@@ -194,6 +217,10 @@ mod_decouverte_server <- function(id, base, bus, main_session) {
     })
 
     output$timing <- renderUI({
+      if (est_python(base())) {
+        if (!rv$py_ran || is.null(rv$py_sec)) return(NULL)
+        return(span(class = "text-muted small ms-2", sprintf("(%.2f s)", rv$py_sec)))
+      }
       r <- rv$run
       if (is.null(r) || length(r$blocked)) return(NULL)
       span(class = "text-muted small ms-2", sprintf("(%.2f s)", r$seconds))
@@ -201,6 +228,9 @@ mod_decouverte_server <- function(id, base, bus, main_session) {
 
     output$result <- renderUI({
       r <- rv$run
+      if (est_python(base()))
+        return(if (!rv$py_ran) div(class = "empty-result", icon("play"),
+                                   " Cliquez sur « Exécuter » (ou Ctrl + Entrée) pour lancer le code. Python s'exécute dans votre navigateur."))
       if (is.null(r))
         return(div(class = "empty-result", icon("play"),
                    " Cliquez sur « Exécuter » (ou Ctrl + Entrée) pour lancer le code."))
@@ -210,12 +240,13 @@ mod_decouverte_server <- function(id, base, bus, main_session) {
     })
 
     output$objets <- renderUI({
+      if (est_python(base())) return(NULL)
       rv$env_version
       req(rv$env)
       env_objects_ui(rv$env)
     })
 
     observeEvent(input$dico, showModal(dico_modal(base())))
-    observeEvent(input$fonctions, showModal(fonctions_modal()))
+    observeEvent(input$fonctions, showModal(if (est_python(base())) python_modal() else fonctions_modal()))
   })
 }

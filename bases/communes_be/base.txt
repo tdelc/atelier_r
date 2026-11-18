@@ -1,0 +1,29 @@
+# ============================================================================
+# Base « Communes belges » : un cours en PYTHON.
+# Voir docs/GUIDE_CONTENUS.md, sections A et « Une base en Python ».
+# ============================================================================
+
+# Langage du cours : r (par défaut) ou python
+langage: python
+
+# Table affichée sur l'accueil et dans le dictionnaire (côté R)
+objet: population
+fichier: fichiers/donnees/population_communes_2026.csv
+separateur: ;
+
+libelle: Communes belges
+titre: Population des communes belges, 2026
+description: Un cours en Python (pandas, NumPy, DuckDB) sur les fichiers de Statbel : population par commune au 1er janvier 2026 et nomenclature NUTS 2027.
+source: Statbel (Direction générale Statistique)
+ligne: une commune
+icone: python
+ordre: 3
+nom_lignes: communes
+
+# Python : le dossier fichiers/ est copié dans le dossier de travail de
+# l'étudiant (donnees/, referentiels/…). Les fichiers qu'il écrit vont dans
+# sortie/, en mémoire, dans son navigateur.
+dossier_python: fichiers
+
+# Code proposé dans le bac à sable libre (\n = retour à la ligne)
+code_libre: import pandas as pd\n\npop = pd.read_csv("donnees/population_communes_2026.csv", sep=";")\npop.head()

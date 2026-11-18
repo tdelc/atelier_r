@@ -51,16 +51,57 @@ highlight_r <- function(code) {
   paste(out, collapse = "")
 }
 
-code_block <- function(code, copy = TRUE) {
+# Coloration du code Python, par expressions régulières : commentaires,
+# textes, nombres, mots-clés et appels de fonction
+PY_KEYWORDS <- c("and", "as", "assert", "async", "await", "break", "class", "continue",
+                 "def", "del", "elif", "else", "except", "finally", "for", "from",
+                 "global", "if", "import", "in", "is", "lambda", "nonlocal", "not",
+                 "or", "pass", "raise", "return", "try", "while", "with", "yield")
+
+PY_TOKEN_RE <- paste0(
+  "(#[^\\n]*)",                                                   # 1 commentaire
+  "|((?:[rRbBfFuU]{1,2})?(?:\"\"\"[\\s\\S]*?\"\"\"|'''[\\s\\S]*?'''",
+  "|\"(?:\\\\.|[^\"\\\\\\n])*\"|'(?:\\\\.|[^'\\\\\\n])*'))",        # 2 texte
+  "|(\\b\\d[\\d_]*(?:\\.\\d+)?(?:[eE][+-]?\\d+)?\\b)",            # 3 nombre
+  "|([A-Za-z_][A-Za-z0-9_]*)"                                     # 4 nom
+)
+
+highlight_python <- function(code) {
+  m <- gregexpr(PY_TOKEN_RE, code, perl = TRUE)[[1]]
+  if (m[1] < 0) return(esc(code))
+  cs <- attr(m, "capture.start"); len <- attr(m, "match.length")
+  out <- character(); pos <- 1L
+  for (i in seq_along(m)) {
+    start <- m[i]; stop <- start + len[i] - 1L
+    txt <- substr(code, start, stop)
+    if (start > pos) out <- c(out, esc(substr(code, pos, start - 1L)))
+    grp <- unname(which(cs[i, ] == start & attr(m, "capture.length")[i, ] > 0))[1]
+    cls <- if (identical(grp, 1L)) "tk-com"
+      else if (identical(grp, 2L)) "tk-str"
+      else if (identical(grp, 3L)) "tk-num"
+      else if (txt %in% c("True", "False", "None")) "tk-num"
+      else if (txt %in% PY_KEYWORDS) "tk-kw"
+      else if (grepl("^\\(", substr(code, stop + 1L, stop + 1L))) "tk-fn"
+      else NA_character_
+    out <- c(out, if (is.na(cls)) esc(txt) else sprintf('<span class="%s">%s</span>', cls, esc(txt)))
+    pos <- stop + 1L
+  }
+  if (pos <= nchar(code)) out <- c(out, esc(substr(code, pos, nchar(code))))
+  paste(out, collapse = "")
+}
+
+code_block <- function(code, copy = TRUE, lang = "r") {
   htmltools::div(
     class = "code-wrap",
     if (copy) htmltools::tags$button(
       type = "button", class = "btn-copier", title = "Copier le code",
       `data-code` = code, htmltools::HTML("Copier")
     ),
-    htmltools::tags$pre(class = "code-r", .noWS = c("inside", "outside"),
+    htmltools::tags$pre(class = paste("code-r", if (identical(lang, "python")) "code-py"),
+                        .noWS = c("inside", "outside"),
                         htmltools::tags$code(.noWS = c("inside", "outside"),
-                                             htmltools::HTML(highlight_r(code))))
+                                             htmltools::HTML(if (identical(lang, "python"))
+                                               highlight_python(code) else highlight_r(code))))
   )
 }
 

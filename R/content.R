@@ -19,7 +19,8 @@
 #   ```
 #   Commentaire après le résultat… (encadrés ::: usage / piege / note / etape)
 #
-#   Blocs de code :  ```r         exécuté et affiché
+#   Blocs de code :  ```r         exécuté et affiché (```python pour une base
+#                                 en Python, mêmes options norun / setup)
 #                    ```r norun   affiché, non exécuté (ex. setwd)
 #                    ```r setup   exécuté, non affiché
 #
@@ -76,19 +77,22 @@ split_sections <- function(lines, level = 1) {
 # Découpe un corps en segments texte / code
 split_segments <- function(lines) {
   segs <- list(); buf <- character(); in_code <- FALSE; mode <- "run"; code <- character()
+  lang <- "r"
   push_text <- function() {
     txt <- paste(buf, collapse = "\n")
     if (nzchar(trimws(txt))) segs[[length(segs) + 1]] <<- list(type = "text", md = txt)
     buf <<- character()
   }
   for (l in lines) {
-    if (!in_code && grepl("^```\\s*\\{?r", l)) {
+    if (!in_code && grepl("^```\\s*\\{?(r|python|py)\\b", l)) {
       push_text()
       in_code <- TRUE; code <- character()
+      lang <- if (grepl("^```\\s*\\{?r\\b", l)) "r" else "python"
       mode <- if (grepl("norun", l)) "norun" else if (grepl("setup", l)) "setup" else "run"
     } else if (in_code && grepl("^```\\s*$", l)) {
       in_code <- FALSE
-      segs[[length(segs) + 1]] <- list(type = "code", code = paste(code, collapse = "\n"), mode = mode)
+      segs[[length(segs) + 1]] <- list(type = "code", code = paste(code, collapse = "\n"),
+                                       mode = mode, lang = lang)
     } else if (in_code) {
       code <- c(code, l)
     } else {
@@ -183,6 +187,7 @@ read_exercises <- function(path) {
       title = s$title,
       niveau = as.integer(tm$meta$niveau %||% 1),
       theme = tm$meta$theme %||% "",
+      groupe = tm$meta$groupe %||% "",
       verif = tm$meta$verif %||% "valeur",
       enonce = text_of(get_sub("Énoncé")),
       indice = text_of(get_sub("Indice")),

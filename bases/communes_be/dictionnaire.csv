@@ -1,0 +1,6 @@
+variable,libelle,type,modalites
+code_ins,"Code INS (aussi appelé code NIS ou REFNIS) de la commune",Texte,"5 chiffres : le 1er désigne la province, les deux premiers l'arrondissement. Ex. 62063 = Liège"
+commune,Nom de la commune en français,Texte,"565 communes au 1er janvier 2026"
+hommes,Nombre d'hommes résidant dans la commune au 1er janvier 2026,Numérique (entier),
+femmes,Nombre de femmes résidant dans la commune au 1er janvier 2026,Numérique (entier),
+total,Population totale de la commune au 1er janvier 2026,Numérique (entier),hommes + femmes
