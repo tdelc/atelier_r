@@ -4,3 +4,6 @@
 .Ruserdata
 .git/
 .claude/
+
+# sorties des tests Python
+bases/*/fichiers/sortie/

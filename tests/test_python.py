@@ -12,7 +12,7 @@
 # duckdb (les mêmes que dans le navigateur).
 # ============================================================================
 
-import glob, json, os, re, sys
+import glob, json, os, re, shutil, sys, tempfile
 
 APP = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 sys.path.insert(0, os.path.join(APP, "www", "python"))
@@ -89,7 +89,12 @@ def main():
             continue
         meta = base_txt(f)
         base = os.path.basename(dir)
-        os.chdir(os.path.join(dir, meta.get("dossier_python", "fichiers")))
+        # copie temporaire des fichiers : les écritures (sortie/) ne
+        # touchent pas au dépôt, comme dans le navigateur
+        travail = tempfile.mkdtemp(prefix="atelier_py_")
+        shutil.copytree(os.path.join(dir, meta.get("dossier_python", "fichiers")), travail,
+                        dirs_exist_ok=True)
+        os.chdir(travail)
         os.makedirs("sortie", exist_ok=True)
         print(f"\n========== Base : {base} ==========")
 
