@@ -16,7 +16,7 @@ Votre dossier de travail contient trois dossiers. Les fichiers sont ceux de **St
 | `referentiels/nuts_lau_2027.txt` | nomenclature des territoires (codes NUTS 2027) | séparateur `\|`, encodage latin-1 |
 | `sortie/` | vos résultats | vide au départ |
 
-Le CSV et l'Excel ont été tirés du fichier d'origine, pour pratiquer d'autres formats : les chiffres sont identiques.
+Le CSV et l'Excel ont été tirés du fichier d'origine, pour pratiquer d'autres formats : les chiffres sont identiques. Les autres fichiers de `donnees/` (un par région, et deux fichiers `.parquet`) et `outils_cours.py` servent à partir de la demi-journée 2.
 
 `os.listdir()` liste le contenu d'un dossier :
 

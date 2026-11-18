@@ -95,6 +95,8 @@ def main():
         shutil.copytree(os.path.join(dir, meta.get("dossier_python", "fichiers")), travail,
                         dirs_exist_ok=True)
         os.chdir(travail)
+        sys.path.insert(0, travail)              # import outils_cours
+        sys.modules.pop("outils_cours", None)
         os.makedirs("sortie", exist_ok=True)
         print(f"\n========== Base : {base} ==========")
 

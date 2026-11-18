@@ -54,7 +54,7 @@ async function init(files) {
   const src = await (await fetch(base + "runner.py")).text();
   py.FS.writeFile("/tmp/atelier_runner.py", src);
   await py.runPythonAsync(
-    "import sys, os, matplotlib\nmatplotlib.use('Agg')\nsys.path.insert(0, '/tmp')\nimport atelier_runner\nos.environ['MPLBACKEND'] = 'Agg'");
+    "import sys, os, matplotlib\nmatplotlib.use('Agg')\nsys.path.insert(0, '/tmp')\nsys.path.insert(0, '/home/pyodide')\nimport atelier_runner\nos.environ['MPLBACKEND'] = 'Agg'");
   runner = py.pyimport("atelier_runner");
   status("");
 }
