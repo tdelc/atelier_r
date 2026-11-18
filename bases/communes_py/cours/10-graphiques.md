@@ -1,7 +1,7 @@
 ---
 titre: Graphiques avec seaborn
 resume: Préparer une table, puis la dessiner - barres, histogrammes, boîtes, nuages de points, barres empilées ; titres, axes et export.
-partie: Pour aller plus loin
+partie: Représenter
 ---
 
 # Deux bibliothèques : seaborn et matplotlib

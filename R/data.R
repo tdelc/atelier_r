@@ -201,8 +201,11 @@ est_python <- function(base) identical(BASES[[base]]$langage, "python")
 base_lang <- function(base) if (est_python(base)) "python" else "r"
 
 # Petit libellé en tête des pages : l'objet R (BDD_NAIS) ou « Python · … »
-base_kicker <- function(base)
-  if (est_python(base)) paste("Python ·", BASES[[base]]$libelle) else BASES[[base]]$objet
+base_kicker <- function(base) {
+  if (!est_python(base)) return(BASES[[base]]$objet)
+  lib <- BASES[[base]]$libelle
+  if (grepl("python", lib, ignore.case = TRUE)) lib else paste("Python ·", lib)
+}
 
 # Adresse web des fichiers d'une base Python
 py_resource <- function(base) paste0("pyfiles-", base)

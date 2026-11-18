@@ -99,6 +99,7 @@ Une ligne = `clé: valeur`. Les lignes qui commencent par `#` sont des commentai
 | `dashboard_titre` | titre du tableau de bord | `titre` |
 | `langage` | `r` ou `python` (voir « Une base en Python ») | `r` |
 | `dossier_python` | base Python : dossier copié dans le dossier de travail de l'étudiant | `fichiers` |
+| `demarrage_python` | base Python : fichier `.py` (dans `dossier_python`) exécuté en silence au début de chaque leçon, piste et exercice, pour précharger les tables | aucun |
 
 Exemple complet : `bases/naissances/base.txt`.
 
@@ -126,6 +127,7 @@ Le plus simple est de copier les fichiers d'une base existante et de les adapter
 Une base peut avoir un cours en **Python** plutôt qu'en R : ajoutez `langage: python` dans son `base.txt` (exemple complet : `bases/communes_be/`).
 
 - **Où s'exécute le code ?** Dans le **navigateur** de l'étudiant, avec [Pyodide](https://pyodide.org) (Python compilé pour le web), et non sur le serveur. Il n'y a donc pas de liste de fonctions autorisées : tout Python est disponible. Paquets : pandas, NumPy, PyArrow, DuckDB, Matplotlib (chargés depuis le CDN jsdelivr), Seaborn et openpyxl (fournis dans `www/python/wheels/`). Le premier chargement prend une dizaine de secondes.
+- **Les tables préchargées** : avec `demarrage_python: demarrage.py`, ce fichier (imports, `pd.read_parquet(...)`) s'exécute en silence au début de chaque leçon, piste et exercice. Les tables sont alors prêtes, comme `BDD_NAIS` dans les bases R : c'est ce qui permet de partir tout de suite de la table (exemple : `bases/communes_py/`).
 - **Les fichiers** : le dossier `fichiers/` de la base (clé `dossier_python`) est copié dans le dossier de travail Python de l'étudiant. On y range `donnees/`, `referentiels/`… ; l'étudiant écrit dans `sortie/`, en mémoire dans son navigateur.
 - **Les blocs de code** s'écrivent ```` ```python ````, avec les mêmes options : ```` ```python norun ````, ```` ```python setup ````, et ```` ```python erreur ```` pour une **erreur volontaire** (le bloc s'affiche normalement ; le test vérifie qu'il produit bien une erreur). Comme dans un notebook, la dernière ligne d'un bloc s'affiche sans `print()`, et les tableaux pandas s'affichent en tableau.
 - **Les encadrés** `::: sas` affichent une « Passerelle SAS ».

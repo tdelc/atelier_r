@@ -58,7 +58,10 @@ libelle: Chômage
 titre: Taux de chômage par région, 2000-2024
 ```
 
-Une base peut aussi avoir un cours en **Python** (`langage: python`) : le code s'exécute alors dans le navigateur de l'étudiant (Pyodide), avec pandas, NumPy, PyArrow, DuckDB, Matplotlib et Seaborn. Exemple : `bases/communes_be/` (population des communes belges, Statbel) : cinq demi-journées, des fondamentaux de Python aux jointures et à DuckDB. Voir le guide, section « Une base en Python ».
+Une base peut aussi avoir un cours en **Python** (`langage: python`) : le code s'exécute alors dans le navigateur de l'étudiant (Pyodide), avec pandas, NumPy, PyArrow, DuckDB, Matplotlib et Seaborn. Deux cours Python existent, sur la population des communes belges (Statbel) :
+
+- `bases/communes_py/` (**Python**) : un cours « par la table », pour passer de SAS à Python sans être programmeur. On part tout de suite de la table des communes, déjà chargée, comme le cours R part du tidyverse : 16 leçons (filtrer, compter, regrouper, créer des variables, croiser, graphiques, étude de cas, puis importer, fusionner, nettoyer ses fichiers, SQL avec DuckDB, boucles et fonctions), 8 pistes, 26 exercices ;
+- `bases/communes_be/` (**Python, support d'origine**) : le même public, mais en partant des bases du langage (types, listes, boucles) : cinq demi-journées. Voir le guide, section « Une base en Python ».
 
 Au redémarrage, la base apparaît sur l'accueil et dans le sélecteur du haut (boutons jusqu'à trois bases, liste déroulante au-delà), utilisable dans le bac à sable. Les leçons, pistes, exercices et dashboard s'ajoutent ensuite, quand on veut.
 
