@@ -350,7 +350,8 @@ sandbox_check <- function(code, env = NULL) {
         } else if (fn %in% c("library", "require", "install.packages")) {
           add(sprintf("%s() n'est pas nécessaire ici : tous les paquets du cours (tidyverse, ggplot2) sont déjà chargés.", fn))
         } else if (fn %in% c("setwd", "read_csv", "read_csv2", "read.csv", "read_delim")) {
-          add(sprintf("%s() n'est pas utilisable dans l'atelier : les bases BDD_NAIS et BDD_METEO sont déjà chargées.", fn))
+          add(sprintf("%s() n'est pas utilisable dans l'atelier : les bases (%s) sont déjà chargées.", fn,
+                      if (exists("BASES") && length(BASES)) paste(bases_objets(), collapse = ", ") else "BDD_…"))
         } else if (fn %in% c("while", "repeat")) {
           add(sprintf("La boucle %s n'est pas autorisée dans l'atelier : utilisez une boucle for, dont le nombre de tours est connu.", fn))
         } else if (!fn %in% allowed) {

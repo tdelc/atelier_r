@@ -7,7 +7,9 @@
 #   tab: cours
 #   target: #cours-lessons
 #   ## Titre de la bulle
-#   Texte en markdown. {base} est remplacé par la base choisie.
+#   Texte en markdown. {base} est remplacé par la base choisie, {titre_base}
+#   par son titre, {liste_bases} par la liste des bases, {nb_bases} par
+#   leur nombre.
 #
 #   tab    : onglet à ouvrir (facultatif ; valeur d'un nav_panel)
 #   target : sélecteur CSS de l'élément à entourer (facultatif -> bulle centrée)
@@ -84,7 +86,10 @@ mod_tour_server <- function(start, base, main_session) {
   show_step <- function(i) {
     s <- rv$steps[[i]]
     if (!is.null(s$tab) && nzchar(s$tab)) bslib::nav_select("onglets", s$tab, session = session)
-    vals <- list(base = BASES[[base()]]$objet, titre_base = BASES[[base()]]$titre)
+    vals <- list(base = BASES[[base()]]$objet, titre_base = BASES[[base()]]$titre,
+                 nb_bases = length(BASES),
+                 liste_bases = paste0("**", vapply(BASES, `[[`, "", "libelle"), "** (",
+                                      vapply(BASES, `[[`, "", "titre"), ")", collapse = ", "))
     fill <- function(x) { for (k in names(vals)) x <- gsub(paste0("{", k, "}"), vals[[k]], x, fixed = TRUE); x }
     session$sendCustomMessage("atelier_tour", list(
       action = "show",

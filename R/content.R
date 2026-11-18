@@ -1,10 +1,11 @@
 # ============================================================================
 # content.R — lecture des contenus pédagogiques (fichiers markdown)
 #
-# Tout le contenu est dans le dossier content/ : on peut corriger un texte,
-# ajouter une carte ou un exercice sans toucher au code R de l'application.
+# Le contenu de chaque base est dans son dossier bases/<base>/ : on peut
+# corriger un texte, ajouter une carte, un exercice ou une base entière sans
+# toucher au code R de l'application.
 #
-# LEÇON (content/cours/<base>/NN-nom.md) :
+# LEÇON (bases/<base>/cours/NN-nom.md) :
 #
 #   ---
 #   titre: Filtrer les lignes
@@ -22,10 +23,10 @@
 #                    ```r norun   affiché, non exécuté (ex. setwd)
 #                    ```r setup   exécuté, non affiché
 #
-# PISTES DE DÉCOUVERTE (content/decouverte/<base>.md) : même format ; le
+# PISTES DE DÉCOUVERTE (bases/<base>/decouverte.md) : même format ; le
 # premier bloc ```r est le code de départ, le texte qui suit les idées à tester.
 #
-# EXERCICES (content/exercices/<base>.md) : une section « # » par exercice,
+# EXERCICES (bases/<base>/exercices.md) : une section « # » par exercice,
 # des métadonnées (niveau, theme, verif), puis des sous-sections « ## » :
 # Énoncé, Indice, Préparation, Code de départ, Correction, Commentaire.
 # ============================================================================

@@ -1,7 +1,7 @@
 # ============================================================================
 # mod_cours.R — volet COURS : des leçons en cartes, une par une
 #
-# Chaque leçon est un fichier markdown (content/cours/<base>/). Les cartes
+# Chaque leçon est un fichier markdown (bases/<base>/cours/). Les cartes
 # s'affichent une à une : explication, code, résultat, commentaire. Le code
 # est réellement exécuté (dans le bac à sable) la première fois qu'une leçon
 # est ouverte, puis le rendu est gardé en mémoire pour tous les étudiants.
@@ -11,7 +11,7 @@ COURS <- new.env()       # leçons lues (par base)
 COURS_CACHE <- new.env() # rendus HTML des leçons (par base/leçon)
 
 load_cours <- function() {
-  for (b in names(BASES)) COURS[[b]] <- read_course(file.path("content/cours", b))
+  for (b in names(BASES)) COURS[[b]] <- read_course(base_path(b, "cours"))
 }
 
 # Exécute toute une leçon et renvoie le HTML de chaque carte
@@ -69,7 +69,7 @@ mod_cours_server <- function(id, base, bus, main_session) {
     })
 
     current <- reactive({
-      req(rv$lesson, rv$lesson %in% names(lessons()))
+      req(length(lessons()) > 0, rv$lesson, rv$lesson %in% names(lessons()))
       lessons()[[rv$lesson]]
     })
     n_cards <- reactive(length(current()$cards))
@@ -82,6 +82,7 @@ mod_cours_server <- function(id, base, bus, main_session) {
 
     output$lessons <- renderUI({
       L <- lessons()
+      if (!length(L)) return(p(class = "text-muted small", "Aucune leçon pour cette base."))
       items <- data.frame(
         id = names(L),
         num = sprintf("%02d", seq_along(L)),
@@ -94,6 +95,9 @@ mod_cours_server <- function(id, base, bus, main_session) {
     })
 
     output$head <- renderUI({
+      if (!length(lessons()))
+        return(aucun_contenu("Pas encore de cours pour cette base",
+                             sprintf("Ajoutez des leçons dans le dossier %s.", base_path(base(), "cours"))))
       L <- current(); k <- rv$card; n <- n_cards()
       idx <- which(names(lessons()) == rv$lesson)
       div(class = "lesson-head",

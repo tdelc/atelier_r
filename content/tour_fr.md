@@ -3,7 +3,8 @@ Visite guidée. Une section = une étape, dans l'ordre du fichier.
   tab:    onglet à ouvrir (accueil, cours, decouverte, exercices, dashboard)
   target: sélecteur CSS de l'élément à entourer (facultatif -> bulle centrée)
   ##      titre de la bulle, le reste est du markdown
-  {base}  nom de la base choisie (BDD_NAIS ou BDD_METEO), {titre_base} son titre
+  {base}  nom de l'objet de la base choisie (ex. BDD_NAIS), {titre_base} son titre
+  {liste_bases} la liste des bases disponibles, {nb_bases} leur nombre
 Si la cible n'est pas visible à l'écran, la bulle s'affiche au centre.
 -->
 
@@ -17,7 +18,7 @@ Cette visite présente l'interface en quelques étapes. Utilisez **Suivant**, le
 # 02-base
 target: #base
 ## Choisissez votre base
-Deux bases sont disponibles : les **naissances** en France en 2021 (INSEE) et la **météo** quotidienne de 13 villes depuis 2010 (Meteostat).
+Bases disponibles : {liste_bases}.
 
 Vous travaillez actuellement sur **{base}** ({titre_base}). Changer de base met à jour **tous** les volets.
 

@@ -1,0 +1,32 @@
+# ============================================================================
+# Description de la base. Une ligne = « clé: valeur ».
+# Les lignes qui commencent par # sont des commentaires.
+# Le nom du dossier (ici « meteo ») est l'identifiant de la base.
+# Voir docs/GUIDE_CONTENUS.md, section « Ajouter une base ».
+# ============================================================================
+
+# Nom de l'objet R dans le code des étudiants, et fichier de données
+objet: BDD_METEO
+fichier: BDD_METEO.rds
+
+# Affichage
+libelle: Météo
+titre: Météo quotidienne de 13 villes, 2010-2026
+source: meteostat.net
+ligne: une ville × un jour
+icone: cloud-sun
+ordre: 2
+
+# Page d'accueil : chiffres clés (nom = colonne dont on compte les valeurs distinctes)
+nom_lignes: relevés
+compter: villes = name
+
+# Tables complémentaires disponibles dans le bac à sable (fichiers .rds cherchés
+# dans ce dossier, puis dans data/)
+extras: CARTE_DEP
+
+# Code proposé dans le bac à sable libre (\n = retour à la ligne)
+code_libre: BDD_METEO |>\n  count(name)
+
+# Dashboard (fichier dashboard.R de ce dossier, facultatif)
+dashboard_titre: Le climat de 13 villes françaises, 2010-2026

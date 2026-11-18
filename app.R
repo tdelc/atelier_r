@@ -1,7 +1,7 @@
 # ============================================================================
 # Atelier R — apprendre l'analyse de bases de données avec R
 #
-#   Cours       : les leçons, carte par carte (content/cours/)
+#   Cours       : les leçons, carte par carte (bases/<base>/cours/)
 #   Découverte  : modifier le code et tester, dans un bac à sable sécurisé
 #   Exercices   : questions graduées, vérification automatique, corrections
 #   Dashboard   : ce qu'on peut construire avec R et Shiny
@@ -11,8 +11,9 @@
 #
 # Lancement : shiny::runApp() depuis ce dossier.
 # Les fichiers du dossier R/ sont chargés automatiquement par Shiny.
-# Le contenu pédagogique se modifie dans content/ (markdown), sans toucher au
-# code.
+# Les bases sont dans bases/ : un dossier par base, décrit par un fichier
+# base.txt, avec son contenu pédagogique (markdown). Ajouter une base = ajouter
+# un dossier, sans toucher au code (voir docs/GUIDE_CONTENUS.md).
 # ============================================================================
 
 suppressPackageStartupMessages({
@@ -35,8 +36,7 @@ options(shiny.maxRequestSize = 1e6)
 # --- Chargement unique, partagé par toutes les sessions -------------------------
 sandbox_init()
 load_bases()
-load_departements()
-load_geo()
+load_dashboards()
 load_cours()
 load_pistes()
 load_exercices()
@@ -63,10 +63,7 @@ ui <- atelier_page_navbar(
   mod_dashboard_ui("dashboard"),
   bslib::nav_spacer(),
   bslib::nav_item(
-    radioButtons("base", NULL, inline = TRUE,
-                 choiceNames = list(tagList(icon("baby"), "Naissances"),
-                                    tagList(icon("cloud-sun"), "Météo")),
-                 choiceValues = list("naissances", "meteo"))
+    base_selector("base")
   ),
   bslib::nav_item(actionButton("btn_dico", tagList(icon("table-list"), "Dictionnaire"),
                                class = "btn-sm btn-nav")),
@@ -76,7 +73,10 @@ ui <- atelier_page_navbar(
 
 # --- Serveur ---------------------------------------------------------------------
 server <- function(input, output, session) {
-  base <- reactive(input$base %||% "naissances")
+  base <- reactive({
+    b <- input$base
+    if (is.null(b) || !b %in% names(BASES)) names(BASES)[1] else b
+  })
 
   # Canal entre modules (ex. « Modifier ce code dans Découverte »)
   bus <- reactiveValues(decouverte = NULL)

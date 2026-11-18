@@ -39,7 +39,7 @@ mod_accueil_ui <- function(id) {
             volet("dashboard", "chart-line", "Dashboard",
                   "Un tableau de bord interactif écrit en R : ce que vous saurez faire avec les outils du cours.")),
 
-        h3(class = "section-title", "Deux bases de données"),
+        h3(class = "section-title", nombre_bases_titre()),
         p(class = "text-muted", "Choisissez la base en haut de l'écran : tous les volets s'adaptent."),
         uiOutput(ns("bases")),
 
@@ -67,32 +67,40 @@ mod_accueil_server <- function(id, main_session, base_input_id = "base") {
 
     output$bases <- renderUI({
       cur <- main_session$input[[base_input_id]]
-      carte_base <- function(b, ic, chiffres) {
-        B <- BASES[[b]]
+      carte_base <- function(b) {
+        B <- BASES[[b]]; D <- B$data
+        chiffres <- c(stats::setNames(list(format(nrow(D), big.mark = " ")), B$nom_lignes),
+                      list(variables = ncol(D)),
+                      lapply(B$compter, function(col)
+                        if (col %in% names(D)) dplyr::n_distinct(D[[col]]) else "?"))
         tags$button(
           type = "button", class = paste("base-card", if (identical(cur, b)) "active"),
           onclick = sprintf("Shiny.setInputValue('%s', '%s', {priority: 'event'})", session$ns("choisir"), b),
-          div(class = "base-head", icon(ic), span(B$titre)),
+          div(class = "base-head", icon(B$icone), span(B$titre)),
           div(class = "base-meta", tags$code(B$objet), " · une ligne = ", B$ligne),
+          if (nzchar(B$description)) div(class = "base-desc", B$description),
           div(class = "base-chiffres",
               lapply(names(chiffres), function(n) div(div(class = "bc-val", chiffres[[n]]),
                                                      div(class = "bc-lab", n)))),
-          div(class = "base-source", "Source : ", B$source),
+          if (nzchar(B$source)) div(class = "base-source", "Source : ", B$source),
           if (identical(cur, b)) div(class = "base-active", icon("check"), " Base sélectionnée")
         )
       }
-      N <- BASES$naissances$data; M <- BASES$meteo$data
-      div(class = "bases",
-          carte_base("naissances", "baby",
-                     list("naissances" = format(nrow(N), big.mark = " "),
-                          "variables" = ncol(N), "départements" = dplyr::n_distinct(N$DEPNAIS))),
-          carte_base("meteo", "cloud-sun",
-                     list("relevés" = format(nrow(M), big.mark = " "),
-                          "variables" = ncol(M), "villes" = dplyr::n_distinct(M$name))))
+      div(class = "bases", lapply(names(BASES), carte_base))
     })
     observeEvent(input$choisir, {
-      updateRadioButtons(main_session, base_input_id, selected = input$choisir)
+      if (length(BASES) <= 3)
+        updateRadioButtons(main_session, base_input_id, selected = input$choisir)
+      else
+        updateSelectInput(main_session, base_input_id, selected = input$choisir)
     })
     reactive(input$tour)
   })
+}
+
+# « Deux bases de données », « Trois bases de données »…
+nombre_bases_titre <- function(n = length(BASES)) {
+  mots <- c("Une base", "Deux bases", "Trois bases", "Quatre bases", "Cinq bases",
+            "Six bases", "Sept bases", "Huit bases", "Neuf bases", "Dix bases")
+  paste(if (n >= 1 && n <= 10) mots[n] else paste(n, "bases"), "de données")
 }

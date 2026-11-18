@@ -12,6 +12,9 @@ suppressPackageStartupMessages({
 })
 for (f in list.files("R", full.names = TRUE)) source(f, encoding = "UTF-8")
 sandbox_init(); load_bases()
+# facultatif : ne tester qu'une base -> Rscript tests/test_contenus.R meteo
+args <- setdiff(commandArgs(TRUE), "--verbose")
+bases_testees <- if (length(args)) intersect(args, names(BASES)) else names(BASES)
 verbose <- "--verbose" %in% commandArgs(TRUE)
 
 fails <- 0; n_runs <- 0; t_total <- 0
@@ -30,9 +33,9 @@ report <- function(where, run) {
   if (length(warns) && verbose) cat("   ⚠", paste(warns, collapse = " | "), "\n")
 }
 
-for (b in names(BASES)) {
+for (b in bases_testees) {
   cat("\n========== Base :", b, "==========\n")
-  lessons <- read_course(file.path("content/cours", b))
+  lessons <- read_course(base_path(b, "cours"))
   for (L in lessons) {
     env <- sandbox_new_env(base_datasets(b))
     for (k in seq_along(L$cards)) {
@@ -43,13 +46,15 @@ for (b in names(BASES)) {
       }
     }
   }
-  pistes <- read_pistes(file.path("content/decouverte", paste0(b, ".md")))
+  f <- base_path(b, "decouverte.md")
+  pistes <- if (file.exists(f)) read_pistes(f) else list()
   for (p in pistes) {
     env <- sandbox_new_env(base_datasets(b))
     if (nzchar(p$setup)) report(paste("[découverte setup]", p$title), sandbox_run(p$setup, env))
     report(paste("[découverte]", p$title), sandbox_run(p$code, env))
   }
-  exs <- read_exercises(file.path("content/exercices", paste0(b, ".md")))
+  f <- base_path(b, "exercices.md")
+  exs <- if (file.exists(f)) read_exercises(f) else list()
   for (e in exs) {
     env <- sandbox_new_env(base_datasets(b))
     if (nzchar(e$preparation)) report(paste("[exercice prépa]", e$id, e$title), sandbox_run(e$preparation, env))

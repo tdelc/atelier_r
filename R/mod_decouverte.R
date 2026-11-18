@@ -1,7 +1,7 @@
 # ============================================================================
 # mod_decouverte.R — volet DÉCOUVERTE : modifier le code et tester
 #
-# Des pistes (content/decouverte/<base>.md) proposent un code de départ et des
+# Des pistes (bases/<base>/decouverte.md) proposent un code de départ et des
 # idées à tester. L'étudiant modifie le code dans un éditeur et l'exécute dans
 # le bac à sable. Chaque session a son propre environnement de travail : les
 # objets créés (BDD_NAIS_NORD <- …) restent disponibles d'une exécution à
@@ -10,14 +10,15 @@
 
 PISTES <- new.env()
 load_pistes <- function() {
-  for (b in names(BASES))
-    PISTES[[b]] <- read_pistes(file.path("content/decouverte", paste0(b, ".md")))
+  for (b in names(BASES)) {
+    f <- base_path(b, "decouverte.md")
+    PISTES[[b]] <- if (file.exists(f)) read_pistes(f) else list()
+  }
 }
 
-LIBRE_CODE <- list(
-  naissances = "# Bac à sable libre : écrivez votre code ici, puis Ctrl + Entrée\nBDD_NAIS |>\n  count(SEXE)\n",
-  meteo = "# Bac à sable libre : écrivez votre code ici, puis Ctrl + Entrée\nBDD_METEO |>\n  count(name)\n"
-)
+libre_code <- function(base)
+  paste0("# Bac à sable libre : écrivez votre code ici, puis Ctrl + Entrée\n",
+         BASES[[base]]$code_libre, "\n")
 
 mod_decouverte_ui <- function(id) {
   ns <- NS(id)
@@ -107,8 +108,13 @@ mod_decouverte_server <- function(id, base, bus, main_session) {
       if (identical(rv$piste, "libre"))
         return(list(title = "Bac à sable libre",
                     description = sprintf("Un espace pour écrire votre propre code sur `%s`. Les objets que vous créez restent disponibles tant que vous ne cliquez pas sur « Nouvel environnement ».", BASES[[base()]]$objet),
-                    code = LIBRE_CODE[[base()]], setup = "", idees = ""))
+                    code = libre_code(base()), setup = "", idees = ""))
       i <- suppressWarnings(as.integer(rv$piste))
+      if (!length(pistes())) {
+        return(list(title = "Bac à sable libre",
+                    description = sprintf("Un espace pour écrire votre propre code sur `%s`.", BASES[[base()]]$objet),
+                    code = libre_code(base()), setup = "", idees = ""))
+      }
       if (is.na(i) || i > length(pistes())) i <- 1
       pistes()[[i]]
     })
@@ -121,7 +127,7 @@ mod_decouverte_server <- function(id, base, bus, main_session) {
     }
 
     observeEvent(base(), {
-      rv$piste <- "1"; rv$from_cours <- NULL
+      rv$piste <- if (length(pistes())) "1" else "libre"; rv$from_cours <- NULL
       load_piste()
     })
     observeEvent(input$piste, {
@@ -139,7 +145,7 @@ mod_decouverte_server <- function(id, base, bus, main_session) {
       items <- data.frame(id = as.character(seq_along(P)),
                           num = sprintf("%02d", seq_along(P)),
                           label = vapply(P, `[[`, "", "title"),
-                          sub = "", group = "Pistes guidées",
+                          sub = rep("", length(P)), group = rep("Pistes guidées", length(P)),
                           stringsAsFactors = FALSE)
       extra <- data.frame(id = "libre", num = "✎", label = "Bac à sable libre",
                           sub = "Votre propre code", group = "Espace libre",

@@ -1,0 +1,32 @@
+# ============================================================================
+# Description de la base. Une ligne = « clé: valeur ».
+# Les lignes qui commencent par # sont des commentaires.
+# Le nom du dossier (ici « naissances ») est l'identifiant de la base.
+# Voir docs/GUIDE_CONTENUS.md, section « Ajouter une base ».
+# ============================================================================
+
+# Nom de l'objet R dans le code des étudiants, et fichier de données
+objet: BDD_NAIS
+fichier: BDD_NAIS.rds
+
+# Affichage
+libelle: Naissances
+titre: Naissances en France, 2021
+source: INSEE, fichier détail de l'état civil
+ligne: une naissance
+icone: baby
+ordre: 1
+
+# Page d'accueil : chiffres clés (nom = colonne dont on compte les valeurs distinctes)
+nom_lignes: naissances
+compter: départements = DEPNAIS
+
+# Tables complémentaires disponibles dans le bac à sable (fichiers .rds cherchés
+# dans ce dossier, puis dans data/)
+extras: INFO_DEPARTEMENTS, CARTE_DEP
+
+# Code proposé dans le bac à sable libre (\n = retour à la ligne)
+code_libre: BDD_NAIS |>\n  count(SEXE)
+
+# Dashboard (fichier dashboard.R de ce dossier, facultatif)
+dashboard_titre: Les naissances en France en 2021

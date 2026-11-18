@@ -18,8 +18,8 @@ fichier_meteo <- if (length(args) >= 2) args[2] else "meteo_2010_2026.csv"
 BDD_NAIS  <- read_csv2(fichier_nais, show_col_types = FALSE)
 BDD_METEO <- read_csv(fichier_meteo, show_col_types = FALSE, name_repair = "unique_quiet")
 
-saveRDS(BDD_NAIS,  "data/BDD_NAIS.rds")
-saveRDS(BDD_METEO, "data/BDD_METEO.rds")
+saveRDS(BDD_NAIS,  "bases/naissances/BDD_NAIS.rds")
+saveRDS(BDD_METEO, "bases/meteo/BDD_METEO.rds")
 
 cat("BDD_NAIS  :", nrow(BDD_NAIS),  "lignes x", ncol(BDD_NAIS),  "colonnes\n")
 cat("BDD_METEO :", nrow(BDD_METEO), "lignes x", ncol(BDD_METEO), "colonnes\n")

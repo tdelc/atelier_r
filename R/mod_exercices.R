@@ -12,8 +12,10 @@ EXERCICES <- new.env()
 SOLUTIONS_CACHE <- new.env()
 
 load_exercices <- function() {
-  for (b in names(BASES))
-    EXERCICES[[b]] <- read_exercises(file.path("content/exercices", paste0(b, ".md")))
+  for (b in names(BASES)) {
+    f <- base_path(b, "exercices.md")
+    EXERCICES[[b]] <- if (file.exists(f)) read_exercises(f) else list()
+  }
 }
 
 NIVEAUX <- c("1" = "Niveau 1 · Premiers pas", "2" = "Niveau 2 · Regrouper",
@@ -79,7 +81,10 @@ mod_exercices_server <- function(id, base, main_session) {
                          show_corr = FALSE, progress = list())
 
     exs <- reactive(EXERCICES[[base()]])
-    ex <- reactive({ i <- min(rv$i, length(exs())); exs()[[i]] })
+    ex <- reactive({
+      req(length(exs()) > 0)
+      i <- min(rv$i, length(exs())); exs()[[i]]
+    })
     pkey <- function(e = ex()) paste(base(), e$id, sep = "/")
 
     # --- progression (localStorage via atelier.js) ---
@@ -104,13 +109,18 @@ mod_exercices_server <- function(id, base, main_session) {
                                 value = if (nzchar(e$depart)) e$depart else "")
       rv$run <- NULL; rv$feedback <- NULL; rv$show_hint <- FALSE; rv$show_corr <- FALSE
     }
-    observeEvent(base(), { rv$i <- 1; reset_view() })
+    observeEvent(base(), {
+      rv$i <- 1
+      if (length(exs())) reset_view()
+      else { shinyAce::updateAceEditor(session, "code", value = ""); rv$run <- NULL; rv$feedback <- NULL }
+    })
     observeEvent(input$pick, { rv$i <- as.integer(sub("ex", "", input$pick)); reset_view() })
     observeEvent(input$prev, { rv$i <- max(1, rv$i - 1); reset_view() })
     observeEvent(input$suiv, { rv$i <- min(length(exs()), rv$i + 1); reset_view() })
     observeEvent(input$reset, reset_view())
 
     run_student <- function(code) {
+      req(length(exs()) > 0)
       e <- ex()
       env <- sandbox_new_env(base_datasets(base()))
       if (nzchar(e$preparation)) sandbox_run(e$preparation, env)
@@ -136,7 +146,9 @@ mod_exercices_server <- function(id, base, main_session) {
     observeEvent(input$hide_corr, rv$show_corr <- FALSE)
 
     output$progress <- renderUI({
-      E <- exs(); st <- vapply(E, function(e) rv$progress[[pkey(e)]] %||% "", "")
+      E <- exs()
+      if (!length(E)) return(p(class = "text-muted small", "Aucun exercice pour cette base."))
+      st <- vapply(E, function(e) rv$progress[[pkey(e)]] %||% "", "")
       ok <- sum(st == "reussi"); n <- length(E)
       div(class = "ex-progress",
           div(class = "d-flex justify-content-between small",
@@ -161,6 +173,9 @@ mod_exercices_server <- function(id, base, main_session) {
     })
 
     output$enonce <- renderUI({
+      if (!length(exs()))
+        return(aucun_contenu("Pas encore d'exercices pour cette base",
+                             sprintf("Ajoutez-les dans le fichier %s.", base_path(base(), "exercices.md"))))
       e <- ex(); n <- length(exs())
       bslib::card(
         class = "enonce-card",
@@ -230,6 +245,7 @@ mod_exercices_server <- function(id, base, main_session) {
 
     output$nav <- renderUI({
       n <- length(exs())
+      if (!n) return(NULL)
       div(class = "d-flex gap-2 my-3",
           actionButton(ns("prev"), tagList(icon("arrow-left"), "Exercice précédent"),
                        class = "btn-outline-secondary btn-sm",

@@ -1,6 +1,6 @@
 # Atelier R
 
-Application Shiny (bslib) pour apprendre l'analyse de bases de données avec R et le tidyverse. Elle comporte quatre volets, tous disponibles pour les deux bases du cours (naissances INSEE 2021, météo Meteostat 2010-2026) :
+Application Shiny (bslib) pour apprendre l'analyse de bases de données avec R et le tidyverse. Elle comporte quatre volets, disponibles pour chaque base du cours (aujourd'hui : naissances INSEE 2021, météo Meteostat 2010-2026 ; on peut en ajouter autant qu'on veut, voir plus bas) :
 
 | Volet | Contenu |
 |---|---|
@@ -22,34 +22,57 @@ install.packages(c("shiny", "bslib", "dplyr", "tidyr", "ggplot2", "lubridate",
 shiny::runApp("atelier_r")
 ```
 
-Les données sont déjà prêtes dans `data/` (fichiers `.rds`). Pour les régénérer à partir des CSV :
+Les données sont déjà prêtes dans `bases/<base>/` et `data/` (fichiers `.rds`). Pour les régénérer à partir des CSV :
 
 ```
 Rscript data-raw/preparer_donnees.R FD_NAIS_2021.csv meteo_2010_2026.csv
 ```
 
+## Ajouter une base (sans toucher au code)
+
+Chaque base est **un dossier** dans `bases/`, décrit par un fichier texte `base.txt` (guide détaillé : `docs/GUIDE_CONTENUS.md`, section A) :
+
+```
+bases/
+  naissances/
+    base.txt          description : nom de l'objet R, fichier, titre, source…
+    BDD_NAIS.rds      les données (.rds ou .csv)
+    dictionnaire.csv  dictionnaire des variables          (facultatif)
+    cours/01-….md     une leçon par fichier                (facultatif)
+    decouverte.md     les pistes de découverte             (facultatif)
+    exercices.md      les exercices                        (facultatif)
+    dashboard.R       le tableau de bord                   (facultatif)
+  meteo/
+    …
+data/                 tables partagées entre bases (CARTE_DEP, INFO_DEPARTEMENTS…)
+content/tour_fr.md    la visite guidée
+```
+
+Pour ajouter une base, il suffit d'un dossier avec un `base.txt` et un fichier de données :
+
+```
+# bases/chomage/base.txt
+objet: BDD_CHOMAGE
+fichier: chomage.csv
+libelle: Chômage
+titre: Taux de chômage par région, 2000-2024
+```
+
+Au redémarrage, la base apparaît sur l'accueil et dans le sélecteur du haut (boutons jusqu'à trois bases, liste déroulante au-delà), utilisable dans le bac à sable. Les leçons, pistes, exercices et dashboard s'ajoutent ensuite, quand on veut.
+
 ## Modifier le contenu (sans toucher au code)
 
-Tout le contenu pédagogique est en markdown, dans `content/` (guide détaillé : `docs/GUIDE_CONTENUS.md`) :
+Tout le contenu pédagogique est en markdown, dans le dossier de chaque base :
 
-```
-content/
-  cours/naissances/01-mise-en-route.md …  une leçon par fichier, une carte par titre « # »
-  cours/meteo/…
-  decouverte/naissances.md, meteo.md      une piste par titre « # »
-  exercices/naissances.md, meteo.md       un exercice par titre « # »
-  dictionnaires/naissances.csv, meteo.csv
-  tour_fr.md                               la visite guidée
-```
-
-- **Leçons.** Le texte est en markdown. Les blocs de code s'écrivent ```` ```r ```` (exécuté et affiché), ```` ```r norun ```` (affiché seulement, par exemple pour `setwd`) ou ```` ```r setup ```` (exécuté sans être affiché). Les encadrés du mémo s'écrivent `::: usage`, `::: piege`, `::: note` ou `::: etape`, et se ferment par `:::`. Les cartes d'une leçon s'exécutent dans l'ordre : une variable créée dans une carte est disponible dans les suivantes.
-- **Exercices.** Chaque exercice commence par des métadonnées (`niveau: 1` à 5, `theme:`, et `verif: aucune` pour un graphique), puis comporte les sous-sections `## Énoncé`, `## Indice`, `## Code de départ` (facultatif), `## Préparation` (facultatif, exécutée avant le code de l'étudiant), `## Correction` et `## Commentaire`.
+- **Leçons** (`bases/<base>/cours/`). Le texte est en markdown. Les blocs de code s'écrivent ```` ```r ```` (exécuté et affiché), ```` ```r norun ```` (affiché seulement, par exemple pour `setwd`) ou ```` ```r setup ```` (exécuté sans être affiché). Les encadrés du mémo s'écrivent `::: usage`, `::: piege`, `::: note` ou `::: etape`, et se ferment par `:::`. Les cartes d'une leçon s'exécutent dans l'ordre : une variable créée dans une carte est disponible dans les suivantes.
+- **Exercices** (`bases/<base>/exercices.md`). Chaque exercice commence par des métadonnées (`niveau: 1` à 5, `theme:`, et `verif: aucune` pour un graphique), puis comporte les sous-sections `## Énoncé`, `## Indice`, `## Code de départ` (facultatif), `## Préparation` (facultatif, exécutée avant le code de l'étudiant), `## Correction` et `## Commentaire`.
 - Le format est décrit en détail en tête de `R/content.R`.
 
 **Après toute modification**, lancez le test qui exécute tout le contenu dans le bac à sable :
 
 ```
-Rscript tests/test_contenus.R          # toutes les cartes, pistes et corrections
+Rscript tests/test_bases.R             # description des bases, dashboards, ajout d'une base
+Rscript tests/test_contenus.R          # toutes les cartes, pistes et corrections (ou : … meteo)
 Rscript tests/test_verification.R      # vérification automatique des exercices
 Rscript tests/test_sandbox.R           # sécurité du bac à sable (113 tests)
 ```

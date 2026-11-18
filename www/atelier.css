@@ -34,6 +34,12 @@ body { background: var(--paper); }
 #base label span, #base .form-check-label { display: inline-block; padding: .28rem .8rem; border-radius: 999px; color: #dfe8f2; cursor: pointer; font-size: .88rem; font-weight: 500; }
 #base input[type=radio]:checked + span, #base input[type=radio]:checked + .form-check-label { background: #fff; color: var(--ink); }
 #base label { margin: 0; }
+/* plus de trois bases : liste déroulante */
+.base-select .form-group { margin: 0; }
+.base-select .selectize-control { margin: 0; }
+.base-select .selectize-input, .base-select .selectize-input.full { padding: .3rem 2rem .3rem .9rem; min-height: 0; font-size: .88rem; border-radius: 999px; background: #fff; color: var(--ink); box-shadow: none; }
+.base-select .selectize-input .item { color: var(--ink); font-weight: 500; }
+.base-select .selectize-dropdown { color: var(--ink); font-size: .88rem; }
 .btn-nav { color: #dfe8f2 !important; border: 1px solid rgba(255,255,255,.3) !important; background: transparent !important; margin-left: .35rem; }
 .btn-nav:hover { background: rgba(255,255,255,.12) !important; }
 
@@ -183,6 +189,7 @@ details.prep summary { cursor: pointer; color: var(--muted); }
 .bc-val { font-size: 1.4rem; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
 .bc-lab { font-size: .78rem; color: var(--muted); }
 .base-source { font-size: .78rem; color: var(--muted); }
+.base-desc { font-size: .9rem; margin: .4rem 0; }
 .base-active { margin-top: .6rem; font-size: .82rem; font-weight: 600; color: var(--green); }
 .savoir { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
 .savoir > div { display: flex; gap: .8rem; background: #fff; border: 1px solid var(--line); border-radius: .8rem; padding: 1rem 1.1rem; font-size: .92rem; color: #3a3f47; }

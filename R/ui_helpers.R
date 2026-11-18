@@ -167,3 +167,27 @@ env_objects_ui <- function(env) {
     }))
   )
 }
+
+# Message « pas de contenu » (base sans cours, sans exercices…)
+aucun_contenu <- function(titre, texte = NULL) {
+  htmltools::div(class = "lesson-head",
+                 htmltools::h2(titre),
+                 if (!is.null(texte)) htmltools::p(class = "lead-sub", texte))
+}
+
+# Sélecteur de base de la barre du haut : boutons radio pour peu de bases,
+# liste déroulante au-delà
+base_selector <- function(input_id = "base") {
+  ids <- names(BASES)
+  if (length(ids) <= 3) {
+    shiny::radioButtons(
+      input_id, NULL, inline = TRUE,
+      choiceNames = lapply(ids, function(b) htmltools::tagList(shiny::icon(BASES[[b]]$icone),
+                                                               BASES[[b]]$libelle)),
+      choiceValues = as.list(ids))
+  } else {
+    htmltools::div(class = "base-select",
+                   shiny::selectInput(input_id, NULL, width = "200px",
+                                      choices = stats::setNames(ids, vapply(BASES, `[[`, "", "libelle"))))
+  }
+}
