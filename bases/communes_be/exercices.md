@@ -594,3 +594,219 @@ relu.shape
 - Comptez les anomalies par règle dans un dictionnaire `{"R1 sexe": 1, ...}`.
 - Détectez le doublon de Flandre : mémorisez chaque clé `(code_ins, sexe)` dans un ensemble de tuples et signalez une clé déjà vue.
 - Listez les fichiers automatiquement : `sorted(str(p) for p in Path("donnees").glob("population_*_2026.*"))`, après `from pathlib import Path`.
+
+# Écrire la fonction harmoniser_sexe()
+niveau: 2
+groupe: Demi-journée 3 · À vous
+theme: def, return, None
+
+## Énoncé
+1. Écrivez `harmoniser_sexe(valeur)` qui renvoie `"H"` ou `"F"` quels que soient la casse et les espaces (`" f"`, `"h "`).
+2. Elle renvoie `None` pour une valeur manquante ou non reconnue.
+3. Sur la dernière ligne, testez-la sur quatre valeurs : `[harmoniser_sexe(v) for v in ["f", " H ", "x", None]]`.
+
+## Indice
+Traitez d'abord le cas `None` (avec `return None`), puis utilisez `.strip().upper()`.
+
+## Code de départ
+```python
+def harmoniser_sexe(valeur):
+    ...
+
+[harmoniser_sexe(v) for v in ["f", " H ", "x", None]]
+```
+
+## Correction
+```python
+def harmoniser_sexe(valeur):
+    """Renvoie 'H' ou 'F', ou None si la valeur n'est pas reconnue."""
+    if valeur is None:
+        return None
+    valeur = valeur.strip().upper()
+    if valeur in ("H", "F"):
+        return valeur
+    return None
+
+[harmoniser_sexe(v) for v in ["f", " H ", "x", None]]
+```
+
+## Commentaire
+Résultat attendu : `['F', 'H', None, None]`. La dernière ligne est une *liste en compréhension* : elle applique la fonction à chaque valeur, comme une boucle `for` qui remplirait une liste.
+
+# Écrire la fonction ecrire_resultat()
+niveau: 2
+groupe: Demi-journée 3 · À vous
+theme: def, export
+
+## Énoncé
+1. Écrivez `ecrire_resultat(lignes, chemin)` qui exporte une liste de dictionnaires en CSV séparé par `;` et renvoie le **nombre de lignes écrites**.
+2. Recette : `pd.DataFrame(lignes).to_csv(chemin, sep=";", index=False)`.
+3. Sur la dernière ligne, appelez-la sur les lignes valides de Wallonie (déjà calculées dans `valides`) avec le chemin `sortie/valides_wallonie.csv`.
+
+## Indice
+`return len(lignes)` après l'export.
+
+## Préparation
+```python
+import pandas as pd
+from outils_cours import charger_lignes, harmoniser_code, harmoniser_sexe
+valides = []
+for ligne in charger_lignes("donnees/population_wallonie_2026.txt"):
+    ligne = dict(ligne, code_ins=harmoniser_code(ligne["code_ins"]),
+                 sexe=harmoniser_sexe(ligne["sexe"]))
+    if ligne["population"] is not None and ligne["population"] >= 0:
+        valides.append(ligne)
+```
+
+## Correction
+```python
+def ecrire_resultat(lignes, chemin):
+    """Exporte des lignes en CSV (;) et renvoie le nombre de lignes écrites."""
+    pd.DataFrame(lignes).to_csv(chemin, sep=";", index=False)
+    return len(lignes)
+
+ecrire_resultat(valides, "sortie/valides_wallonie.csv")
+```
+
+## Commentaire
+521 lignes écrites. Pour contrôler, relisez le fichier : `pd.read_csv("sortie/valides_wallonie.csv", sep=";").shape`.
+
+# Atelier 3 · Étape 1 : transformer_ligne()
+niveau: 3
+groupe: Atelier 3 · Un traitement réutilisable
+theme: def, date
+
+## Énoncé
+**Objectif de l'atelier** : construire un traitement dont les mêmes fonctions s'appliquent aux trois fichiers.
+
+Écrivez `transformer_ligne(ligne)`, qui renvoie une **copie** de la ligne avec deux champs en plus :
+
+- `date_reference` : le 1er janvier de l'année (`date(annee, 1, 1)`) ;
+- `taille` : `"petite"` si la population (de ce sexe) est inférieure à 5 000, `"grande"` sinon.
+
+Sur la dernière ligne, appliquez-la à `{"code_ins": "62063", "commune": "Liège", "annee": 2026, "sexe": "H", "population": 98484}`.
+
+## Indice
+`nouvelle = dict(ligne)`, deux affectations, `return nouvelle`. Pour `taille`, un `if` ou l'écriture courte `"petite" if ... else "grande"`.
+
+## Préparation
+```python
+from datetime import date
+```
+
+## Code de départ
+```python
+def transformer_ligne(ligne):
+    nouvelle = dict(ligne)
+    nouvelle["date_reference"] = ...
+    nouvelle["taille"] = ...
+    return nouvelle
+```
+
+## Correction
+```python
+def transformer_ligne(ligne):
+    """Copie de la ligne avec date_reference et taille."""
+    nouvelle = dict(ligne)
+    nouvelle["date_reference"] = date(ligne["annee"], 1, 1)
+    if ligne["population"] < 5000:
+        nouvelle["taille"] = "petite"
+    else:
+        nouvelle["taille"] = "grande"
+    return nouvelle
+
+transformer_ligne({"code_ins": "62063", "commune": "Liège", "annee": 2026,
+                   "sexe": "H", "population": 98484})
+```
+
+## Commentaire
+La ligne d'origine n'est pas modifiée : `transformer_ligne()` travaille sur une copie. On n'appelle cette fonction que sur des lignes **déjà contrôlées** : sur une population manquante, `None < 5000` provoquerait une erreur.
+
+# Atelier 3 · Étape 2 : traiter_fichier() sur les trois fichiers
+niveau: 4
+groupe: Atelier 3 · Un traitement réutilisable
+theme: enchaîner des fonctions, assert
+
+## Énoncé
+Les fonctions `harmoniser_ligne()`, `controler_ligne()` et `transformer_ligne()` sont déjà définies.
+
+1. Écrivez `traiter_fichier(chemin)` : charger, harmoniser puis contrôler chaque ligne ; les lignes rejetées vont dans `rejets`, les autres sont transformées puis vont dans `valides`. La fonction renvoie `valides, rejets`.
+2. Vérifiez par `assert`, pour chaque fichier, qu'aucune ligne n'est perdue.
+3. Sur la dernière ligne, affichez la liste des bilans `[(len(valides), len(rejets)), ...]` pour les trois fichiers, dans l'ordre de `fichiers`.
+
+## Indice
+Le plan : initialiser `valides, rejets = [], []` ; parcourir `charger_lignes(chemin)` ; harmoniser ; `if controler_ligne(ligne):` → rejet ; sinon transformer et ajouter ; `return valides, rejets`.
+
+## Préparation
+```python
+from datetime import date
+from outils_cours import charger_lignes, harmoniser_code, harmoniser_sexe
+fichiers = ["donnees/population_bruxelles_2026.csv",
+            "donnees/population_flandre_2026.xlsx",
+            "donnees/population_wallonie_2026.txt"]
+
+def harmoniser_ligne(ligne):
+    nouvelle = dict(ligne)
+    nouvelle["code_ins"] = harmoniser_code(ligne["code_ins"])
+    nouvelle["sexe"] = harmoniser_sexe(ligne["sexe"])
+    return nouvelle
+
+def controler_ligne(ligne):
+    anomalies = []
+    if ligne["sexe"] not in ("H", "F"):
+        anomalies.append("R1 sexe")
+    if ligne["population"] is None:
+        anomalies.append("R2 population manquante")
+    elif ligne["population"] < 0:
+        anomalies.append("R3 population négative")
+    if len(ligne["code_ins"]) != 5:
+        anomalies.append("R4 format du code")
+    return anomalies
+
+def transformer_ligne(ligne):
+    nouvelle = dict(ligne)
+    nouvelle["date_reference"] = date(ligne["annee"], 1, 1)
+    nouvelle["taille"] = "petite" if ligne["population"] < 5000 else "grande"
+    return nouvelle
+```
+
+## Code de départ
+```python
+# Plan de traiter_fichier(chemin) :
+# 1. Initialiser valides et rejets.
+# 2. Parcourir charger_lignes(chemin).
+# 3. Harmoniser, puis contrôler chaque ligne.
+# 4. Ajouter les lignes rejetées à rejets.
+# 5. Transformer les autres lignes, puis les ajouter à valides.
+# 6. Renvoyer valides, rejets.
+```
+
+## Correction
+```python
+def traiter_fichier(chemin):
+    """Charge, harmonise, contrôle et transforme un fichier."""
+    valides, rejets = [], []
+    for ligne in charger_lignes(chemin):
+        ligne = harmoniser_ligne(ligne)
+        if controler_ligne(ligne):
+            rejets.append(ligne)
+        else:
+            valides.append(transformer_ligne(ligne))
+    return valides, rejets
+
+bilans = []
+for chemin in fichiers:
+    valides, rejets = traiter_fichier(chemin)
+    assert len(valides) + len(rejets) == len(charger_lignes(chemin)), "lignes perdues"
+    bilans.append((len(valides), len(rejets)))
+bilans
+```
+
+## Commentaire
+Bilan attendu : `[(38, 0), (571, 0), (521, 2)]`. Les deux rejets sont Daverdisse (population manquante) et Martelange (population négative) ; le code `" 62063"` et le sexe `"f"` sont **corrigés**, pas rejetés.
+
+**Pour aller plus loin**
+- Écrivez votre propre version de `charger_lignes()` à partir des recettes de la demi-journée 1.
+- Ajoutez un paramètre `seuil_min=0` à `controler_ligne()` pour paramétrer la règle R3.
+- Tenez un journal : un dictionnaire qui compte les rejets par règle et par fichier.
+- Signalez le doublon de Flandre avec un ensemble de clés `(code_ins, sexe)` déjà vues.
