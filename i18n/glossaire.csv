@@ -1,0 +1,35 @@
+fr,nl,en,remarque
+table,tabel,table,"« DataFrame » reste en anglais dans les trois langues"
+ligne (d'une table),rij,row,
+colonne,kolom,column,
+variable,variabele,variable,
+base de données,databank,dataset,
+commune,gemeente,municipality,
+région,gewest,region,"Bruxelles / Flandre / Wallonie = Brussel / Vlaanderen / Wallonië"
+province,provincie,province,
+arrondissement,arrondissement,district,
+code INS,NIS-code,NIS code,"Statbel écrit « NIS code » en néerlandais, « Code INS » en français"
+population,bevolking,population,
+hommes / femmes,mannen / vrouwen,men / women,"sexe H / F = geslacht M / V"
+filtrer,filteren,filter,
+regrouper,groeperen,group,
+fusionner (jointure),koppelen (koppeling),join,
+empiler,stapelen,stack,
+nettoyer,opschonen,clean,
+doublon,dubbel,duplicate,
+valeur manquante,ontbrekende waarde,missing value,
+tableau croisé,kruistabel,cross table,
+pourcentage,percentage,percentage,
+dénominateur,noemer,denominator,
+graphique,grafiek,chart,
+leçon,les,lesson,
+carte (d'une leçon),kaart,card,
+exercice,oefening,exercise,
+énoncé,opgave,question,"titre de section : ## Opgave"
+indice,hint,hint,
+correction,oplossing,solution,"titre de section : ## Oplossing"
+piste (Découverte),spoor,path,
+bac à sable,zandbak,sandbox,
+Lecture : (commentaire d'un résultat),Interpretatie:,Reading:,
+Passerelle SAS,Brug naar SAS,SAS bridge,
+dossier donnees/ referentiels/ sortie/,gegevens/ referenties/ uitvoer/,,dossiers des fichiers dans l'atelier

@@ -167,13 +167,24 @@ read_pistes <- function(path) {
 
 # --- Exercices -------------------------------------------------------------------
 
+# Titres des sous-sections d'un exercice : en français, ou leur traduction
+# (une traduction peut écrire « ## Opgave » au lieu de « ## Énoncé »)
+SOUS_TITRES_EXERCICE <- list(
+  "Énoncé" = c("Opgave", "Question"),
+  "Indice" = c("Hint"),
+  "Préparation" = c("Voorbereiding", "Preparation"),
+  "Code de départ" = c("Startcode", "Starting code"),
+  "Correction" = c("Oplossing", "Solution"),
+  "Commentaire" = c("Commentaar", "Comment"))
+
 read_exercises <- function(path) {
   fm <- split_front_matter(read_utf8(path))
   exs <- lapply(split_sections(fm$lines, 1), function(s) {
     tm <- take_meta(s$lines)
     subs <- split_sections(tm$lines, 2)
     get_sub <- function(name) {
-      k <- which(tolower(vapply(subs, `[[`, "", "title")) == tolower(name))
+      noms <- tolower(c(name, SOUS_TITRES_EXERCICE[[name]]))
+      k <- which(tolower(vapply(subs, `[[`, "", "title")) %in% noms)
       if (!length(k)) return(NULL)
       subs[[k[1]]]$lines
     }

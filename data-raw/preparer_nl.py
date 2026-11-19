@@ -90,10 +90,11 @@ gemeenten[["nis_code", "gemeente", "mannen", "vrouwen", "totaal"]].to_csv(
 codes_prov = ["10000", "20001", "20002", "30000", "40000", "50000", "60000",
               "70000", "80000", "90000", "04000"]
 pv = brut[brut["nis_code"].isin(codes_prov)].rename(columns={"plaats": "provincie"})
-with pd.ExcelWriter(BE + "gegevens/bevolking_provincies_2026.xlsx") as xl:
-    pd.DataFrame([["Bevolking per provincie op 1 januari 2026"],
-                  ["Bron: Statbel (Algemene Directie Statistiek)"]]).to_excel(xl, index=False, header=False)
-    pv.to_excel(xl, index=False, startrow=2)
+for d in (BE, PY):
+    with pd.ExcelWriter(d + "gegevens/bevolking_provincies_2026.xlsx") as xl:
+        pd.DataFrame([["Bevolking per provincie op 1 januari 2026"],
+                      ["Bron: Statbel (Algemene Directie Statistiek)"]]).to_excel(xl, index=False, header=False)
+        pv.to_excel(xl, index=False, startrow=2)
 
 # --- Fil rouge : trois livraisons régionales, avec les mêmes anomalies -------
 lang = (gemeenten.melt(id_vars=["nis_code", "gemeente", "gewest"], value_vars=["mannen", "vrouwen"],

@@ -30,7 +30,7 @@ import csv, glob, hashlib, os, re, sys
 
 APP = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 sys.path.insert(0, os.path.join(APP, "tests"))
-from test_python import sections, code_blocks, read  # noqa: E402
+from test_python import sections, code_blocks, read, sous_sections  # noqa: E402
 
 LANGUES = ["nl", "en"]
 CONTENUS = ["base.txt", "dictionnaire.csv", "decouverte.md", "exercices.md"]
@@ -105,10 +105,10 @@ def comparer(base, lang, rel, erreurs):
                     erreurs.append(f"{nom}, exercice {i} : {k} = {my.get(k)}, en français {mx.get(k)}")
             if ("groupe" in mx) != ("groupe" in my):
                 erreurs.append(f"{nom}, exercice {i} : clé groupe présente d'un seul côté")
-            subs = {s["title"].lower() for s in sections(y["lines"], 2)}
+            subs = sous_sections(y["lines"])
             if "énoncé" not in subs or "correction" not in subs:
-                erreurs.append(f"{nom}, exercice {i} : il manque « ## Énoncé » ou « ## Correction » "
-                               "(les titres de structure restent en français)")
+                erreurs.append(f"{nom}, exercice {i} : il manque l'énoncé ou la correction "
+                               "(« ## Énoncé » / « ## Opgave », « ## Correction » / « ## Oplossing »)")
     elif rel == "decouverte.md":
         a, b = sections(read(fr)), sections(read(tr_))
         if len(a) != len(b):

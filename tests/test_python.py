@@ -94,11 +94,29 @@ def cibles():
                 yield os.path.basename(dir), lang, d, dir, m
 
 
+SOUS_TITRES = {"énoncé": ["opgave", "question"], "indice": ["hint"],
+               "préparation": ["voorbereiding", "preparation"],
+               "code de départ": ["startcode", "starting code"],
+               "correction": ["oplossing", "solution"], "commentaire": ["commentaar", "comment"]}
+
+
+def sous_sections(lines):
+    """Les sous-sections « ## » d'un exercice, sous leur nom français."""
+    out = {}
+    for s in sections(lines, 2):
+        t = s["title"].lower()
+        for fr, autres in SOUS_TITRES.items():
+            if t in autres:
+                t = fr
+        out[t] = s["lines"]
+    return out
+
+
 def lire_exercices(contenu):
     fx = os.path.join(contenu, "exercices.md")
     out = []
     for i, e in enumerate(sections(read(fx)) if os.path.exists(fx) else [], 1):
-        subs = {s["title"].lower(): s["lines"] for s in sections(e["lines"], 2)}
+        subs = sous_sections(e["lines"])
         code_of = lambda n, subs=subs: "\n".join(c for c, _ in code_blocks(subs.get(n, [])))
         verif = "aucune" if re.search(r"^verif:\s*aucune", "\n".join(e["lines"]), re.M) else "valeur"
         out.append({"id": f"ex{i:02d}", "titre": e["title"], "verif": verif,
