@@ -22,11 +22,12 @@ const contenu = JSON.parse(execFileSync(python,
 
 (async () => {
   const navigateur = await chromium.launch();
-  const page = await navigateur.newPage();
-  await page.goto(url);
-  await page.waitForFunction(() => window.AtelierPy, null, { timeout: 60000 });
   let echecs = 0;
   for (const B of contenu) {
+    // une page par base et par langue : les tables préchargées dépendent de la langue
+    const page = await navigateur.newPage();
+    await page.goto(url + "/?lang=" + B.lang);
+    await page.waitForFunction(() => window.AtelierPy, null, { timeout: 60000 });
     const res = await page.evaluate(async (B) => {
       const out = []; let n = 0; const t0 = performance.now();
       for (const lecon of B.lecons) {
@@ -49,7 +50,8 @@ const contenu = JSON.parse(execFileSync(python,
       }
       return { out, n, s: ((performance.now() - t0) / 1000).toFixed(1) };
     }, B);
-    console.log(`========== Base : ${B.base} ==========`);
+    await page.close();
+    console.log(`========== Base : ${B.base} (${B.lang}) ==========`);
     res.out.forEach((l) => console.log(l));
     console.log(`${res.n} exécutions dans le navigateur, ${res.out.length} échecs, ${res.s} s`);
     echecs += res.out.length;

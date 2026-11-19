@@ -71,26 +71,52 @@ def read(path):
     return lines
 
 
-def export_json():
-    """Le contenu à exécuter, pour tests/test_python_navigateur.js."""
-    out = []
+LANGUES = ["fr", "nl", "en"]
+
+
+def cibles():
+    """(base, langue, dossier du contenu, base.txt fusionné) pour chaque base
+    Python et chaque langue disponible : le français dans le dossier de la
+    base, les traductions dans bases/<base>/<langue>/ (seuls les fichiers
+    traduits sont exécutés ; ce qui manque est le contenu français, déjà testé)."""
     for dir in sorted(glob.glob(os.path.join(APP, "bases", "*"))):
         f = os.path.join(dir, "base.txt")
         if not os.path.exists(f) or base_txt(f).get("langage", "r").lower() != "python":
             continue
-        base = {"base": os.path.basename(dir), "lecons": [], "exercices": []}
-        for path in sorted(glob.glob(os.path.join(dir, "cours", "*.md"))):
-            base["lecons"].append([{"code": c, "mode": m, "where": f"{os.path.basename(path)} carte {k}"}
-                                   for k, card in enumerate(sections(read(path)), 1)
-                                   for c, m in code_blocks(card["lines"]) if m != "norun"])
-        fx = os.path.join(dir, "exercices.md")
-        for i, e in enumerate(sections(read(fx)) if os.path.exists(fx) else [], 1):
-            subs = {s["title"].lower(): s["lines"] for s in sections(e["lines"], 2)}
-            code_of = lambda n: "\n".join(c for c, _ in code_blocks(subs.get(n, [])))
-            verif = "aucune" if re.search(r"^verif:\s*aucune", "\n".join(e["lines"]), re.M) else "valeur"
-            base["exercices"].append({"id": f"ex{i:02d}", "titre": e["title"], "verif": verif,
-                                      "prep": code_of("préparation"), "correction": code_of("correction")})
-        out.append(base)
+        meta = base_txt(f)
+        yield os.path.basename(dir), "fr", dir, dir, meta
+        for lang in LANGUES[1:]:
+            d = os.path.join(dir, lang)
+            if os.path.isdir(d):
+                m = dict(meta)
+                if os.path.exists(os.path.join(d, "base.txt")):
+                    m.update(base_txt(os.path.join(d, "base.txt")))
+                yield os.path.basename(dir), lang, d, dir, m
+
+
+def lire_exercices(contenu):
+    fx = os.path.join(contenu, "exercices.md")
+    out = []
+    for i, e in enumerate(sections(read(fx)) if os.path.exists(fx) else [], 1):
+        subs = {s["title"].lower(): s["lines"] for s in sections(e["lines"], 2)}
+        code_of = lambda n, subs=subs: "\n".join(c for c, _ in code_blocks(subs.get(n, [])))
+        verif = "aucune" if re.search(r"^verif:\s*aucune", "\n".join(e["lines"]), re.M) else "valeur"
+        out.append({"id": f"ex{i:02d}", "titre": e["title"], "verif": verif,
+                    "prep": code_of("préparation"), "correction": code_of("correction"),
+                    "complet": bool(code_of("correction")) and "énoncé" in subs})
+    return out
+
+
+def export_json():
+    """Le contenu à exécuter, pour tests/test_python_navigateur.js."""
+    out = []
+    for base, lang, contenu, dir, meta in cibles():
+        B = {"base": base, "lang": lang, "lecons": [], "exercices": lire_exercices(contenu)}
+        for path in sorted(glob.glob(os.path.join(contenu, "cours", "*.md"))):
+            B["lecons"].append([{"code": c, "mode": m, "where": f"{os.path.basename(path)} carte {k}"}
+                                for k, card in enumerate(sections(read(path)), 1)
+                                for c, m in code_blocks(card["lines"]) if m != "norun"])
+        out.append(B)
     print(json.dumps(out))
 
 
@@ -111,12 +137,7 @@ def main():
             fails += 1
             print("✗", where, ":", errs[0])
 
-    for dir in sorted(glob.glob(os.path.join(APP, "bases", "*"))):
-        f = os.path.join(dir, "base.txt")
-        if not os.path.exists(f) or base_txt(f).get("langage", "r").lower() != "python":
-            continue
-        meta = base_txt(f)
-        base = os.path.basename(dir)
+    for base, lang, contenu, dir, meta in cibles():
         # copie temporaire des fichiers : les écritures (sortie/) ne
         # touchent pas au dépôt, comme dans le navigateur
         travail = tempfile.mkdtemp(prefix="atelier_py_")
@@ -124,15 +145,17 @@ def main():
                         dirs_exist_ok=True)
         os.chdir(travail)
         sys.path.insert(0, travail)              # import outils_cours
-        sys.modules.pop("outils_cours", None)
+        for mod in [m for m in sys.modules if m.startswith("outils_")]:
+            sys.modules.pop(mod, None)
         runner.DEMARRAGE = None                  # tables préchargées de la base
         if meta.get("demarrage_python"):
             runner.set_demarrage(meta["demarrage_python"])
         runner.NAMESPACES.clear(); runner.SOLUTIONS.clear()
-        os.makedirs("sortie", exist_ok=True)
-        print(f"\n========== Base : {base} ==========")
+        for d in ["sortie", "uitvoer", "output"]:
+            os.makedirs(d, exist_ok=True)
+        print(f"\n========== Base : {base} ({lang}) ==========")
 
-        lecons = sorted(glob.glob(os.path.join(dir, "cours", "*.md")))
+        lecons = sorted(glob.glob(os.path.join(contenu, "cours", "*.md")))
         for path in lecons:
             ns = "cours:" + path
             runner.reset(ns)
@@ -144,8 +167,8 @@ def main():
                     report(f"[cours] {os.path.basename(path)} / carte {k} « {card['title']} »",
                            res, expect_error=(mode == "erreur"))
 
-        pistes = sections(read(os.path.join(dir, "decouverte.md"))) \
-            if os.path.exists(os.path.join(dir, "decouverte.md")) else []
+        fp = os.path.join(contenu, "decouverte.md")
+        pistes = sections(read(fp)) if os.path.exists(fp) else []
         for p in pistes:
             runner.reset("piste")
             for code, mode in code_blocks(p["lines"]):
@@ -153,22 +176,17 @@ def main():
                     report(f"[découverte] {p['title']}", json.loads(runner.run("piste", code)))
                     break
 
-        exs = sections(read(os.path.join(dir, "exercices.md"))) \
-            if os.path.exists(os.path.join(dir, "exercices.md")) else []
-        for i, e in enumerate(exs, 1):
-            subs = {s["title"].lower(): s["lines"] for s in sections(e["lines"], 2)}
-            code_of = lambda name: "\n".join(c for c, _ in code_blocks(subs.get(name, [])))
-            prep, corr = code_of("préparation"), code_of("correction")
-            verif = "aucune" if re.search(r"^verif:\s*aucune", "\n".join(e["lines"]), re.M) else "valeur"
-            if not corr or "énoncé" not in subs:
-                fails += 1; print("✗ exercice incomplet :", e["title"]); continue
-            res = json.loads(runner.check(f"{base}/ex{i}", prep, corr, corr))
-            report(f"[exercice] ex{i:02d} {e['title']}", res)
-            if verif == "valeur" and res["feedback"]["status"] != "ok":
+        exs = lire_exercices(contenu)
+        for e in exs:
+            if not e["complet"]:
+                fails += 1; print("✗ exercice incomplet :", e["titre"]); continue
+            res = json.loads(runner.check(f"{base}/{lang}/{e['id']}", e["prep"], e["correction"], e["correction"]))
+            report(f"[exercice] {e['id']} {e['titre']}", res)
+            if e["verif"] == "valeur" and res["feedback"]["status"] != "ok":
                 fails += 1
-                print(f"✗ [exercice] ex{i:02d} {e['title']} : correction refusée par la vérification "
+                print(f"✗ [exercice] {e['id']} {e['titre']} : correction refusée par la vérification "
                       f"({res['feedback']['message']})")
-        print(f"{base} : {len(lecons)} leçons, {len(pistes)} pistes, {len(exs)} exercices")
+        print(f"{base} ({lang}) : {len(lecons)} leçons, {len(pistes)} pistes, {len(exs)} exercices")
 
     print(f"\n{n} exécutions, {fails} échecs")
     sys.exit(1 if fails else 0)

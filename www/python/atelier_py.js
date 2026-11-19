@@ -16,6 +16,8 @@
 
 (function () {
   const workers = {};       // base -> {worker, pending, nextId, ready}
+  // textes de l'interface dans la langue de la page (clés « js.* », injectés par le serveur)
+  const T = (k) => (window.ATELIER_TXT || {})[k] || k;
   const chunkCache = {};    // key -> [html | undefined]  (résultats des leçons)
   const chunkRuns = {};     // key -> Promise
   const wurl = (document.currentScript && document.currentScript.src || "python/atelier_py.js")
@@ -41,7 +43,7 @@
     const w = { worker: new Worker(wurl, { type: "module" }), pending: {}, nextId: 1 };
     w.worker.onmessage = (ev) => {
       const m = ev.data;
-      if ("status" in m) { setStatus(m.status ? m.status + " (environ 10 s la première fois)" : ""); return; }
+      if ("status" in m) { setStatus(m.status ? T(m.status) + " " + T("js.py_premiere_fois") : ""); return; }
       const p = w.pending[m.id]; delete w.pending[m.id];
       if (!p) return;
       m.ok ? p.resolve(m.result) : p.reject(new Error(m.error));
@@ -54,8 +56,9 @@
     // adresses absolues : le worker résoudrait les adresses relatives
     // depuis son propre dossier (python/)
     const files = (conf.files || []).map((f) => ({ path: f.path, url: new URL(f.url, document.baseURI).href }));
-    w.ready = w.call("init", { files: files, demarrage: conf.demarrage || null });
-    w.ready.catch((e) => setStatus("Python n'a pas pu démarrer : " + e.message));
+    w.ready = w.call("init", { files: files, demarrage: conf.demarrage || null,
+                               textes: window.ATELIER_PYTXT || null });
+    w.ready.catch((e) => setStatus(T("js.py_echec") + " " + e.message));
     workers[base] = w;
     return w;
   }
@@ -74,10 +77,10 @@
       switch (it.type) {
         case "output": return '<pre class="code-out py-text">' + esc(it.text) + "</pre>";
         case "table": return '<div class="py-table">' + it.html + "</div>";
-        case "plot": return '<div class="code-plot"><img alt="Graphique" src="' + esc(it.src) + '"></div>';
-        case "warning": return '<div class="res-warning"><strong>Avertissement : </strong>' + esc(it.text) + "</div>";
+        case "plot": return '<div class="code-plot"><img alt="' + esc(T("js.graphique")) + '" src="' + esc(it.src) + '"></div>';
+        case "warning": return '<div class="res-warning"><strong>' + esc(T("js.avertissement")) + ' </strong>' + esc(it.text) + "</div>";
         case "error":
-          return '<div class="res-error"><div class="res-msg"><strong>Erreur : </strong>' + esc(it.text) + "</div>" +
+          return '<div class="res-error"><div class="res-msg"><strong>' + esc(T("js.erreur")) + ' </strong>' + esc(it.text) + "</div>" +
             ((it.where || []).length ? '<pre class="py-where">' + esc(it.where.join("\n")) + "</pre>" : "") +
             (it.hint ? '<div class="res-hint">' + esc(it.hint) + "</div>" : "") + "</div>";
         default: return "";
@@ -85,7 +88,7 @@
     }).join("");
   }
   const waiting = (txt) => '<div class="py-wait"><span class="spinner-border spinner-border-sm"></span> ' +
-    esc(txt || "Exécution en cours…") + "</div>";
+    esc(txt || T("js.execution")) + "</div>";
 
   function setHtml(target, html) {
     const el = typeof target === "string" ? document.getElementById(target) : target;
@@ -97,7 +100,7 @@
     (root || document).querySelectorAll(".py-out[data-key]").forEach((el) => {
       const res = (chunkCache[el.dataset.key] || [])[+el.dataset.idx];
       if (res !== undefined) { if (el.dataset.filled !== "1") { el.innerHTML = res; el.dataset.filled = "1"; } }
-      else if (!el.innerHTML) el.innerHTML = waiting("Python prépare le résultat dans votre navigateur…");
+      else if (!el.innerHTML) el.innerHTML = waiting(T("js.py_prepare_resultat"));
     });
   }
   new MutationObserver((muts) => {
@@ -133,7 +136,7 @@
       ? '<table class="table table-sm env-table"><tbody>' + objs.map((o) =>
           "<tr><td><code>" + esc(o.name) + '</code></td><td class="text-muted">' + esc(o.desc) + "</td></tr>").join("") +
         "</tbody></table>"
-      : '<p class="text-muted small">Aucun objet.</p>');
+      : '<p class="text-muted small">' + esc(T("js.aucun_objet")) + '</p>');
   }
 
   async function resetNs(msg) {
@@ -143,14 +146,14 @@
   }
 
   async function runCode(msg) {
-    setHtml(msg.target, waiting(workers[msg.base] ? null : "Python se prépare dans votre navigateur…"));
+    setHtml(msg.target, waiting(workers[msg.base] ? null : T("js.py_se_prepare")));
     const t0 = performance.now();
     try {
       if (msg.fresh) await resetNs({ base: msg.base, ns: msg.ns, setup: msg.setup });
       const r = await call(msg.base, "run", { ns: msg.ns, code: msg.code });
       const sec = ((performance.now() - t0) / 1000).toFixed(2);
       setHtml(msg.target, r.items.length ? '<div class="run-output">' + renderItems(r.items) + "</div>"
-        : '<div class="empty-result">Le code s\'est exécuté sans rien afficher. Pour voir une valeur, écrivez-la seule sur la dernière ligne.</div>');
+        : '<div class="empty-result">' + esc(T("js.rien_affiche_valeur")) + '</div>');
       if (msg.reply) Shiny.setInputValue(msg.reply, { ok: r.ok, seconds: +sec, ts: Date.now() }, { priority: "event" });
       await showObjects(msg.base, msg.ns, msg.objets);
     } catch (e) {
@@ -163,7 +166,7 @@
     try {
       const r = await call(msg.base, "check", msg);
       setHtml(msg.target, r.items.length ? '<div class="run-output">' + renderItems(r.items) + "</div>"
-        : '<div class="empty-result">Le code s\'est exécuté sans rien afficher.</div>');
+        : '<div class="empty-result">' + esc(T("js.rien_affiche")) + '</div>');
       Shiny.setInputValue(msg.reply, Object.assign({ ts: Date.now() }, r.feedback), { priority: "event" });
     } catch (e) {
       setHtml(msg.target, '<div class="res-error">' + esc(e.message) + "</div>");

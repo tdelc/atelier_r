@@ -28,16 +28,16 @@ const base = self.location.href.replace(/py_worker\.js.*$/, "");
 
 function status(text) { self.postMessage({ status: text }); }
 
-async function init(files, demarrage) {
-  status("Chargement de Python…");
+async function init(files, demarrage, textes) {
+  status("js.py_chargement");
   py = await loadPyodide({ indexURL: PYODIDE_URL });
-  status("Chargement de pandas, NumPy, PyArrow, Matplotlib…");
+  status("js.py_paquets");
   await py.loadPackage(["numpy", "pandas", "pyarrow", "matplotlib", "micropip"]);
   const wheels = ["seaborn-0.13.2-py3-none-any.whl", "openpyxl-3.1.5-py2.py3-none-any.whl",
                   "et_xmlfile-2.0.0-py3-none-any.whl"].map(w => base + "wheels/" + w);
   py.globals.set("_wheels", py.toPy(wheels));
   await py.runPythonAsync("import micropip\nawait micropip.install(_wheels)\ndel _wheels");
-  status("Copie des fichiers de données…");
+  status("js.py_fichiers");
   const home = "/home/pyodide";
   for (const f of files) {
     const buf = new Uint8Array(await (await fetch(f.url)).arrayBuffer());
@@ -49,13 +49,14 @@ async function init(files, demarrage) {
     }
     py.FS.writeFile(home + "/" + f.path, buf);
   }
-  try { py.FS.mkdir(home + "/sortie"); } catch (e) {}
+  for (const d of ["sortie", "uitvoer", "output"]) { try { py.FS.mkdir(home + "/" + d); } catch (e) {} }
   py.FS.chdir(home);
   const src = await (await fetch(base + "runner.py")).text();
   py.FS.writeFile("/tmp/atelier_runner.py", src);
   await py.runPythonAsync(
     "import sys, os, matplotlib\nmatplotlib.use('Agg')\nsys.path.insert(0, '/tmp')\nsys.path.insert(0, '/home/pyodide')\nimport atelier_runner\nos.environ['MPLBACKEND'] = 'Agg'");
   runner = py.pyimport("atelier_runner");
+  if (textes) runner.set_textes(JSON.stringify(textes));
   if (demarrage) runner.set_demarrage(home + "/" + demarrage);
   status("");
 }
@@ -69,7 +70,7 @@ self.onmessage = async (ev) => {
   const m = ev.data;
   try {
     if (m.cmd === "init") {
-      if (!ready) ready = init(m.files || [], m.demarrage || null);
+      if (!ready) ready = init(m.files || [], m.demarrage || null, m.textes || null);
       await ready;
       self.postMessage({ id: m.id, ok: true, result: "ready" });
       return;

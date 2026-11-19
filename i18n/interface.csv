@@ -1,0 +1,199 @@
+cle,fr,nl,en
+cours.non_execute,Non exécuté dans l'atelier,Niet uitgevoerd in het atelier,Not run in the workshop
+onglet.cours,Cours,Cursus,Course
+cours.lecons,Leçons,Lessen,Lessons
+cours.execution,Exécution du code de la leçon…,De code van de les wordt uitgevoerd…,Running the lesson code…
+cours.aucune_lecon,Aucune leçon pour cette base.,Geen lessen voor deze databank.,No lessons for this dataset.
+cours.n_cartes,{n} cartes,{n} kaarten,{n} cards
+cours.vide_titre,Pas encore de cours pour cette base,Nog geen cursus voor deze databank,No course yet for this dataset
+cours.vide_texte,Ajoutez des leçons dans le dossier {dossier}.,Voeg lessen toe in de map {dossier}.,Add lessons in the folder {dossier}.
+cours.kicker,Leçon {i} / {n} · {base},Les {i} / {n} · {base},Lesson {i} / {n} · {base}
+contenu.non_traduit,Ce contenu n'est pas encore traduit : il s'affiche en français.,Deze inhoud is nog niet vertaald: hij wordt in het Frans getoond.,This content is not translated yet: it is shown in French.
+cours.precedente,Précédente,Vorige,Previous
+cours.essayer,Modifier ce code dans Découverte,Deze code aanpassen in Ontdekken,Edit this code in Explore
+cours.suivante,Suivante,Volgende,Next
+cours.lecon_suivante,Leçon suivante,Volgende les,Next lesson
+cours.fin,Fin du cours : place aux exercices !,Einde van de cursus: tijd voor de oefeningen!,End of the course: on to the exercises!
+dec.libre_commentaire,"Bac à sable libre : écrivez votre code ici, puis Ctrl + Entrée",Vrije zandbak: schrijf hier je code en druk dan op Ctrl + Enter,"Free sandbox: write your code here, then press Ctrl + Enter"
+onglet.decouverte,Découverte,Ontdekken,Explore
+dec.pistes,Pistes à explorer,Sporen om te verkennen,Paths to explore
+dec.votre_code,Votre code,Je code,Your code
+commun.ctrl_entree,Ctrl + Entrée pour exécuter,Ctrl + Enter om uit te voeren,Ctrl + Enter to run
+commun.executer,Exécuter,Uitvoeren,Run
+dec.code_depart,Code de départ,Startcode,Starting code
+dec.code_depart_aide,Remettre le code de départ de la piste,De startcode van het spoor terugzetten,Restore the starting code of this path
+dec.nouvel_env,Nouvel environnement,Nieuwe omgeving,New environment
+dec.nouvel_env_aide,Effacer les objets créés et recharger les bases d'origine,De aangemaakte objecten wissen en de oorspronkelijke tabellen herladen,Delete the objects you created and reload the original tables
+dec.resultat,Résultat,Resultaat,Result
+dec.objets,Objets disponibles,Beschikbare objecten,Available objects
+commun.dictionnaire,Dictionnaire,Woordenboek,Dictionary
+dec.fonctions,Fonctions autorisées,Toegestane functies,Allowed functions
+dec.depuis_cours_texte,Code importé depuis le cours. Les cartes précédentes de la leçon ont été exécutées en arrière-plan : les variables qu'elles créent sont disponibles.,"Code overgenomen uit de cursus. De vorige kaarten van de les zijn op de achtergrond uitgevoerd: de variabelen die ze aanmaken, zijn beschikbaar.",Code imported from the course. The previous cards of the lesson were run in the background: the variables they create are available.
+dec.libre,Bac à sable libre,Vrije zandbak,Free sandbox
+dec.libre_python,Un espace pour écrire votre propre code Python. Les fichiers du cours sont dans `donnees/` et `referentiels/` ; ce que vous créez reste disponible tant que vous ne cliquez pas sur « Nouvel environnement ».,"Een ruimte om je eigen Python-code te schrijven. De bestanden van de cursus staan in `gegevens/` en `referenties/`; wat je aanmaakt, blijft beschikbaar zolang je niet op « Nieuwe omgeving » klikt.",A space to write your own Python code. The course files are in `donnees/` and `referentiels/`; what you create stays available until you click « New environment ».
+dec.libre_r,Un espace pour écrire votre propre code sur `{objet}`. Les objets que vous créez restent disponibles tant que vous ne cliquez pas sur « Nouvel environnement ».,"Een ruimte om je eigen code te schrijven op `{objet}`. De objecten die je aanmaakt, blijven beschikbaar zolang je niet op « Nieuwe omgeving » klikt.",A space to write your own code on `{objet}`. The objects you create stay available until you click « New environment ».
+dec.libre_court,Un espace pour écrire votre propre code sur `{objet}`.,Een ruimte om je eigen code te schrijven op `{objet}`.,A space to write your own code on `{objet}`.
+dec.pistes_guidees,Pistes guidées,Begeleide sporen,Guided paths
+dec.propre_code,Votre propre code,Je eigen code,Your own code
+dec.espace_libre,Espace libre,Vrije ruimte,Free space
+dec.depuis_cours,Code venant du cours,Code uit de cursus,Code from the course
+dec.env_recharge,Nouvel environnement : les bases d'origine sont rechargées.,Nieuwe omgeving: de oorspronkelijke tabellen zijn herladen.,New environment: the original tables have been reloaded.
+dec.cliquez_python,Cliquez sur « Exécuter » (ou Ctrl + Entrée) pour lancer le code. Python s'exécute dans votre navigateur.,Klik op « Uitvoeren » (of Ctrl + Enter) om de code te starten. Python draait in je browser.,Click « Run » (or Ctrl + Enter) to run the code. Python runs in your browser.
+dec.cliquez,Cliquez sur « Exécuter » (ou Ctrl + Entrée) pour lancer le code.,Klik op « Uitvoeren » (of Ctrl + Enter) om de code te starten.,Click « Run » (or Ctrl + Enter) to run the code.
+dec.rien_affiche,"Le code s'est exécuté sans rien afficher. Pour voir un objet, tapez son nom sur une ligne.",De code is uitgevoerd zonder iets te tonen. Typ de naam van een object op een regel om het te zien.,"The code ran without displaying anything. To see an object, type its name on a line."
+dec.a_essayer,À essayer,Probeer zelf,Try it
+ex.niveau1,Niveau 1 · Premiers pas,Niveau 1 · Eerste stappen,Level 1 · First steps
+ex.niveau2,Niveau 2 · Regrouper,Niveau 2 · Groeperen,Level 2 · Grouping
+ex.niveau3,Niveau 3 · Créer des variables,Niveau 3 · Variabelen aanmaken,Level 3 · Creating variables
+ex.niveau4,Niveau 4 · Mettre en forme,Niveau 4 · Tabellen vormgeven,Level 4 · Shaping tables
+ex.niveau5,Niveau 5 · Synthèse,Niveau 5 · Synthese,Level 5 · Synthesis
+onglet.exercices,Exercices,Oefeningen,Exercises
+ex.votre_reponse,Votre réponse,Je antwoord,Your answer
+ex.verifier,Vérifier,Controleren,Check
+ex.effacer,Effacer,Wissen,Clear
+ex.pas_de_verif,Pas de vérification automatique pour cet exercice : comparez avec la correction.,Geen automatische controle voor deze oefening: vergelijk met de oplossing.,No automatic check for this exercise: compare with the solution.
+verif.erreur,Votre code produit une erreur : corrigez-la d'abord (voir le résultat ci-dessous).,Je code geeft een fout: verbeter die eerst (zie het resultaat hieronder).,Your code produces an error: fix it first (see the result below).
+ex.aucun,Aucun exercice pour cette base.,Geen oefeningen voor deze databank.,No exercises for this dataset.
+ex.reussis,Réussis,Geslaagd,Solved
+ex.vide_titre,Pas encore d'exercices pour cette base,Nog geen oefeningen voor deze databank,No exercises yet for this dataset
+ex.vide_texte,Ajoutez-les dans le fichier {fichier}.,Voeg ze toe in het bestand {fichier}.,Add them in the file {fichier}.
+ex.niveau,Niveau {n},Niveau {n},Level {n}
+ex.preparation,Code déjà exécuté avant le vôtre,Code die vóór de jouwe al is uitgevoerd,Code already run before yours
+ex.masquer_indice,Masquer l'indice,Hint verbergen,Hide the hint
+ex.indice,Indice,Hint,Hint
+ex.voir_correction,Voir la correction,Oplossing tonen,Show the solution
+ex.votre_resultat,Votre résultat,Jouw resultaat,Your result
+ex.rien_affiche,Le code s'est exécuté sans rien afficher.,De code is uitgevoerd zonder iets te tonen.,The code ran without displaying anything.
+ex.correction,Correction,Oplossing,Solution
+ex.masquer,Masquer,Verbergen,Hide
+ex.precedent,Exercice précédent,Vorige oefening,Previous exercise
+ex.suivant,Exercice suivant,Volgende oefening,Next exercise
+verif.na,Ce résultat ne se vérifie pas automatiquement : comparez avec la correction.,Dit resultaat wordt niet automatisch gecontroleerd: vergelijk met de oplossing.,This result is not checked automatically: compare with the solution.
+verif.pas_de_valeur_r,Votre code ne produit pas de tableau ou de valeur à comparer. La dernière ligne de votre code doit afficher le résultat demandé.,Je code geeft geen tabel of waarde om te vergelijken. De laatste regel van je code moet het gevraagde resultaat tonen.,Your code produces no table or value to compare. The last line of your code must display the requested result.
+verif.valeur_r,"La valeur obtenue n'est pas celle attendue. Relisez l'énoncé : population (filtre), variable et calcul.","De verkregen waarde is niet de verwachte. Lees de opgave opnieuw: populatie (filter), variabele en berekening.","The value obtained is not the expected one. Reread the question: population (filter), variable and calculation."
+verif.lignes_r,"Votre résultat a {eleve} ligne(s), la correction en a {sol}. Vérifiez vos filtres et vos regroupements.","Je resultaat heeft {eleve} rij(en), de oplossing {sol}. Controleer je filters en groeperingen.","Your result has {eleve} row(s), the solution has {sol}. Check your filters and groupings."
+verif.ok,"Bravo, votre résultat correspond à la correction !","Bravo, je resultaat komt overeen met de oplossing!","Well done, your result matches the solution!"
+verif.colonnes_r,"Le nombre de lignes est bon, mais {n} colonne(s) de la correction ne se retrouvent pas dans votre résultat. Vérifiez vos calculs (na.rm, conditions, variable utilisée).","Het aantal rijen klopt, maar {n} kolom(men) van de oplossing staan niet in je resultaat. Controleer je berekeningen (na.rm, voorwaarden, gebruikte variabele).","The number of rows is right, but {n} column(s) of the solution are not in your result. Check your calculations (na.rm, conditions, variable used)."
+dash.voir_code,Voir le code,Code bekijken,See the code
+dash.code_titre,Le code R derrière : {titre},De R-code achter: {titre},The R code behind: {titre}
+dash.code_note,"<p>Pour rendre un graphique <code>ggplot2</code> interactif (survol, zoom), il suffit de le passer à <code>ggplotly()</code> du paquet <strong>plotly</strong>. Dans l'application Shiny, ce code est placé dans un <code>renderPlotly({ … })</code> : il est relancé automatiquement à chaque changement de filtre.</p>","<p>Om een <code>ggplot2</code>-grafiek interactief te maken (zweven, inzoomen), volstaat het om hem door te geven aan <code>ggplotly()</code> uit het pakket <strong>plotly</strong>. In de Shiny-toepassing staat deze code in een <code>renderPlotly({ … })</code>: hij wordt automatisch opnieuw uitgevoerd bij elke wijziging van een filter.</p>","<p>To make a <code>ggplot2</code> chart interactive (hover, zoom), simply pass it to <code>ggplotly()</code> from the <strong>plotly</strong> package. In the Shiny application, this code sits inside a <code>renderPlotly({ … })</code>: it reruns automatically whenever a filter changes.</p>"
+commun.fermer,Fermer,Sluiten,Close
+onglet.dashboard,Dashboard,Dashboard,Dashboard
+dash.vide_titre,Pas de tableau de bord pour cette base,Geen dashboard voor deze databank,No dashboard for this dataset
+dash.vide_texte,"Pour en créer un, ajoutez un fichier {fichier} (voir docs/GUIDE_CONTENUS.md).",Voeg een bestand {fichier} toe om er een te maken (zie docs/GUIDE_CONTENUS.md).,"To create one, add a file {fichier} (see docs/GUIDE_CONTENUS.md)."
+dash.intro,"Ce tableau de bord est écrit en R, avec les outils du cours : les verbes du tidyverse pour préparer les données, ggplot2 pour les graphiques, plotly pour l'interactivité et Shiny pour l'application. Cliquez sur « Voir le code » sous chaque titre.","Dit dashboard is in R geschreven, met de hulpmiddelen van de cursus: de werkwoorden van de tidyverse om de gegevens voor te bereiden, ggplot2 voor de grafieken, plotly voor de interactiviteit en Shiny voor de toepassing. Klik op « Code bekijken » onder elke titel.","This dashboard is written in R, with the course tools: tidyverse verbs to prepare the data, ggplot2 for the charts, plotly for interactivity and Shiny for the application. Click « See the code » under each title."
+onglet.accueil,Accueil,Startpagina,Home
+accueil.kicker,Introduction aux bases de données avec R et Python,Inleiding tot databanken met R en Python,Introduction to datasets with R and Python
+accueil.lead,"Apprendre, s'entraîner et découvrir l'analyse d'une base de données, à son rythme, depuis n'importe quel navigateur. Rien à installer.","Leren, oefenen en ontdekken hoe je een databank analyseert, in je eigen tempo, vanuit elke browser. Niets te installeren.","Learn, practise and discover how to analyse a dataset, at your own pace, from any browser. Nothing to install."
+accueil.visite,Visite guidée,Rondleiding,Guided tour
+accueil.commencer,Commencer le cours,De cursus starten,Start the course
+accueil.quatre_facons,Quatre façons de travailler,Vier manieren van werken,Four ways to work
+accueil.volet_cours,"Les leçons du cours, carte par carte : l'explication, le code, le résultat, le commentaire. Jusqu'à une étude de cas complète.","De lessen van de cursus, kaart per kaart: de uitleg, de code, het resultaat, de commentaar. Tot een volledige casestudy.","The course lessons, card by card: the explanation, the code, the result, the comment. Up to a complete case study."
+accueil.volet_decouverte,Modifiez le code des exemples et observez ce qui change. Un bac à sable libre pour tester vos propres idées.,Pas de code van de voorbeelden aan en kijk wat er verandert. Een vrije zandbak om je eigen ideeën te testen.,Edit the code of the examples and see what changes. A free sandbox to test your own ideas.
+accueil.volet_exercices,"Des questions de plus en plus difficiles, avec indice, vérification automatique de votre résultat et correction commentée.","Steeds moeilijkere vragen, met een hint, automatische controle van je resultaat en een becommentarieerde oplossing.","Increasingly difficult questions, with a hint, an automatic check of your result and a commented solution."
+accueil.volet_dashboard,Un tableau de bord interactif écrit en R : ce que vous saurez faire avec les outils du cours.,Een interactief dashboard in R: wat je met de hulpmiddelen van de cursus zult kunnen maken.,An interactive dashboard written in R: what you will be able to build with the course tools.
+accueil.choisir_base,Choisissez la base en haut de l'écran : tous les volets s'adaptent.,Kies de databank bovenaan het scherm: alle onderdelen passen zich aan.,Choose the dataset at the top of the screen: every section adapts.
+accueil.bon_a_savoir,Bon à savoir,Goed om te weten,Good to know
+accueil.protege_titre,Un espace protégé.,Een beschermde ruimte.,A protected space.
+accueil.protege_texte,"Votre code s'exécute dans un environnement isolé, et vous ne pouvez rien casser : les bases d'origine restent intactes. En Python, le code s'exécute dans votre propre navigateur.",Je code draait in een afgeschermde omgeving en je kunt niets stukmaken: de oorspronkelijke tabellen blijven ongewijzigd. In Python draait de code in je eigen browser.,"Your code runs in an isolated environment and you cannot break anything: the original tables stay intact. In Python, the code runs in your own browser."
+accueil.progression_titre,Votre progression reste dans votre navigateur.,Je vooruitgang blijft in je browser.,Your progress stays in your browser.
+accueil.progression_texte,"Les exercices réussis sont mémorisés sur cet ordinateur, rien n'est envoyé à l'enseignant.",Geslaagde oefeningen worden op deze computer bewaard; er wordt niets naar de lesgever gestuurd.,Solved exercises are remembered on this computer; nothing is sent to the teacher.
+accueil.rstudio_titre,Et sur votre poste ?,En op je eigen computer?,And on your own computer?
+accueil.rstudio_texte,"Tout le code de l'atelier fonctionne tel quel dans RStudio (après <code>library(tidyverse)</code>) ou dans Jupyter (après <code>import pandas as pd</code>), une fois vos fichiers importés.","Alle code van het atelier werkt zoals ze is in RStudio (na <code>library(tidyverse)</code>) of in Jupyter (na <code>import pandas as pd</code>), zodra je bestanden ingelezen zijn.","All the workshop code works as is in RStudio (after <code>library(tidyverse)</code>) or in Jupyter (after <code>import pandas as pd</code>), once your files are imported."
+accueil.une_ligne,une ligne =,één rij =,one row =
+accueil.variables,variables,variabelen,variables
+accueil.source,Source :,Bron:,Source:
+accueil.selectionnee,Base sélectionnée,Geselecteerde databank,Selected dataset
+accueil.bases1,Une base de données,Eén databank,One dataset
+accueil.bases2,Deux bases de données,Twee databanken,Two datasets
+accueil.bases3,Trois bases de données,Drie databanken,Three datasets
+accueil.bases4,Quatre bases de données,Vier databanken,Four datasets
+accueil.bases5,Cinq bases de données,Vijf databanken,Five datasets
+accueil.bases6,Six bases de données,Zes databanken,Six datasets
+accueil.bases7,Sept bases de données,Zeven databanken,Seven datasets
+accueil.bases8,Huit bases de données,Acht databanken,Eight datasets
+accueil.bases9,Neuf bases de données,Negen databanken,Nine datasets
+accueil.bases10,Dix bases de données,Tien databanken,Ten datasets
+accueil.basesN,{n} bases de données,{n} databanken,{n} datasets
+dico.titre,Dictionnaire des variables — {objet},Woordenboek van de variabelen — {objet},Variable dictionary — {objet}
+dico.intro,{titre}. Source : {source}. Une ligne = {ligne}.,{titre}. Bron: {source}. Eén rij = {ligne}.,{titre}. Source: {source}. One row = {ligne}.
+dico.variable,Variable,Variabele,Variable
+dico.contenu,Contenu,Inhoud,Content
+dico.type,Type,Type,Type
+dico.modalites,Modalités / unité,Waarden / eenheid,Values / unit
+fn.titre,Les fonctions disponibles dans l'atelier,De functies die in het atelier beschikbaar zijn,The functions available in the workshop
+fn.intro,"Pour des raisons de sécurité, le code est exécuté sur le serveur dans un espace protégé : seules les fonctions ci-dessous sont autorisées. Elles couvrent tout le cours. Les bases sont déjà chargées : pas besoin de <code>library()</code> ni de <code>read_csv()</code>.",Om veiligheidsredenen draait de code op de server in een beschermde ruimte: alleen de functies hieronder zijn toegestaan. Ze dekken de hele cursus. De tabellen zijn al geladen: <code>library()</code> of <code>read_csv()</code> is niet nodig.,"For security reasons, the code runs on the server in a protected space: only the functions below are allowed. They cover the whole course. The tables are already loaded: no need for <code>library()</code> or <code>read_csv()</code>."
+fn.interdits,"<p>Non disponibles ici : lire ou écrire des fichiers, <code>library()</code>, <code>::</code>, les boucles <code>while</code> et <code>repeat</code>, les fonctions récursives, <code>&lt;&lt;-</code>. La base de droite d'une jointure doit avoir une seule ligne par clé. Le calcul est interrompu au-delà de 15 secondes.</p>","<p>Hier niet beschikbaar: bestanden lezen of schrijven, <code>library()</code>, <code>::</code>, de lussen <code>while</code> en <code>repeat</code>, recursieve functies, <code>&lt;&lt;-</code>. De rechtertabel van een koppeling moet één rij per sleutel hebben. Een berekening wordt na 15 seconden onderbroken.</p>","<p>Not available here: reading or writing files, <code>library()</code>, <code>::</code>, <code>while</code> and <code>repeat</code> loops, recursive functions, <code>&lt;&lt;-</code>. The right-hand table of a join must have one row per key. A calculation is stopped after 15 seconds.</p>"
+objets.aucun,Aucun objet.,Geen objecten.,No objects.
+objets.tableau,tableau : {l} × {c},tabel: {l} × {c},table: {l} × {c}
+objets.ggplot,graphique ggplot,ggplot-grafiek,ggplot chart
+py.titre,Python dans l'atelier,Python in het atelier,Python in the workshop
+py.intro,"Pour cette base, le code Python s'exécute <strong>dans votre navigateur</strong> (avec Pyodide), et non sur le serveur : toutes les fonctions de Python sont disponibles.",Voor deze databank draait de Python-code <strong>in je browser</strong> (met Pyodide) en niet op de server: alle functies van Python zijn beschikbaar.,"For this dataset, the Python code runs <strong>in your browser</strong> (with Pyodide), not on the server: all Python functions are available."
+py.paquets,Paquets disponibles,Beschikbare pakketten,Available packages
+py.fichiers,Vos fichiers,Je bestanden,Your files
+py.fichiers_texte,Les fichiers du cours sont dans <code>donnees/</code> et <code>referentiels/</code>. Ce que vous écrivez va dans <code>sortie/</code> : ces fichiers restent dans votre navigateur et disparaissent quand vous fermez la page.,"De bestanden van de cursus staan in <code>gegevens/</code> en <code>referenties/</code>. Wat je schrijft, komt in <code>uitvoer/</code>: die bestanden blijven in je browser en verdwijnen wanneer je de pagina sluit.",The course files are in <code>donnees/</code> and <code>referentiels/</code>. What you write goes to <code>sortie/</code>: these files stay in your browser and disappear when you close the page.
+py.attention,Le premier lancement télécharge Python et ses paquets (environ 10 secondes). Une boucle qui ne s'arrête jamais bloque Python : rechargez alors la page.,"Bij de eerste start worden Python en zijn pakketten gedownload (ongeveer 10 seconden). Een lus die nooit stopt, blokkeert Python: herlaad dan de pagina.",The first start downloads Python and its packages (about 10 seconds). A loop that never stops blocks Python: reload the page.
+code.copier_titre,Copier le code,De code kopiëren,Copy the code
+code.copier,Copier,Kopiëren,Copy
+code.non_execute,Code non exécuté,Code niet uitgevoerd,Code not run
+code.graphique,Graphique,Grafiek,Chart
+code.avertissement,Avertissement :,Waarschuwing:,Warning:
+code.erreur,Erreur :,Fout:,Error:
+fn.g_verbes,Verbes du tidyverse,Werkwoorden van de tidyverse,Tidyverse verbs
+fn.g_jointures,Jointures,Koppelingen,Joins
+fn.g_boucles,Boucles et fonctions,Lussen en functies,Loops and functions
+fn.g_dates,Dates (lubridate),Datums (lubridate),Dates (lubridate)
+fn.g_texte,Texte et facteurs,Tekst en factoren,Text and factors
+fn.g_base,R base et statistiques,Basis-R en statistiek,Base R and statistics
+fn.g_graphiques,Graphiques de base,Basisgrafieken,Base graphics
+fn.g_echelles,Échelles (scales),Schalen (scales),Scales (scales)
+fn.g_gt,"Tableaux (gt, affichés dans le Viewer)","Tabellen (gt, getoond in de Viewer)","Tables (gt, shown in the Viewer)"
+js.tour_etape,Étape,Stap,Step
+js.tour_quitter,Quitter,Stoppen,Quit
+js.tour_precedent,Précédent,Vorige,Previous
+js.tour_terminer,Terminer,Klaar,Finish
+js.tour_suivant,Suivant,Volgende,Next
+py.aide.UnicodeDecodeError,"Le fichier n'est pas dans l'encodage supposé (UTF-8 par défaut) : essayez encoding=""cp1252"" (Windows) ou ""latin-1"".","Het bestand heeft niet de verwachte codering (standaard UTF-8): probeer encoding=""cp1252"" (Windows) of ""latin-1"".","The file is not in the expected encoding (UTF-8 by default): try encoding=""cp1252"" (Windows) or ""latin-1""."
+py.aide.FileNotFoundError,"Le fichier est introuvable : vérifiez le dossier (donnees/, referentiels/, sortie/) et l'orthographe du nom.","Het bestand is niet gevonden: controleer de map (gegevens/, referenties/, uitvoer/) en de spelling van de naam.","The file cannot be found: check the folder (donnees/, referentiels/, sortie/) and the spelling of the name."
+py.aide.NameError,"Ce nom n'existe pas (encore) : faute de frappe, ou cellule précédente pas exécutée ?","Deze naam bestaat (nog) niet: een tikfout, of een vorige cel die niet is uitgevoerd?","This name does not exist (yet): a typo, or a previous cell that was not run?"
+py.aide.KeyError,"Cette clé ou cette colonne n'existe pas : vérifiez l'orthographe exacte (majuscules, espaces) avec .columns ou .keys().","Deze sleutel of kolom bestaat niet: controleer de exacte spelling (hoofdletters, spaties) met .columns of .keys().","This key or column does not exist: check the exact spelling (capitals, spaces) with .columns or .keys()."
+py.aide.IndentationError,L'indentation (les espaces en début de ligne) délimite les blocs : 4 espaces après chaque « : ».,Het inspringen (de spaties aan het begin van de regel) bakent de blokken af: 4 spaties na elke « : ».,Indentation (the spaces at the start of a line) delimits blocks: 4 spaces after each « : ».
+py.aide.SyntaxError,"Python ne comprend pas la phrase : parenthèse, guillemet ou « : » manquant ? Un = au lieu de == ?","Python begrijpt de zin niet: ontbreekt er een haakje, aanhalingsteken of « : »? Een = in plaats van ==?","Python does not understand the sentence: a missing bracket, quote or « : »? A = instead of ==?"
+py.aide.TypeError,L'opération ne convient pas à ce type de valeur : vérifiez les types avec type() ou .dtypes.,De bewerking past niet bij dit type waarde: controleer de types met type() of .dtypes.,The operation does not suit this type of value: check the types with type() or .dtypes.
+py.aide.ValueError,La valeur ne convient pas : par exemple un texte qui ne se convertit pas en nombre.,De waarde past niet: bijvoorbeeld een tekst die niet naar een getal kan worden omgezet.,The value does not fit: for example a text that cannot be converted to a number.
+py.aide.IndexError,Cette position n'existe pas : les positions commencent à 0 et la dernière est len(...) - 1.,Deze positie bestaat niet: posities beginnen bij 0 en de laatste is len(...) - 1.,This position does not exist: positions start at 0 and the last one is len(...) - 1.
+py.aide.ZeroDivisionError,Division par zéro.,Deling door nul.,Division by zero.
+py.aide.ModuleNotFoundError,Ce module n'est pas disponible dans l'atelier.,Deze module is niet beschikbaar in het atelier.,This module is not available in the workshop.
+py.aide.MergeError,La jointure ne respecte pas validate= : une clé apparaît plusieurs fois. Repérez les doublons avec .duplicated(subset=...) et filtrez la table.,De koppeling voldoet niet aan validate=: een sleutel komt meerdere keren voor. Zoek de dubbels met .duplicated(subset=...) en filter de tabel.,The join does not satisfy validate=: a key appears several times. Find the duplicates with .duplicated(subset=...) and filter the table.
+py.aide.AssertionError,Un contrôle assert a échoué : la condition vérifiée est fausse (lisez le message après « AssertionError »).,Een controle met assert is mislukt: de gecontroleerde voorwaarde is onwaar (lees de boodschap na « AssertionError »).,An assert check failed: the condition checked is false (read the message after « AssertionError »).
+py.aide.AttributeError,Cet objet n'a pas cet attribut ou cette méthode : vérifiez l'orthographe et le type de l'objet avec type().,Dit object heeft dit attribuut of deze methode niet: controleer de spelling en het type van het object met type().,This object has no such attribute or method: check the spelling and the type of the object with type().
+py.aide.BinderException,"DuckDB ne trouve pas une colonne ou une table de la requête : vérifiez les noms (SELECT, FROM, GROUP BY).","DuckDB vindt een kolom of tabel uit de query niet: controleer de namen (SELECT, FROM, GROUP BY).","DuckDB cannot find a column or table of the query: check the names (SELECT, FROM, GROUP BY)."
+py.aide.ParserException,"La requête SQL est mal écrite : virgule, guillemet ou mot-clé manquant ?","De SQL-query is verkeerd geschreven: ontbreekt er een komma, aanhalingsteken of sleutelwoord?","The SQL query is badly written: a missing comma, quote or keyword?"
+py.verif.na,Ce résultat ne se vérifie pas automatiquement : comparez avec la correction.,Dit resultaat wordt niet automatisch gecontroleerd: vergelijk met de oplossing.,This result is not checked automatically: compare with the solution.
+py.verif.pas_de_valeur,Votre code ne produit pas de valeur à comparer. La dernière ligne doit être le résultat demandé (sans print).,Je code geeft geen waarde om te vergelijken. De laatste regel moet het gevraagde resultaat zijn (zonder print).,Your code produces no value to compare. The last line must be the requested result (without print).
+py.verif.ok,"Bravo, votre résultat correspond à la correction !","Bravo, je resultaat komt overeen met de oplossing!","Well done, your result matches the solution!"
+py.verif.valeur,"La valeur obtenue n'est pas celle attendue. Relisez l'énoncé (calcul, arrondi, type).","De verkregen waarde is niet de verwachte. Lees de opgave opnieuw (berekening, afronding, type).","The value obtained is not the expected one. Reread the question (calculation, rounding, type)."
+py.verif.lignes,"Votre résultat a {eleve} ligne(s) ou élément(s), la correction en a {sol}.","Je resultaat heeft {eleve} rij(en) of element(en), de oplossing {sol}.","Your result has {eleve} row(s) or item(s), the solution has {sol}."
+py.verif.colonnes,"Le nombre de lignes est bon, mais {n} colonne(s) de la correction ne se retrouvent pas dans votre résultat.","Het aantal rijen klopt, maar {n} kolom(men) van de oplossing staan niet in je resultaat.","The number of rows is right, but {n} column(s) of the solution are not in your result."
+py.verif.erreur,Votre code produit une erreur : corrigez-la d'abord (voir le résultat ci-dessous).,Je code geeft een fout: verbeter die eerst (zie het resultaat hieronder).,Your code produces an error: fix it first (see the result below).
+py.ligne,ligne {n},regel {n},line {n}
+py.fonction,fonction,functie,function
+py.valeurs,{n} valeurs,{n} waarden,{n} values
+js.py_chargement,Chargement de Python…,Python wordt geladen…,Loading Python…
+js.py_paquets,"Chargement de pandas, NumPy, PyArrow, Matplotlib…","pandas, NumPy, PyArrow, Matplotlib worden geladen…","Loading pandas, NumPy, PyArrow, Matplotlib…"
+js.py_fichiers,Copie des fichiers de données…,De gegevensbestanden worden gekopieerd…,Copying the data files…
+js.py_premiere_fois,(environ 10 s la première fois),(ongeveer 10 s de eerste keer),(about 10 s the first time)
+js.py_echec,Python n'a pas pu démarrer :,Python kon niet starten:,Python could not start:
+js.graphique,Graphique,Grafiek,Chart
+js.avertissement,Avertissement :,Waarschuwing:,Warning:
+js.erreur,Erreur :,Fout:,Error:
+js.execution,Exécution en cours…,Bezig met uitvoeren…,Running…
+js.py_prepare_resultat,Python prépare le résultat dans votre navigateur…,Python berekent het resultaat in je browser…,Python is computing the result in your browser…
+js.aucun_objet,Aucun objet.,Geen objecten.,No objects.
+js.py_se_prepare,Python se prépare dans votre navigateur…,Python wordt in je browser voorbereid…,Python is getting ready in your browser…
+js.copie,Copié !,Gekopieerd!,Copied!
+js.copier,Copier,Kopiëren,Copy
+js.rien_affiche_valeur,"Le code s'est exécuté sans rien afficher. Pour voir une valeur, écrivez-la seule sur la dernière ligne.",De code is uitgevoerd zonder iets te tonen. Zet een waarde alleen op de laatste regel om ze te zien.,"The code ran without displaying anything. To see a value, put it alone on the last line."
+js.rien_affiche,Le code s'est exécuté sans rien afficher.,De code is uitgevoerd zonder iets te tonen.,The code ran without displaying anything.
+app.description,"Apprendre l'analyse de bases de données avec R et Python : cours, découverte, exercices et dashboard.","Leren databanken analyseren met R en Python: cursus, ontdekken, oefeningen en dashboard.","Learn to analyse datasets with R and Python: course, exploration, exercises and dashboard."
+nav.visite,Visite,Rondleiding,Tour

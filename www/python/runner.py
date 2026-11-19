@@ -69,7 +69,7 @@ def _display(value):
     try:
         import pandas as pd
         if isinstance(value, pd.api.extensions.ExtensionArray):
-            return {"type": "output", "text": (repr(value.tolist()) + f"\n({len(value)} valeurs)")[:MAX_TEXT]}
+            return {"type": "output", "text": (repr(value.tolist()) + "\n(" + _t("py.valeurs", "{n} valeurs", n=len(value)) + ")")[:MAX_TEXT]}
     except ImportError:
         pass
     # tableaux pandas : HTML échappé (les textes ne peuvent pas injecter de HTML)
@@ -107,6 +107,27 @@ def _figures():
 
 # --- Messages d'erreur ------------------------------------------------------------
 
+# Textes affichés à l'étudiant. Les valeurs ci-dessous (français) servent par
+# défaut ; la page les remplace par ceux de sa langue au démarrage
+# (set_textes(), avec les clés « py.* » de i18n/interface.csv).
+TEXTES = {}
+
+
+def set_textes(js):
+    """Remplace les textes par ceux de la langue de la page (JSON)."""
+    TEXTES.update(json.loads(js))
+    for k, v in TEXTES.items():
+        if k.startswith("py.aide."):
+            AIDES[k[len("py.aide."):]] = v
+
+
+def _t(cle, defaut, **kw):
+    txt = TEXTES.get(cle, defaut)
+    for k, v in kw.items():
+        txt = txt.replace("{" + k + "}", str(v))
+    return txt
+
+
 AIDES = {
     "UnicodeDecodeError": "Le fichier n'est pas dans l'encodage supposé (UTF-8 par défaut) : essayez encoding=\"cp1252\" (Windows) ou \"latin-1\".",
     "FileNotFoundError": "Le fichier est introuvable : vérifiez le dossier (donnees/, referentiels/, sortie/) et l'orthographe du nom.",
@@ -131,9 +152,9 @@ def _error(e):
     name = type(e).__name__
     msg = f"{name}: {e}"
     if isinstance(e, SyntaxError) and e.lineno:
-        msg = f"{name}: {e.msg} (ligne {e.lineno})"
+        msg = f"{name}: {e.msg} (" + _t("py.ligne", "ligne {n}", n=e.lineno) + ")"
     tb = traceback.extract_tb(e.__traceback__)
-    lines = [f"ligne {fr.lineno} : {fr.line}" for fr in tb if fr.filename == "<cellule>" and fr.line]
+    lines = [_t("py.ligne", "ligne {n}", n=fr.lineno) + f" : {fr.line}" for fr in tb if fr.filename == "<cellule>" and fr.line]
     aide = next((v for k, v in AIDES.items() if k == name), None)
     if aide is None:
         for cls in type(e).__mro__:
@@ -205,7 +226,7 @@ def objects(name):
         if k.startswith("_") or type(v).__name__ == "module" or isinstance(v, type):
             continue                      # modules et classes importés
         if type(v).__name__ == "function":
-            desc = "fonction"
+            desc = _t("py.fonction", "fonction")
         elif callable(v):
             continue
         elif hasattr(v, "shape") and hasattr(v, "columns"):
@@ -303,17 +324,17 @@ def _same(a, b):
 def compare(student, solution):
     sol = _comparable(solution)
     if sol is None:
-        return {"status": "na", "message": "Ce résultat ne se vérifie pas automatiquement : comparez avec la correction."}
+        return {"status": "na", "message": _t("py.verif.na", "Ce résultat ne se vérifie pas automatiquement : comparez avec la correction.")}
     stu = _comparable(student)
     if stu is None:
-        return {"status": "ko", "message": "Votre code ne produit pas de valeur à comparer. La dernière ligne doit être le résultat demandé (sans print)."}
+        return {"status": "ko", "message": _t("py.verif.pas_de_valeur", "Votre code ne produit pas de valeur à comparer. La dernière ligne doit être le résultat demandé (sans print).")}
     if len(sol) == 1 and len(sol[0]) == 1 and len(stu) == 1 and len(stu[0]) == 1:
         if _same(stu[0], sol[0]):
-            return {"status": "ok", "message": "Bravo, votre résultat correspond à la correction !"}
-        return {"status": "ko", "message": "La valeur obtenue n'est pas celle attendue. Relisez l'énoncé (calcul, arrondi, type)."}
+            return {"status": "ok", "message": _t("py.verif.ok", "Bravo, votre résultat correspond à la correction !")}
+        return {"status": "ko", "message": _t("py.verif.valeur", "La valeur obtenue n'est pas celle attendue. Relisez l'énoncé (calcul, arrondi, type).")}
     n_sol, n_stu = len(sol[0]), len(stu[0])
     if n_sol != n_stu:
-        return {"status": "ko", "message": f"Votre résultat a {n_stu} ligne(s) ou élément(s), la correction en a {n_sol}."}
+        return {"status": "ko", "message": _t("py.verif.lignes", "Votre résultat a {eleve} ligne(s) ou élément(s), la correction en a {sol}.", eleve=n_stu, sol=n_sol)}
     used, missing = [False] * len(stu), 0
     for col in sol:
         hit = next((i for i, c in enumerate(stu) if not used[i] and _same(c, col)), None)
@@ -322,8 +343,8 @@ def compare(student, solution):
         else:
             used[hit] = True
     if missing == 0:
-        return {"status": "ok", "message": "Bravo, votre résultat correspond à la correction !"}
-    return {"status": "ko", "message": f"Le nombre de lignes est bon, mais {missing} colonne(s) de la correction ne se retrouvent pas dans votre résultat."}
+        return {"status": "ok", "message": _t("py.verif.ok", "Bravo, votre résultat correspond à la correction !")}
+    return {"status": "ko", "message": _t("py.verif.colonnes", "Le nombre de lignes est bon, mais {n} colonne(s) de la correction ne se retrouvent pas dans votre résultat.", n=missing)}
 
 
 def check(key, prep, correction, code):
@@ -339,7 +360,7 @@ def check(key, prep, correction, code):
         _execute("__ex__", prep)
     items, value, ok = _execute("__ex__", code)
     if not ok:
-        fb = {"status": "ko", "message": "Votre code produit une erreur : corrigez-la d'abord (voir le résultat ci-dessous)."}
+        fb = {"status": "ko", "message": _t("py.verif.erreur", "Votre code produit une erreur : corrigez-la d'abord (voir le résultat ci-dessous).")}
     else:
         fb = compare(value, SOLUTIONS[key])
     return json.dumps({"ok": ok, "items": items, "feedback": fb})

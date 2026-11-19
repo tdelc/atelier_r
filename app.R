@@ -34,30 +34,39 @@ suppressPackageStartupMessages({
 options(shiny.maxRequestSize = 1e6)
 
 # --- Chargement unique, partagé par toutes les sessions -------------------------
+load_i18n()                    # textes de l'interface (i18n/interface.csv)
 sandbox_init()
 load_bases()
-PY_CONF <- register_python()   # bases en Python : fichiers servis au navigateur
+register_python()              # bases en Python : fichiers servis au navigateur
 load_dashboards()
 load_cours()
 load_pistes()
 load_exercices()
 
 # --- Interface -------------------------------------------------------------------
-ui <- atelier_page_navbar(
+# Construite à chaque chargement de page, dans la langue demandée (?lang=nl)
+ui <- function(req) {
+ lang <- langue_requete(req$QUERY_STRING)
+ avec_langue(lang, {
+ json <- function(x) jsonlite::toJSON(x, auto_unbox = TRUE)
+ py_conf <- py_config(lang)
+ atelier_page_navbar(
   title = span(class = "brand", icon("r-project"), "Atelier R"),
   window_title = "Atelier R",
   id = "onglets",
   theme = atelier_theme(),
+  lang = lang,
   header = tagList(
     tags$head(
       tags$link(rel = "stylesheet", href = "atelier.css"),
+      tags$script(HTML(paste0("window.ATELIER_LANG = '", lang, "'; window.ATELIER_TXT = ",
+                              json(tr_prefixe("js.")), ";"))),
       tags$script(src = "atelier.js"),
-      if (length(PY_CONF)) tagList(
-        tags$script(HTML(paste0("window.ATELIER_PY = ",
-                                jsonlite::toJSON(PY_CONF, auto_unbox = TRUE), ";"))),
+      if (length(py_conf)) tagList(
+        tags$script(HTML(paste0("window.ATELIER_PY = ", json(py_conf), "; window.ATELIER_PYTXT = ",
+                                json(tr_prefixe("py.")), ";"))),
         tags$script(src = "python/atelier_py.js")),
-      tags$meta(name = "description",
-                content = "Apprendre l'analyse de bases de données avec R : cours, découverte, exercices et dashboard.")
+      tags$meta(name = "description", content = tr("app.description"))
     ),
     tour_assets()
   ),
@@ -70,14 +79,20 @@ ui <- atelier_page_navbar(
   bslib::nav_item(
     base_selector("base")
   ),
-  bslib::nav_item(actionButton("btn_dico", tagList(icon("table-list"), "Dictionnaire"),
+  bslib::nav_item(actionButton("btn_dico", tagList(icon("table-list"), tr("commun.dictionnaire")),
                                class = "btn-sm btn-nav")),
-  bslib::nav_item(actionButton("btn_tour", tagList(icon("compass"), "Visite"),
-                               class = "btn-sm btn-nav"))
-)
+  bslib::nav_item(actionButton("btn_tour", tagList(icon("compass"), tr("nav.visite")),
+                               class = "btn-sm btn-nav")),
+  bslib::nav_item(langue_selecteur(lang))
+ )
+ })
+}
 
 # --- Serveur ---------------------------------------------------------------------
 server <- function(input, output, session) {
+  # la langue de la session, lue dans l'adresse (?lang=nl) ; tr() la retrouve
+  session$userData$lang <- langue_requete(isolate(session$clientData$url_search))
+
   base <- reactive({
     b <- input$base
     if (is.null(b) || !b %in% names(BASES)) names(BASES)[1] else b

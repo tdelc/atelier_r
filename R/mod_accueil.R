@@ -14,48 +14,37 @@ mod_accueil_ui <- function(id) {
     )
   }
   bslib::nav_panel(
-    title = tagList(icon("house"), "Accueil"), value = "accueil",
+    title = tagList(icon("house"), tr("onglet.accueil")), value = "accueil",
     div(class = "accueil",
         div(class = "hero",
-            div(class = "hero-kicker", "Introduction aux bases de données avec R"),
+            div(class = "hero-kicker", tr("accueil.kicker")),
             h1("Atelier R"),
-            p(class = "hero-lead",
-              "Apprendre, s'entraîner et découvrir l'analyse d'une base de données avec R et le tidyverse, ",
-              "à son rythme, depuis n'importe quel navigateur. Rien à installer : le code s'exécute sur le serveur."),
+            p(class = "hero-lead", tr("accueil.lead")),
             div(class = "d-flex flex-wrap gap-2",
-                actionButton(ns("tour"), tagList(icon("compass"), "Visite guidée"),
+                actionButton(ns("tour"), tagList(icon("compass"), tr("accueil.visite")),
                              class = "btn-primary"),
-                actionButton(ns("go_cours"), tagList("Commencer le cours", icon("arrow-right")),
+                actionButton(ns("go_cours"), tagList(tr("accueil.commencer"), icon("arrow-right")),
                              class = "btn-outline-primary"))),
 
-        h3(class = "section-title", "Quatre façons de travailler"),
+        h3(class = "section-title", tr("accueil.quatre_facons")),
         div(class = "volets",
-            volet("cours", "book-open", "Cours",
-                  "Les leçons du cours, carte par carte : l'explication, le code, le résultat, le commentaire. Jusqu'à une étude de cas complète."),
-            volet("decouverte", "flask", "Découverte",
-                  "Modifiez le code des exemples et observez ce qui change. Un bac à sable libre pour tester vos propres idées."),
-            volet("exercices", "pen-to-square", "Exercices",
-                  "Des questions de plus en plus difficiles, avec indice, vérification automatique de votre résultat et correction commentée."),
-            volet("dashboard", "chart-line", "Dashboard",
-                  "Un tableau de bord interactif écrit en R : ce que vous saurez faire avec les outils du cours.")),
+            volet("cours", "book-open", tr("onglet.cours"), tr("accueil.volet_cours")),
+            volet("decouverte", "flask", tr("onglet.decouverte"), tr("accueil.volet_decouverte")),
+            volet("exercices", "pen-to-square", tr("onglet.exercices"), tr("accueil.volet_exercices")),
+            volet("dashboard", "chart-line", tr("onglet.dashboard"), tr("accueil.volet_dashboard"))),
 
         h3(class = "section-title", nombre_bases_titre()),
-        p(class = "text-muted", "Choisissez la base en haut de l'écran : tous les volets s'adaptent."),
+        p(class = "text-muted", tr("accueil.choisir_base")),
         uiOutput(ns("bases")),
 
-        h3(class = "section-title", "Bon à savoir"),
+        h3(class = "section-title", tr("accueil.bon_a_savoir")),
         div(class = "savoir",
             div(icon("shield-halved"),
-                div(tags$strong("Un espace protégé. "),
-                    "Votre code s'exécute dans un environnement isolé : seules les fonctions du cours sont autorisées, et vous ne pouvez rien casser. Les bases d'origine restent intactes.")),
+                div(tags$strong(tr("accueil.protege_titre"), " "), tr("accueil.protege_texte"))),
             div(icon("floppy-disk"),
-                div(tags$strong("Votre progression reste dans votre navigateur. "),
-                    "Les exercices réussis sont mémorisés sur cet ordinateur, rien n'est envoyé à l'enseignant.")),
+                div(tags$strong(tr("accueil.progression_titre"), " "), tr("accueil.progression_texte"))),
             div(icon("laptop-code"),
-                div(tags$strong("Et dans RStudio ? "),
-                    "Tout le code de l'atelier fonctionne tel quel dans RStudio, après ",
-                    tags$code("library(tidyverse)"), " et l'import de la base avec ",
-                    tags$code("read_csv2()"), " ou ", tags$code("read_csv()"), ".")))
+                div(tags$strong(tr("accueil.rstudio_titre"), " "), HTML(tr("accueil.rstudio_texte")))))
     )
   )
 }
@@ -68,22 +57,22 @@ mod_accueil_server <- function(id, main_session, base_input_id = "base") {
     output$bases <- renderUI({
       cur <- main_session$input[[base_input_id]]
       carte_base <- function(b) {
-        B <- BASES[[b]]; D <- B$data
+        B <- info(b); D <- B$data
         chiffres <- c(stats::setNames(list(format(nrow(D), big.mark = " ")), B$nom_lignes),
-                      list(variables = ncol(D)),
+                      stats::setNames(list(ncol(D)), tr("accueil.variables")),
                       lapply(B$compter, function(col)
                         if (col %in% names(D)) dplyr::n_distinct(D[[col]]) else "?"))
         tags$button(
           type = "button", class = paste("base-card", if (identical(cur, b)) "active"),
           onclick = sprintf("Shiny.setInputValue('%s', '%s', {priority: 'event'})", session$ns("choisir"), b),
           div(class = "base-head", icon(B$icone), span(B$titre)),
-          div(class = "base-meta", tags$code(B$objet), " · une ligne = ", B$ligne),
+          div(class = "base-meta", tags$code(B$objet), " · ", tr("accueil.une_ligne"), " ", B$ligne),
           if (nzchar(B$description)) div(class = "base-desc", B$description),
           div(class = "base-chiffres",
               lapply(names(chiffres), function(n) div(div(class = "bc-val", chiffres[[n]]),
                                                      div(class = "bc-lab", n)))),
-          if (nzchar(B$source)) div(class = "base-source", "Source : ", B$source),
-          if (identical(cur, b)) div(class = "base-active", icon("check"), " Base sélectionnée")
+          if (nzchar(B$source)) div(class = "base-source", tr("accueil.source"), " ", B$source),
+          if (identical(cur, b)) div(class = "base-active", icon("check"), " ", tr("accueil.selectionnee"))
         )
       }
       div(class = "bases", lapply(names(BASES), carte_base))
@@ -100,7 +89,5 @@ mod_accueil_server <- function(id, main_session, base_input_id = "base") {
 
 # « Deux bases de données », « Trois bases de données »…
 nombre_bases_titre <- function(n = length(BASES)) {
-  mots <- c("Une base", "Deux bases", "Trois bases", "Quatre bases", "Cinq bases",
-            "Six bases", "Sept bases", "Huit bases", "Neuf bases", "Dix bases")
-  paste(if (n >= 1 && n <= 10) mots[n] else paste(n, "bases"), "de données")
+  if (n >= 1 && n <= 10) tr(paste0("accueil.bases", n)) else tr("accueil.basesN", n = n)
 }

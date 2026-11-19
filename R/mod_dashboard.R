@@ -16,7 +16,7 @@ dash_card <- function(ns, id, titre, sous_titre = NULL, height = "340px") {
       div(class = "d-flex align-items-start gap-2",
           div(div(class = "fw-semibold", titre),
               if (!is.null(sous_titre)) div(class = "small text-muted", sous_titre)),
-          actionButton(ns(paste0("code_", id)), tagList(icon("code"), "Voir le code"),
+          actionButton(ns(paste0("code_", id)), tagList(icon("code"), tr("dash.voir_code")),
                        class = "btn-outline-secondary btn-xs ms-auto code-btn"))
     ),
     bslib::card_body(class = "p-1", plotly::plotlyOutput(ns(paste0("plot_", id)), height = height))
@@ -25,12 +25,12 @@ dash_card <- function(ns, id, titre, sous_titre = NULL, height = "340px") {
 
 code_modal <- function(titre, code, intro = NULL) {
   showModal(modalDialog(
-    title = paste("Le code R derrière :", titre), size = "l", easyClose = TRUE,
-    footer = modalButton("Fermer"),
+    title = tr("dash.code_titre", titre = titre), size = "l", easyClose = TRUE,
+    footer = modalButton(tr("commun.fermer")),
     if (!is.null(intro)) p(class = "text-muted", intro),
     code_block(code, copy = TRUE),
     div(class = "callout callout-note",
-        HTML("<p>Pour rendre un graphique <code>ggplot2</code> interactif (survol, zoom), il suffit de le passer à <code>ggplotly()</code> du paquet <strong>plotly</strong>. Dans l'application Shiny, ce code est placé dans un <code>renderPlotly({ … })</code> : il est relancé automatiquement à chaque changement de filtre.</p>"))
+        HTML(tr("dash.code_note")))
   ))
 }
 
@@ -49,7 +49,7 @@ run_dash_code <- function(code, objets) {
 mod_dashboard_ui <- function(id) {
   ns <- NS(id)
   bslib::nav_panel(
-    title = tagList(icon("chart-line"), "Dashboard"), value = "dashboard",
+    title = tagList(icon("chart-line"), tr("onglet.dashboard")), value = "dashboard",
     div(class = "dash-intro",
         uiOutput(ns("intro"))),
     lapply(names(BASES), function(b) {
@@ -63,16 +63,14 @@ mod_dashboard_ui <- function(id) {
 mod_dashboard_server <- function(id, base) {
   moduleServer(id, function(input, output, session) {
     output$intro <- renderUI({
-      B <- BASES[[base()]]
+      B <- info(base())
       if (is.null(B$dash_env))
-        return(aucun_contenu("Pas de tableau de bord pour cette base",
-                             sprintf("Pour en créer un, ajoutez un fichier %s (voir docs/GUIDE_CONTENUS.md).",
-                                     base_path(base(), "dashboard.R"))))
+        return(aucun_contenu(tr("dash.vide_titre"),
+                             tr("dash.vide_texte", fichier = base_path(base(), "dashboard.R"))))
       div(class = "lesson-head",
-          div(class = "lesson-kicker", paste("Dashboard ·", B$objet)),
+          div(class = "lesson-kicker", paste(tr("onglet.dashboard"), "·", B$objet)),
           h2(B$dashboard_titre),
-          p(class = "lead-sub",
-            "Ce tableau de bord est écrit en R, avec les outils du cours : les verbes du tidyverse pour préparer les données, ggplot2 pour les graphiques, plotly pour l'interactivité et Shiny pour l'application. Cliquez sur « Voir le code » sous chaque titre."))
+          p(class = "lead-sub", tr("dash.intro")))
     })
     for (b in names(BASES))
       if (!is.null(BASES[[b]]$dash_env)) BASES[[b]]$dash_env$dashboard_server(b)

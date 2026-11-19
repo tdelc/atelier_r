@@ -22,6 +22,7 @@ tour_assets <- function() {
   tags$script(HTML("
   (function() {
     var box = null, target = null;
+    function T(k) { return (window.ATELIER_TXT || {})[k] || k; }
     function send(a) { Shiny.setInputValue('atelier_tour_action', {action: a, ts: Date.now()}, {priority: 'event'}); }
     function build() {
       box = document.createElement('div');
@@ -61,10 +62,10 @@ tour_assets <- function() {
           if (el) { el.classList.add('tour-target'); target = el; el.scrollIntoView({behavior: 'smooth', block: 'center'}); }
           var last = msg.step >= msg.total;
           box.innerHTML = (msg.title ? '<h5>' + msg.title + '</h5>' : '') + msg.html +
-            '<div class=\"tour-foot\"><span class=\"tour-step\">Étape ' + msg.step + ' / ' + msg.total + '</span>' +
-            '<button class=\"btn btn-sm btn-link\" data-tour=\"quit\">Quitter</button>' +
-            (msg.step > 1 ? '<button class=\"btn btn-sm btn-outline-secondary\" data-tour=\"prev\">Précédent</button>' : '') +
-            '<button class=\"btn btn-sm btn-primary\" data-tour=\"next\">' + (last ? 'Terminer' : 'Suivant') + '</button></div>';
+            '<div class=\"tour-foot\"><span class=\"tour-step\">' + T('js.tour_etape') + ' ' + msg.step + ' / ' + msg.total + '</span>' +
+            '<button class=\"btn btn-sm btn-link\" data-tour=\"quit\">' + T('js.tour_quitter') + '</button>' +
+            (msg.step > 1 ? '<button class=\"btn btn-sm btn-outline-secondary\" data-tour=\"prev\">' + T('js.tour_precedent') + '</button>' : '') +
+            '<button class=\"btn btn-sm btn-primary\" data-tour=\"next\">' + (last ? T('js.tour_terminer') : T('js.tour_suivant')) + '</button></div>';
           box.style.display = 'block';
           position(el);
           setTimeout(function() { position(el); }, 450);
@@ -86,10 +87,12 @@ mod_tour_server <- function(start, base, main_session) {
   show_step <- function(i) {
     s <- rv$steps[[i]]
     if (!is.null(s$tab) && nzchar(s$tab)) bslib::nav_select("onglets", s$tab, session = session)
-    vals <- list(base = if (est_python(base())) BASES[[base()]]$libelle else BASES[[base()]]$objet, titre_base = BASES[[base()]]$titre,
+    B <- info(base())
+    infos <- lapply(names(BASES), info)
+    vals <- list(base = if (est_python(base())) B$libelle else B$objet, titre_base = B$titre,
                  nb_bases = length(BASES),
-                 liste_bases = paste0("**", vapply(BASES, `[[`, "", "libelle"), "** (",
-                                      vapply(BASES, `[[`, "", "titre"), ")", collapse = ", "))
+                 liste_bases = paste0("**", vapply(infos, `[[`, "", "libelle"), "** (",
+                                      vapply(infos, `[[`, "", "titre"), ")", collapse = ", "))
     fill <- function(x) { for (k in names(vals)) x <- gsub(paste0("{", k, "}"), vals[[k]], x, fixed = TRUE); x }
     session$sendCustomMessage("atelier_tour", list(
       action = "show",
@@ -101,7 +104,10 @@ mod_tour_server <- function(start, base, main_session) {
     ))
   }
   observeEvent(start(), {
-    rv$steps <- read_tour("content/tour_fr.md")
+    # la visite dans la langue de la session (content/tour_nl.md…), sinon en français
+    f <- file.path("content", paste0("tour_", langue(), ".md"))
+    if (!file.exists(f)) f <- "content/tour_fr.md"
+    rv$steps <- read_tour(f)
     if (!length(rv$steps)) return()
     rv$i <- 1; show_step(1)
   })

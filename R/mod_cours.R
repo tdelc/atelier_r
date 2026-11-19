@@ -7,18 +7,39 @@
 # est ouverte, puis le rendu est gardé en mémoire pour tous les étudiants.
 # ============================================================================
 
-COURS <- new.env()       # leçons lues (par base)
-COURS_CACHE <- new.env() # rendus HTML des leçons (par base/leçon)
+COURS <- new.env()       # leçons lues (par base et par langue)
+COURS_CACHE <- new.env() # rendus HTML des leçons (par langue/base/leçon)
+
+# Les leçons d'une base dans une langue : chaque leçon traduite remplace la
+# leçon française du même nom de fichier ; les autres restent en français
+# (lesson$traduit vaut FALSE). L'ordre est celui des fichiers français.
+cours_de <- function(base, lang = langue()) {
+  key <- paste(base, lang)
+  if (is.null(COURS[[key]])) {
+    fr <- read_course(base_path(base, "cours"))
+    for (id in names(fr)) fr[[id]]$traduit <- identical(lang, LANGUE_SOURCE)
+    d <- file.path(BASES[[base]]$dir, lang, "cours")
+    if (!identical(lang, LANGUE_SOURCE) && dir.exists(d)) {
+      trad <- read_course(d)
+      for (id in intersect(names(fr), names(trad))) {
+        fr[[id]] <- trad[[id]]
+        fr[[id]]$traduit <- TRUE
+      }
+    }
+    COURS[[key]] <- fr
+  }
+  COURS[[key]]
+}
 
 load_cours <- function() {
-  for (b in names(BASES)) COURS[[b]] <- read_course(base_path(b, "cours"))
+  for (b in names(BASES)) for (l in names(LANGUES)) cours_de(b, l)
 }
 
 # Leçon en Python : le code s'exécute dans le navigateur (www/python/). Les
 # cartes contiennent des emplacements <div class="py-out"> que le navigateur
 # remplit ; py_lesson_chunks() donne la liste des blocs à exécuter, dans le
 # même ordre que ces emplacements.
-py_lesson_key <- function(base, lesson) paste("cours", base, lesson$id, sep = "/")
+py_lesson_key <- function(base, lesson, lang = langue()) paste("cours", lang, base, lesson$id, sep = "/")
 
 py_lesson_chunks <- function(lesson) {
   segs <- unlist(lapply(lesson$cards, `[[`, "segments"), recursive = FALSE)
@@ -34,7 +55,7 @@ render_lesson_py <- function(base, lesson) {
       if (s$type == "text") return(htmltools::div(class = "card-text", md_to_html(s$md)))
       if (s$mode == "norun")
         return(htmltools::div(class = "chunk chunk-norun", code_block(s$code, lang = "python"),
-                              htmltools::div(class = "chunk-badge", "Non exécuté dans l'atelier")))
+                              htmltools::div(class = "chunk-badge", tr("cours.non_execute"))))
       idx <<- idx + 1L
       if (s$mode == "setup") return(NULL)
       htmltools::div(class = "chunk", code_block(s$code, copy = TRUE, lang = "python"),
@@ -45,8 +66,8 @@ render_lesson_py <- function(base, lesson) {
 }
 
 # Exécute toute une leçon et renvoie le HTML de chaque carte
-render_lesson <- function(base, lesson) {
-  key <- paste(base, lesson$id, sep = "/")
+render_lesson <- function(base, lesson, lang = langue()) {
+  key <- paste(lang, base, lesson$id, sep = "/")
   if (!is.null(COURS_CACHE[[key]])) return(COURS_CACHE[[key]])
   if (est_python(base)) return(COURS_CACHE[[key]] <- render_lesson_py(base, lesson))
   env <- sandbox_new_env(base_datasets(base))
@@ -55,7 +76,7 @@ render_lesson <- function(base, lesson) {
       if (s$type == "text") return(htmltools::div(class = "card-text", md_to_html(s$md)))
       if (s$mode == "norun")
         return(htmltools::div(class = "chunk chunk-norun", code_block(s$code),
-                              htmltools::div(class = "chunk-badge", "Non exécuté dans l'atelier")))
+                              htmltools::div(class = "chunk-badge", tr("cours.non_execute"))))
       run <- sandbox_run(s$code, env)
       if (s$mode == "setup") return(NULL)
       htmltools::div(class = "chunk", render_run(run, show_source = TRUE, copy = TRUE))
@@ -69,11 +90,11 @@ render_lesson <- function(base, lesson) {
 mod_cours_ui <- function(id) {
   ns <- NS(id)
   bslib::nav_panel(
-    title = tagList(icon("book-open"), "Cours"), value = "cours",
+    title = tagList(icon("book-open"), tr("onglet.cours")), value = "cours",
     bslib::layout_sidebar(
       fillable = FALSE,
       sidebar = bslib::sidebar(
-        id = ns("sb"), width = 300, title = "Leçons", open = "desktop",
+        id = ns("sb"), width = 300, title = tr("cours.lecons"), open = "desktop",
         uiOutput(ns("lessons"))
       ),
       div(id = ns("zone"), class = "cours-zone",
@@ -88,7 +109,7 @@ mod_cours_server <- function(id, base, bus, main_session) {
     ns <- session$ns
     rv <- reactiveValues(lesson = NULL, card = 1)
 
-    lessons <- reactive(COURS[[base()]])
+    lessons <- reactive(cours_de(base()))
 
     observeEvent(base(), {
       rv$lesson <- names(lessons())[1]
@@ -116,18 +137,18 @@ mod_cours_server <- function(id, base, bus, main_session) {
     rendered <- reactive({
       L <- current()
       if (est_python(base())) return(render_lesson(base(), L))
-      shiny::withProgress(message = "Exécution du code de la leçon…", value = 0.5,
+      shiny::withProgress(message = tr("cours.execution"), value = 0.5,
                           render_lesson(base(), L))
     })
 
     output$lessons <- renderUI({
       L <- lessons()
-      if (!length(L)) return(p(class = "text-muted small", "Aucune leçon pour cette base."))
+      if (!length(L)) return(p(class = "text-muted small", tr("cours.aucune_lecon")))
       items <- data.frame(
         id = names(L),
         num = sprintf("%02d", seq_along(L)),
         label = vapply(L, `[[`, "", "titre"),
-        sub = sprintf("%d cartes", vapply(L, function(x) length(x$cards), 1L)),
+        sub = vapply(L, function(x) tr("cours.n_cartes", n = length(x$cards)), ""),
         group = vapply(L, `[[`, "", "partie"),
         stringsAsFactors = FALSE
       )
@@ -136,14 +157,15 @@ mod_cours_server <- function(id, base, bus, main_session) {
 
     output$head <- renderUI({
       if (!length(lessons()))
-        return(aucun_contenu("Pas encore de cours pour cette base",
-                             sprintf("Ajoutez des leçons dans le dossier %s.", base_path(base(), "cours"))))
+        return(aucun_contenu(tr("cours.vide_titre"),
+                             tr("cours.vide_texte", dossier = base_path(base(), "cours"))))
       L <- current(); k <- rv$card; n <- n_cards()
       idx <- which(names(lessons()) == rv$lesson)
       div(class = "lesson-head",
           div(class = "lesson-kicker",
-              sprintf("Leçon %d / %d · %s", idx, length(lessons()), base_kicker(base()))),
+              tr("cours.kicker", i = idx, n = length(lessons()), base = base_kicker(base()))),
           h2(L$titre),
+          if (!isTRUE(L$traduit)) div(class = "non-traduit", icon("language"), " ", tr("contenu.non_traduit")),
           p(class = "lead-sub", L$resume),
           div(class = "card-dots",
               lapply(seq_len(n), function(i) {
@@ -188,21 +210,21 @@ mod_cours_server <- function(id, base, bus, main_session) {
         bslib::card_body(class = "lesson-body", HTML(html)),
         bslib::card_footer(
           div(class = "d-flex flex-wrap gap-2 align-items-center",
-              actionButton(ns("prev"), tagList(icon("arrow-left"), "Précédente"),
+              actionButton(ns("prev"), tagList(icon("arrow-left"), tr("cours.precedente")),
                            class = "btn-outline-secondary btn-sm",
                            disabled = if (k == 1) "disabled"),
               if (has_code)
-                actionButton(ns("try"), tagList(icon("flask"), "Modifier ce code dans Découverte"),
+                actionButton(ns("try"), tagList(icon("flask"), tr("cours.essayer")),
                              class = "btn-outline-primary btn-sm"),
               div(class = "ms-auto"),
               if (k < n)
-                actionButton(ns("next"), tagList("Suivante", icon("arrow-right")),
+                actionButton(ns("next"), tagList(tr("cours.suivante"), icon("arrow-right")),
                              class = "btn-primary btn-sm")
               else if (!last_lesson)
-                actionButton(ns("next"), tagList("Leçon suivante", icon("arrow-right")),
+                actionButton(ns("next"), tagList(tr("cours.lecon_suivante"), icon("arrow-right")),
                              class = "btn-success btn-sm")
               else span(class = "text-success small fw-semibold",
-                        icon("flag-checkered"), " Fin du cours : place aux exercices !")
+                        icon("flag-checkered"), " ", tr("cours.fin"))
           )
         )
       )

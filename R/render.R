@@ -94,8 +94,8 @@ code_block <- function(code, copy = TRUE, lang = "r") {
   htmltools::div(
     class = "code-wrap",
     if (copy) htmltools::tags$button(
-      type = "button", class = "btn-copier", title = "Copier le code",
-      `data-code` = code, htmltools::HTML("Copier")
+      type = "button", class = "btn-copier", title = tr("code.copier_titre"),
+      `data-code` = code, htmltools::HTML(tr("code.copier"))
     ),
     htmltools::tags$pre(class = paste("code-r", if (identical(lang, "python")) "code-py"),
                         .noWS = c("inside", "outside"),
@@ -113,7 +113,7 @@ render_run <- function(run, show_source = TRUE, copy = FALSE) {
   if (length(run$blocked)) {
     return(htmltools::div(
       class = "res-blocked",
-      htmltools::tags$strong("Code non exécuté"),
+      htmltools::tags$strong(tr("code.non_execute")),
       htmltools::tags$ul(lapply(run$blocked, htmltools::tags$li))
     ))
   }
@@ -130,13 +130,13 @@ render_run <- function(run, show_source = TRUE, copy = FALSE) {
     pieces[[length(pieces) + 1]] <- switch(
       it$type,
       output  = htmltools::tags$pre(class = "code-out", .noWS = "inside", prefix_lines(it$text)),
-      plot    = htmltools::div(class = "code-plot", htmltools::tags$img(src = it$src, alt = "Graphique")),
+      plot    = htmltools::div(class = "code-plot", htmltools::tags$img(src = it$src, alt = tr("code.graphique"))),
       html    = viewer_frame(it$html),
       message = htmltools::HTML(sprintf('<div class="res-message">%s</div>', esc(it$text))),
-      warning = htmltools::HTML(sprintf('<div class="res-warning"><strong>Avertissement : </strong>%s</div>', esc(it$text))),
+      warning = htmltools::HTML(sprintf('<div class="res-warning"><strong>%s </strong>%s</div>', tr("code.avertissement"), esc(it$text))),
       error   = htmltools::div(
         class = "res-error",
-        htmltools::HTML(sprintf('<div class="res-msg"><strong>Erreur : </strong>%s</div>', esc(it$text))),
+        htmltools::HTML(sprintf('<div class="res-msg"><strong>%s </strong>%s</div>', tr("code.erreur"), esc(it$text))),
         if (nzchar(it$hint %||% "")) htmltools::div(class = "res-hint", it$hint)
       )
     )

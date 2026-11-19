@@ -4,9 +4,9 @@
 
 # page_navbar() compatible avec les versions anciennes (< 0.9) et récentes de
 # bslib (navbar_options() remplace les arguments bg / inverse)
-atelier_page_navbar <- function(..., title, id, theme, header, window_title) {
+atelier_page_navbar <- function(..., title, id, theme, header, window_title, lang = "fr") {
   args <- list(..., title = title, id = id, theme = theme, header = header,
-               window_title = window_title, fillable = FALSE, lang = "fr")
+               window_title = window_title, fillable = FALSE, lang = lang)
   if (utils::packageVersion("bslib") >= "0.9.0") {
     args$navbar_options <- bslib::navbar_options(bg = "#1f3a5f", theme = "dark",
                                                  underline = TRUE)
@@ -81,19 +81,18 @@ side_list <- function(input_id, items, active = NULL) {
 
 # Fenêtre « Dictionnaire des variables »
 dico_modal <- function(base) {
-  d <- BASES[[base]]$dico
+  B <- info(base)
+  d <- B$dico
   shiny::modalDialog(
-    title = paste("Dictionnaire des variables —", BASES[[base]]$objet),
-    size = "l", easyClose = TRUE, footer = shiny::modalButton("Fermer"),
+    title = tr("dico.titre", objet = B$objet),
+    size = "l", easyClose = TRUE, footer = shiny::modalButton(tr("commun.fermer")),
     htmltools::p(class = "text-muted",
-                 sprintf("%s. Source : %s. Une ligne = %s.",
-                         BASES[[base]]$titre, BASES[[base]]$source,
-                         BASES[[base]]$ligne)),
+                 tr("dico.intro", titre = B$titre, source = B$source, ligne = B$ligne)),
     htmltools::tags$table(
       class = "table table-sm dico-table",
       htmltools::tags$thead(htmltools::tags$tr(
-        htmltools::tags$th("Variable"), htmltools::tags$th("Contenu"),
-        htmltools::tags$th("Type"), htmltools::tags$th("Modalités / unité"))),
+        htmltools::tags$th(tr("dico.variable")), htmltools::tags$th(tr("dico.contenu")),
+        htmltools::tags$th(tr("dico.type")), htmltools::tags$th(tr("dico.modalites")))),
       htmltools::tags$tbody(lapply(seq_len(nrow(d)), function(i) {
         htmltools::tags$tr(
           htmltools::tags$td(htmltools::tags$code(d$variable[i])),
@@ -123,10 +122,13 @@ fonctions_modal <- function() {
     "Échelles (scales)" = SANDBOX_ALLOWED$scales,
     "Tableaux (gt, affichés dans le Viewer)" = SANDBOX_ALLOWED$gt
   )
+  names(groupes) <- c(tr("fn.g_verbes"), tr("fn.g_jointures"), tr("fn.g_boucles"),
+                      tr("fn.g_dates"), tr("fn.g_texte"), tr("fn.g_base"), tr("fn.g_graphiques"),
+                      "ggplot2", tr("fn.g_echelles"), tr("fn.g_gt"))
   shiny::modalDialog(
-    title = "Les fonctions disponibles dans l'atelier",
-    size = "l", easyClose = TRUE, footer = shiny::modalButton("Fermer"),
-    htmltools::p("Pour des raisons de sécurité, le code est exécuté sur le serveur dans un espace protégé : seules les fonctions ci-dessous sont autorisées. Elles couvrent tout le cours. Les bases sont déjà chargées : pas besoin de ", htmltools::tags$code("library()"), " ni de ", htmltools::tags$code("read_csv()"), "."),
+    title = tr("fn.titre"),
+    size = "l", easyClose = TRUE, footer = shiny::modalButton(tr("commun.fermer")),
+    htmltools::p(htmltools::HTML(tr("fn.intro"))),
     lapply(names(groupes), function(g) {
       htmltools::tagList(
         htmltools::h6(class = "mt-3", g),
@@ -135,7 +137,7 @@ fonctions_modal <- function() {
       )
     }),
     htmltools::div(class = "callout callout-piege mt-3",
-                   htmltools::HTML("<p>Non disponibles ici : lire ou écrire des fichiers, <code>library()</code>, <code>::</code>, les boucles <code>while</code> et <code>repeat</code>, les fonctions récursives, <code>&lt;&lt;-</code>. La base de droite d\'une jointure doit avoir une seule ligne par clé. Le calcul est interrompu au-delà de 15 secondes.</p>"))
+                   htmltools::HTML(tr("fn.interdits")))
   )
 }
 
@@ -150,15 +152,15 @@ page_head <- function(titre, sous_titre = NULL, ...) {
 # Tableau des objets d'un environnement de travail
 env_objects_ui <- function(env) {
   nms <- sort(ls(env))
-  if (!length(nms)) return(htmltools::p(class = "text-muted small", "Aucun objet."))
+  if (!length(nms)) return(htmltools::p(class = "text-muted small", tr("objets.aucun")))
   htmltools::tags$table(
     class = "table table-sm env-table",
     htmltools::tags$tbody(lapply(nms, function(n) {
       obj <- get(n, envir = env)
       desc <- if (is.data.frame(obj)) {
-        sprintf("tableau : %s × %s", format(nrow(obj), big.mark = " "), ncol(obj))
+        tr("objets.tableau", l = format(nrow(obj), big.mark = " "), c = ncol(obj))
       } else if (inherits(obj, "ggplot")) {
-        "graphique ggplot"
+        tr("objets.ggplot")
       } else if (is.atomic(obj)) {
         sprintf("%s [%s]", class(obj)[1], format(length(obj), big.mark = " "))
       } else class(obj)[1]
@@ -183,31 +185,28 @@ base_selector <- function(input_id = "base") {
     shiny::radioButtons(
       input_id, NULL, inline = TRUE,
       choiceNames = lapply(ids, function(b) htmltools::tagList(shiny::icon(BASES[[b]]$icone),
-                                                               BASES[[b]]$libelle)),
+                                                               info(b)$libelle)),
       choiceValues = as.list(ids))
   } else {
     htmltools::div(class = "base-select",
                    shiny::selectInput(input_id, NULL, width = "200px",
-                                      choices = stats::setNames(ids, vapply(BASES, `[[`, "", "libelle"))))
+                                      choices = stats::setNames(ids, vapply(ids, function(b) info(b)$libelle, ""))))
   }
 }
 
 # Fenêtre « Python dans l'atelier » (à la place des fonctions autorisées)
 python_modal <- function() {
   shiny::modalDialog(
-    title = "Python dans l'atelier",
-    size = "l", easyClose = TRUE, footer = shiny::modalButton("Fermer"),
-    htmltools::p("Pour cette base, le code Python s'exécute ", htmltools::strong("dans votre navigateur"),
-                 " (avec Pyodide), et non sur le serveur : toutes les fonctions de Python sont disponibles."),
-    htmltools::h6(class = "mt-3", "Paquets disponibles"),
+    title = tr("py.titre"),
+    size = "l", easyClose = TRUE, footer = shiny::modalButton(tr("commun.fermer")),
+    htmltools::p(htmltools::HTML(tr("py.intro"))),
+    htmltools::h6(class = "mt-3", tr("py.paquets")),
     htmltools::div(class = "fn-list", lapply(c("pandas", "numpy", "pyarrow", "duckdb", "matplotlib",
                                                "seaborn", "openpyxl", "datetime", "math", "pathlib"),
                                              htmltools::tags$code)),
-    htmltools::h6(class = "mt-3", "Vos fichiers"),
-    htmltools::p("Les fichiers du cours sont dans ", htmltools::tags$code("donnees/"), " et ",
-                 htmltools::tags$code("referentiels/"), ". Ce que vous écrivez va dans ",
-                 htmltools::tags$code("sortie/"), " : ces fichiers restent dans votre navigateur et disparaissent quand vous fermez la page."),
+    htmltools::h6(class = "mt-3", tr("py.fichiers")),
+    htmltools::p(htmltools::HTML(tr("py.fichiers_texte"))),
     htmltools::div(class = "callout callout-piege mt-3",
-                   htmltools::HTML("<p>Le premier lancement télécharge Python et ses paquets (environ 10 secondes). Une boucle qui ne s'arrête jamais bloque Python : rechargez alors la page.</p>"))
+                   htmltools::HTML(paste0("<p>", tr("py.attention"), "</p>")))
   )
 }

@@ -9,25 +9,32 @@
 # ============================================================================
 
 PISTES <- new.env()
-load_pistes <- function() {
-  for (b in names(BASES)) {
-    f <- base_path(b, "decouverte.md")
-    PISTES[[b]] <- if (file.exists(f)) read_pistes(f) else list()
+
+# Les pistes d'une base dans une langue (decouverte.md traduit, sinon français)
+pistes_de <- function(base, lang = langue()) {
+  key <- paste(base, lang)
+  if (is.null(PISTES[[key]])) {
+    f <- content_file(base, "decouverte.md", lang)
+    PISTES[[key]] <- if (file.exists(f$path)) read_pistes(f$path) else list()
   }
+  PISTES[[key]]
+}
+
+load_pistes <- function() {
+  for (b in names(BASES)) for (l in names(LANGUES)) pistes_de(b, l)
 }
 
 libre_code <- function(base)
-  paste0("# Bac à sable libre : écrivez votre code ici, puis Ctrl + Entrée\n",
-         BASES[[base]]$code_libre, "\n")
+  paste0("# ", tr("dec.libre_commentaire"), "\n", info(base)$code_libre, "\n")
 
 mod_decouverte_ui <- function(id) {
   ns <- NS(id)
   bslib::nav_panel(
-    title = tagList(icon("flask"), "Découverte"), value = "decouverte",
+    title = tagList(icon("flask"), tr("onglet.decouverte")), value = "decouverte",
     bslib::layout_sidebar(
       fillable = FALSE,
       sidebar = bslib::sidebar(
-        id = ns("sb"), width = 290, title = "Pistes à explorer", open = "desktop",
+        id = ns("sb"), width = 290, title = tr("dec.pistes"), open = "desktop",
         uiOutput(ns("pistes"))
       ),
       div(class = "decouverte-zone",
@@ -39,17 +46,17 @@ mod_decouverte_ui <- function(id) {
                 class = "editor-card",
                 bslib::card_header(
                   div(class = "d-flex flex-wrap gap-2 align-items-center",
-                      span(class = "fw-semibold", icon("code"), " Votre code"),
-                      span(class = "text-muted small d-none d-md-inline", "Ctrl + Entrée pour exécuter"),
+                      span(class = "fw-semibold", icon("code"), " ", tr("dec.votre_code")),
+                      span(class = "text-muted small d-none d-md-inline", tr("commun.ctrl_entree")),
                       div(class = "ms-auto d-flex gap-2",
-                          ace_button(ns("run"), ns("code"), tagList(icon("play"), "Exécuter"),
+                          ace_button(ns("run"), ns("code"), tagList(icon("play"), tr("commun.executer")),
                                      class = "btn-primary btn-sm ace-default"),
-                          actionButton(ns("reset_code"), tagList(icon("rotate-left"), "Code de départ"),
+                          actionButton(ns("reset_code"), tagList(icon("rotate-left"), tr("dec.code_depart")),
                                        class = "btn-outline-secondary btn-sm",
-                                       title = "Remettre le code de départ de la piste"),
-                          actionButton(ns("reset_env"), tagList(icon("broom"), "Nouvel environnement"),
+                                       title = tr("dec.code_depart_aide")),
+                          actionButton(ns("reset_env"), tagList(icon("broom"), tr("dec.nouvel_env")),
                                        class = "btn-outline-secondary btn-sm",
-                                       title = "Effacer les objets créés et recharger les bases d'origine")))
+                                       title = tr("dec.nouvel_env_aide"))))
                 ),
                 shinyAce::aceEditor(
                   ns("code"), value = "", mode = "r", theme = "chrome",
@@ -60,7 +67,7 @@ mod_decouverte_ui <- function(id) {
               ),
               bslib::card(
                 class = "result-card",
-                bslib::card_header(span(class = "fw-semibold", icon("terminal"), " Résultat"),
+                bslib::card_header(span(class = "fw-semibold", icon("terminal"), " ", tr("dec.resultat")),
                                    uiOutput(ns("timing"), inline = TRUE)),
                 bslib::card_body(uiOutput(ns("result")),
                                  div(id = ns("pyres"), class = "py-target"))
@@ -69,14 +76,14 @@ mod_decouverte_ui <- function(id) {
             div(
               uiOutput(ns("idees")),
               bslib::card(
-                bslib::card_header(span(class = "fw-semibold", icon("box-archive"), " Objets disponibles")),
+                bslib::card_header(span(class = "fw-semibold", icon("box-archive"), " ", tr("dec.objets"))),
                 bslib::card_body(
                   uiOutput(ns("objets")),
                   div(id = ns("objets_py"), class = "py-target"),
                   div(class = "d-flex flex-wrap gap-2",
-                      actionButton(ns("dico"), tagList(icon("table-list"), "Dictionnaire"),
+                      actionButton(ns("dico"), tagList(icon("table-list"), tr("commun.dictionnaire")),
                                    class = "btn-outline-primary btn-sm"),
-                      actionButton(ns("fonctions"), tagList(icon("shield-halved"), "Fonctions autorisées"),
+                      actionButton(ns("fonctions"), tagList(icon("shield-halved"), tr("dec.fonctions")),
                                    class = "btn-outline-secondary btn-sm"))
                 )
               )
@@ -92,7 +99,7 @@ mod_decouverte_server <- function(id, base, bus, main_session) {
     rv <- reactiveValues(piste = "1", env = NULL, run = NULL, from_cours = NULL,
                          env_version = 0, notice = NULL, py_ran = FALSE, py_sec = NULL)
 
-    pistes <- reactive(PISTES[[base()]])
+    pistes <- reactive(pistes_de(base()))
 
     new_env <- function(setup = "") {
       if (est_python(base())) {
@@ -111,21 +118,21 @@ mod_decouverte_server <- function(id, base, bus, main_session) {
     current <- reactive({
       if (identical(rv$piste, "cours") && !is.null(rv$from_cours)) {
         return(list(title = rv$from_cours$titre,
-                    description = "Code importé depuis le cours. Les cartes précédentes de la leçon ont été exécutées en arrière-plan : les variables qu'elles créent sont disponibles.",
+                    description = tr("dec.depuis_cours_texte"),
                     code = rv$from_cours$code, setup = rv$from_cours$setup, idees = ""))
       }
       if (identical(rv$piste, "libre") && est_python(base()))
-        return(list(title = "Bac à sable libre",
-                    description = "Un espace pour écrire votre propre code Python. Les fichiers du cours sont dans `donnees/` et `referentiels/` ; ce que vous créez reste disponible tant que vous ne cliquez pas sur « Nouvel environnement ».",
+        return(list(title = tr("dec.libre"),
+                    description = tr("dec.libre_python"),
                     code = libre_code(base()), setup = "", idees = ""))
       if (identical(rv$piste, "libre"))
-        return(list(title = "Bac à sable libre",
-                    description = sprintf("Un espace pour écrire votre propre code sur `%s`. Les objets que vous créez restent disponibles tant que vous ne cliquez pas sur « Nouvel environnement ».", BASES[[base()]]$objet),
+        return(list(title = tr("dec.libre"),
+                    description = tr("dec.libre_r", objet = info(base())$objet),
                     code = libre_code(base()), setup = "", idees = ""))
       i <- suppressWarnings(as.integer(rv$piste))
       if (!length(pistes())) {
-        return(list(title = "Bac à sable libre",
-                    description = sprintf("Un espace pour écrire votre propre code sur `%s`.", BASES[[base()]]$objet),
+        return(list(title = tr("dec.libre"),
+                    description = tr("dec.libre_court", objet = info(base())$objet),
                     code = libre_code(base()), setup = "", idees = ""))
       }
       if (is.na(i) || i > length(pistes())) i <- 1
@@ -161,14 +168,14 @@ mod_decouverte_server <- function(id, base, bus, main_session) {
       items <- data.frame(id = as.character(seq_along(P)),
                           num = sprintf("%02d", seq_along(P)),
                           label = vapply(P, `[[`, "", "title"),
-                          sub = rep("", length(P)), group = rep("Pistes guidées", length(P)),
+                          sub = rep("", length(P)), group = rep(tr("dec.pistes_guidees"), length(P)),
                           stringsAsFactors = FALSE)
-      extra <- data.frame(id = "libre", num = "✎", label = "Bac à sable libre",
-                          sub = "Votre propre code", group = "Espace libre",
+      extra <- data.frame(id = "libre", num = "✎", label = tr("dec.libre"),
+                          sub = tr("dec.propre_code"), group = tr("dec.espace_libre"),
                           stringsAsFactors = FALSE)
       if (!is.null(rv$from_cours))
-        extra <- rbind(data.frame(id = "cours", num = "↩", label = "Code venant du cours",
-                                  sub = rv$from_cours$titre, group = "Espace libre",
+        extra <- rbind(data.frame(id = "cours", num = "↩", label = tr("dec.depuis_cours"),
+                                  sub = rv$from_cours$titre, group = tr("dec.espace_libre"),
                                   stringsAsFactors = FALSE), extra)
       side_list(ns("piste"), rbind(items, extra), active = rv$piste)
     })
@@ -176,18 +183,19 @@ mod_decouverte_server <- function(id, base, bus, main_session) {
     output$head <- renderUI({
       p <- current()
       div(class = "lesson-head",
-          div(class = "lesson-kicker", paste("Découverte ·", base_kicker(base()))),
+          div(class = "lesson-kicker", paste(tr("onglet.decouverte"), "·", base_kicker(base()))),
           h2(p$title),
           div(class = "lead-sub", md_to_html(p$description)))
     })
 
     output$idees <- renderUI({
       p <- current()
-      txt <- sub("^\\s*##\\s*À essayer\\s*\n", "", p$idees)
+      # le titre « ## À essayer » (ou sa traduction) est remplacé par l'en-tête
+      txt <- sub("^\\s*##[^\n]*\n", "", p$idees)
       if (!nzchar(trimws(txt))) return(NULL)
       bslib::card(
         class = "idees-card",
-        bslib::card_header(span(class = "fw-semibold", icon("lightbulb"), " À essayer")),
+        bslib::card_header(span(class = "fw-semibold", icon("lightbulb"), " ", tr("dec.a_essayer"))),
         bslib::card_body(md_to_html(txt))
       )
     })
@@ -212,7 +220,7 @@ mod_decouverte_server <- function(id, base, bus, main_session) {
     observeEvent(input$reset_env, {
       new_env(current()$setup)
       rv$run <- NULL
-      showNotification("Nouvel environnement : les bases d'origine sont rechargées.",
+      showNotification(tr("dec.env_recharge"),
                        type = "message", duration = 3)
     })
 
@@ -230,12 +238,12 @@ mod_decouverte_server <- function(id, base, bus, main_session) {
       r <- rv$run
       if (est_python(base()))
         return(if (!rv$py_ran) div(class = "empty-result", icon("play"),
-                                   " Cliquez sur « Exécuter » (ou Ctrl + Entrée) pour lancer le code. Python s'exécute dans votre navigateur."))
+                                   " ", tr("dec.cliquez_python")))
       if (is.null(r))
         return(div(class = "empty-result", icon("play"),
-                   " Cliquez sur « Exécuter » (ou Ctrl + Entrée) pour lancer le code."))
+                   " ", tr("dec.cliquez")))
       if (!length(r$items) && !length(r$blocked))
-        return(div(class = "empty-result", "Le code s'est exécuté sans rien afficher. Pour voir un objet, tapez son nom sur une ligne."))
+        return(div(class = "empty-result", tr("dec.rien_affiche")))
       div(class = "run-output", render_run(r, show_source = TRUE, copy = FALSE))
     })
 

@@ -8,13 +8,13 @@ sandbox_init(); load_bases(); load_exercices()
 ok <- 0; ko <- 0
 expect <- function(desc, cond) if (isTRUE(cond)) ok <<- ok + 1 else { ko <<- ko + 1; cat("ÉCHEC :", desc, "\n") }
 verdict <- function(base, id, code) {
-  e <- Filter(function(x) x$id == id, EXERCICES[[base]])[[1]]
+  e <- Filter(function(x) x$id == id, exercices_de(base, "fr"))[[1]]
   env <- sandbox_new_env(base_datasets(base))
   if (nzchar(e$preparation)) sandbox_run(e$preparation, env)
   compare_results(sandbox_run(code, env)$value, solution_of(base, e)$value)$status
 }
 # Chaque correction est acceptée par la vérification
-for (b in Filter(function(b) !est_python(b), names(BASES))) for (e in EXERCICES[[b]]) if (e$verif == "valeur")
+for (b in Filter(function(b) !est_python(b), names(BASES))) for (e in exercices_de(b, "fr")) if (e$verif == "valeur")
   expect(paste("correction acceptée", b, e$id), verdict(b, e$id, e$correction) == "ok")
 
 # Réponses équivalentes écrites autrement

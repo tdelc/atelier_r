@@ -231,3 +231,12 @@ details.prep summary { cursor: pointer; color: var(--muted); }
 .py-table p { font-size: .78rem; color: var(--muted); margin: .3rem 0 0; }
 .py-where { font-size: .8rem; margin: .3rem 0; padding: .3rem .5rem; background: rgba(0,0,0,.03); }
 .py-result:not(:empty) { margin: .8rem 0; padding: .9rem 1rem; background: #fff; border: 1px solid var(--line); border-radius: .5rem; }
+
+/* ---- Langues ---- */
+.lang-select { display: inline-flex; gap: 2px; background: rgba(255,255,255,.12); border-radius: 999px; padding: 3px; }
+.lang-link { color: #dfe8f2; text-decoration: none; font-size: .8rem; font-weight: 600; padding: .22rem .55rem; border-radius: 999px; }
+.lang-link:hover { color: #fff; }
+.lang-link.active { background: #fff; color: var(--ink); }
+.non-traduit { display: inline-block; margin: .2rem 0 .6rem; padding: .25rem .7rem; border-radius: .4rem; background: #fff6ec; color: #8a5a1c; font-size: .85rem; }
+.callout-sas:lang(nl)::before { content: "Brug naar SAS"; }
+.callout-sas:lang(en)::before { content: "SAS bridge"; }

@@ -11,19 +11,30 @@
 EXERCICES <- new.env()
 SOLUTIONS_CACHE <- new.env()
 
-load_exercices <- function() {
-  for (b in names(BASES)) {
-    f <- base_path(b, "exercices.md")
-    EXERCICES[[b]] <- if (file.exists(f)) read_exercises(f) else list()
+# Les exercices d'une base dans une langue (exercices.md traduit, sinon
+# français). Les identifiants (ex01, ex02…) suivent l'ordre du fichier : une
+# traduction garde le même ordre, et la progression vaut pour toutes les
+# langues.
+exercices_de <- function(base, lang = langue()) {
+  key <- paste(base, lang)
+  if (is.null(EXERCICES[[key]])) {
+    f <- content_file(base, "exercices.md", lang)
+    E <- if (file.exists(f$path)) read_exercises(f$path) else list()
+    for (i in seq_along(E)) E[[i]]$traduit <- f$traduit
+    EXERCICES[[key]] <- E
   }
+  EXERCICES[[key]]
 }
 
-NIVEAUX <- c("1" = "Niveau 1 · Premiers pas", "2" = "Niveau 2 · Regrouper",
-             "3" = "Niveau 3 · Créer des variables", "4" = "Niveau 4 · Mettre en forme",
-             "5" = "Niveau 5 · Synthèse")
+load_exercices <- function() {
+  for (b in names(BASES)) for (l in names(LANGUES)) exercices_de(b, l)
+}
 
-solution_of <- function(base, ex) {
-  key <- paste(base, ex$id, sep = "/")
+# Titre d'un niveau dans la liste des exercices
+niveau_titre <- function(n) tr(paste0("ex.niveau", n))
+
+solution_of <- function(base, ex, lang = langue()) {
+  key <- paste(lang, base, ex$id, sep = "/")
   if (is.null(SOLUTIONS_CACHE[[key]])) {
     env <- sandbox_new_env(base_datasets(base))
     if (nzchar(ex$preparation)) sandbox_run(ex$preparation, env)
@@ -35,11 +46,11 @@ solution_of <- function(base, ex) {
 mod_exercices_ui <- function(id) {
   ns <- NS(id)
   bslib::nav_panel(
-    title = tagList(icon("pen-to-square"), "Exercices"), value = "exercices",
+    title = tagList(icon("pen-to-square"), tr("onglet.exercices")), value = "exercices",
     bslib::layout_sidebar(
       fillable = FALSE,
       sidebar = bslib::sidebar(
-        id = ns("sb"), width = 300, title = "Exercices", open = "desktop",
+        id = ns("sb"), width = 300, title = tr("onglet.exercices"), open = "desktop",
         uiOutput(ns("progress")),
         uiOutput(ns("liste"))
       ),
@@ -49,14 +60,14 @@ mod_exercices_ui <- function(id) {
             class = "editor-card",
             bslib::card_header(
               div(class = "d-flex flex-wrap gap-2 align-items-center",
-                  span(class = "fw-semibold", icon("code"), " Votre réponse"),
-                  span(class = "text-muted small d-none d-md-inline", "Ctrl + Entrée pour exécuter"),
+                  span(class = "fw-semibold", icon("code"), " ", tr("ex.votre_reponse")),
+                  span(class = "text-muted small d-none d-md-inline", tr("commun.ctrl_entree")),
                   div(class = "ms-auto d-flex flex-wrap gap-2",
-                      ace_button(ns("run"), ns("code"), tagList(icon("play"), "Exécuter"),
+                      ace_button(ns("run"), ns("code"), tagList(icon("play"), tr("commun.executer")),
                                  class = "btn-outline-primary btn-sm ace-default"),
-                      ace_button(ns("check"), ns("code"), tagList(icon("circle-check"), "Vérifier"),
+                      ace_button(ns("check"), ns("code"), tagList(icon("circle-check"), tr("ex.verifier")),
                                  class = "btn-primary btn-sm"),
-                      actionButton(ns("reset"), tagList(icon("rotate-left"), "Effacer"),
+                      actionButton(ns("reset"), tagList(icon("rotate-left"), tr("ex.effacer")),
                                    class = "btn-outline-secondary btn-sm")))
             ),
             shinyAce::aceEditor(
@@ -81,7 +92,7 @@ mod_exercices_server <- function(id, base, main_session) {
     rv <- reactiveValues(i = 1, run = NULL, feedback = NULL, show_hint = FALSE,
                          show_corr = FALSE, progress = list())
 
-    exs <- reactive(EXERCICES[[base()]])
+    exs <- reactive(exercices_de(base()))
     ex <- reactive({
       req(length(exs()) > 0)
       i <- min(rv$i, length(exs())); exs()[[i]]
@@ -153,7 +164,7 @@ mod_exercices_server <- function(id, base, main_session) {
       if (est_python(base())) {
         if (e$verif == "aucune") {
           py_run_student(input$check$code)
-          rv$feedback <- list(status = "na", message = "Pas de vérification automatique pour cet exercice : comparez avec la correction.")
+          rv$feedback <- list(status = "na", message = tr("ex.pas_de_verif"))
           return(set_status("tente"))
         }
         main_session$sendCustomMessage("py_check", list(
@@ -163,9 +174,9 @@ mod_exercices_server <- function(id, base, main_session) {
       }
       r <- run_student(input$check$code); rv$run <- r
       if (length(r$blocked) || !r$ok) {
-        rv$feedback <- list(status = "ko", message = "Votre code produit une erreur : corrigez-la d'abord (voir le résultat ci-dessous).")
+        rv$feedback <- list(status = "ko", message = tr("verif.erreur"))
       } else if (e$verif == "aucune") {
-        rv$feedback <- list(status = "na", message = "Pas de vérification automatique pour cet exercice : comparez avec la correction.")
+        rv$feedback <- list(status = "na", message = tr("ex.pas_de_verif"))
       } else {
         rv$feedback <- compare_results(r$value, solution_of(base(), e)$value)
       }
@@ -178,12 +189,12 @@ mod_exercices_server <- function(id, base, main_session) {
 
     output$progress <- renderUI({
       E <- exs()
-      if (!length(E)) return(p(class = "text-muted small", "Aucun exercice pour cette base."))
+      if (!length(E)) return(p(class = "text-muted small", tr("ex.aucun")))
       st <- vapply(E, function(e) rv$progress[[pkey(e)]] %||% "", "")
       ok <- sum(st == "reussi"); n <- length(E)
       div(class = "ex-progress",
           div(class = "d-flex justify-content-between small",
-              span("Réussis"), span(class = "fw-semibold", sprintf("%d / %d", ok, n))),
+              span(tr("ex.reussis")), span(class = "fw-semibold", sprintf("%d / %d", ok, n))),
           div(class = "progress", style = "height: 6px;",
               div(class = "progress-bar bg-success", style = sprintf("width: %.0f%%", 100 * ok / n))))
     })
@@ -198,7 +209,7 @@ mod_exercices_server <- function(id, base, main_session) {
         sub = vapply(E, `[[`, "", "theme"),
         group = ifelse(nzchar(vapply(E, function(e) e$groupe %||% "", "")),
                        vapply(E, function(e) e$groupe %||% "", ""),
-                       NIVEAUX[as.character(vapply(E, `[[`, 1L, "niveau"))]),
+                       vapply(vapply(E, `[[`, 1L, "niveau"), niveau_titre, "")),
         status = ifelse(nzchar(st), st, "aucun"),
         stringsAsFactors = FALSE
       )
@@ -207,8 +218,8 @@ mod_exercices_server <- function(id, base, main_session) {
 
     output$enonce <- renderUI({
       if (!length(exs()))
-        return(aucun_contenu("Pas encore d'exercices pour cette base",
-                             sprintf("Ajoutez-les dans le fichier %s.", base_path(base(), "exercices.md"))))
+        return(aucun_contenu(tr("ex.vide_titre"),
+                             tr("ex.vide_texte", fichier = base_path(base(), "exercices.md"))))
       e <- ex(); n <- length(exs())
       bslib::card(
         class = "enonce-card",
@@ -217,21 +228,22 @@ mod_exercices_server <- function(id, base, main_session) {
               span(class = "card-count", sprintf("%d / %d", min(rv$i, n), n)),
               h4(class = "m-0", e$title),
               span(class = paste0("badge niveau niveau-", e$niveau),
-                   sprintf("Niveau %d", e$niveau)),
+                   tr("ex.niveau", n = e$niveau)),
               if (nzchar(e$theme)) span(class = "badge theme-badge", e$theme))
         ),
         bslib::card_body(
+          if (!isTRUE(e$traduit)) div(class = "non-traduit", icon("language"), " ", tr("contenu.non_traduit")),
           md_to_html(e$enonce),
           if (nzchar(e$preparation))
             tags$details(class = "prep",
-                         tags$summary("Code déjà exécuté avant le vôtre"),
+                         tags$summary(tr("ex.preparation")),
                          code_block(e$preparation, copy = FALSE, lang = base_lang(base()))),
           div(class = "d-flex flex-wrap gap-2 mt-2",
               actionButton(ns("hint"), tagList(icon("lightbulb"),
-                                               if (rv$show_hint) "Masquer l'indice" else "Indice"),
+                                               if (rv$show_hint) tr("ex.masquer_indice") else tr("ex.indice")),
                            class = "btn-outline-warning btn-sm"),
               if (!rv$show_corr)
-                actionButton(ns("show_corr"), tagList(icon("eye"), "Voir la correction"),
+                actionButton(ns("show_corr"), tagList(icon("eye"), tr("ex.voir_correction")),
                              class = "btn-outline-secondary btn-sm")),
           if (rv$show_hint && nzchar(e$indice))
             div(class = "callout callout-usage mt-3", md_to_html(e$indice))
@@ -252,10 +264,10 @@ mod_exercices_server <- function(id, base, main_session) {
       if (is.null(r)) return(NULL)
       bslib::card(
         class = "result-card",
-        bslib::card_header(span(class = "fw-semibold", icon("terminal"), " Votre résultat")),
+        bslib::card_header(span(class = "fw-semibold", icon("terminal"), " ", tr("ex.votre_resultat"))),
         bslib::card_body(
           if (!length(r$items) && !length(r$blocked))
-            div(class = "empty-result", "Le code s'est exécuté sans rien afficher.")
+            div(class = "empty-result", tr("ex.rien_affiche"))
           else div(class = "run-output", render_run(r, show_source = TRUE)))
       )
     })
@@ -279,8 +291,8 @@ mod_exercices_server <- function(id, base, main_session) {
         class = "correction-card",
         bslib::card_header(
           div(class = "d-flex align-items-center",
-              span(class = "fw-semibold", icon("graduation-cap"), " Correction"),
-              actionButton(ns("hide_corr"), "Masquer", class = "btn-link btn-sm ms-auto"))),
+              span(class = "fw-semibold", icon("graduation-cap"), " ", tr("ex.correction")),
+              actionButton(ns("hide_corr"), tr("ex.masquer"), class = "btn-link btn-sm ms-auto"))),
         bslib::card_body(
           corps,
           if (nzchar(e$commentaire))
@@ -292,11 +304,11 @@ mod_exercices_server <- function(id, base, main_session) {
       n <- length(exs())
       if (!n) return(NULL)
       div(class = "d-flex gap-2 my-3",
-          actionButton(ns("prev"), tagList(icon("arrow-left"), "Exercice précédent"),
+          actionButton(ns("prev"), tagList(icon("arrow-left"), tr("ex.precedent")),
                        class = "btn-outline-secondary btn-sm",
                        disabled = if (rv$i <= 1) "disabled"),
           div(class = "ms-auto"),
-          actionButton(ns("suiv"), tagList("Exercice suivant", icon("arrow-right")),
+          actionButton(ns("suiv"), tagList(tr("ex.suivant"), icon("arrow-right")),
                        class = "btn-primary btn-sm",
                        disabled = if (rv$i >= n) "disabled"))
     })

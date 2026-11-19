@@ -51,19 +51,19 @@ same_column <- function(a, b) {
 compare_results <- function(student, solution) {
   sol <- as_comparable(solution)
   if (is.null(sol))
-    return(list(status = "na", message = "Ce résultat ne se vérifie pas automatiquement : comparez avec la correction."))
+    return(list(status = "na", message = tr("verif.na")))
   stu <- as_comparable(student)
   if (is.null(stu))
-    return(list(status = "ko", message = "Votre code ne produit pas de tableau ou de valeur à comparer. La dernière ligne de votre code doit afficher le résultat demandé."))
+    return(list(status = "ko", message = tr("verif.pas_de_valeur_r")))
 
   n_sol <- length(sol[[1]]); n_stu <- length(stu[[1]])
   if (n_sol == 1 && length(sol) == 1 && n_stu == 1 && length(stu) == 1 &&
       !same_column(stu[[1]], sol[[1]]))
-    return(list(status = "ko", message = "La valeur obtenue n'est pas celle attendue. Relisez l'énoncé : population (filtre), variable et calcul."))
+    return(list(status = "ko", message = tr("verif.valeur_r")))
   if (n_sol != n_stu)
     return(list(status = "ko",
-                message = sprintf("Votre résultat a %s ligne(s), la correction en a %s. Vérifiez vos filtres et vos regroupements.",
-                                  format(n_stu, big.mark = " "), format(n_sol, big.mark = " "))))
+                message = tr("verif.lignes_r", eleve = format(n_stu, big.mark = " "),
+                             sol = format(n_sol, big.mark = " "))))
   used <- logical(length(stu))
   missing <- 0
   for (col in sol) {
@@ -71,8 +71,7 @@ compare_results <- function(student, solution) {
     if (length(hit)) used[hit[1]] <- TRUE else missing <- missing + 1
   }
   if (missing == 0)
-    return(list(status = "ok", message = "Bravo, votre résultat correspond à la correction !"))
+    return(list(status = "ok", message = tr("verif.ok")))
   list(status = "ko",
-       message = sprintf("Le nombre de lignes est bon, mais %d colonne(s) de la correction ne se retrouvent pas dans votre résultat. Vérifiez vos calculs (na.rm, conditions, variable utilisée).",
-                         missing))
+       message = tr("verif.colonnes_r", n = missing))
 }

@@ -24,7 +24,7 @@ for (b in names(BASES)) {
   expect(paste(b, ": objet dans le bac à sable"), B$objet %in% names(base_datasets(b)))
   if (est_python(b)) {
     expect(paste(b, ": dossier Python"), dir.exists(base_path(b, B$dossier_python)))
-    expect(paste(b, ": leçons en Python"), all(vapply(unlist(lapply(COURS[[b]], function(L)
+    expect(paste(b, ": leçons en Python"), all(vapply(unlist(lapply(cours_de(b, "fr"), function(L)
       Filter(function(s) s$type == "code", unlist(lapply(L$cards, `[[`, "segments"), recursive = FALSE))),
       recursive = FALSE), function(s) s$lang == "python", TRUE)))
   }
@@ -36,11 +36,12 @@ for (b in names(BASES)) {
     if (exists("DASH_CODE", envir = B$dash_env, inherits = FALSE))
       cat(sprintf("  %s : dashboard, %d graphiques\n", b, length(B$dash_env$DASH_CODE)))
   }
-  cat(sprintf("  %s : %d leçons, %d pistes, %d exercices\n", b, length(COURS[[b]]),
-              length(PISTES[[b]]), length(EXERCICES[[b]])))
+  cat(sprintf("  %s : %d leçons, %d pistes, %d exercices\n", b, length(cours_de(b, "fr")),
+              length(pistes_de(b, "fr")), length(exercices_de(b, "fr"))))
 }
 expect("interface de l'onglet Dashboard", !inherits(tryCatch(mod_dashboard_ui("dashboard"), error = function(e) e), "error"))
-expect("configuration Python", is.list(register_python()))
+expect("configuration Python", is.list(py_config("fr")) && is.list(py_config("nl")))
+expect("textes d'interface", nzchar(tr("cours.suivante", lang = "nl")) && tr("cours.n_cartes", n = 3, lang = "en") == "3 cards")
 expect("sélecteur de base", !inherits(tryCatch(base_selector("base"), error = function(e) e), "error"))
 
 # --- Une nouvelle base minimale, dans un dossier temporaire ---------------------

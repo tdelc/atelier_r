@@ -34,8 +34,9 @@
     if (!b) return;
     var txt = b.getAttribute("data-code") || "";
     var done = function () {
-      b.classList.add("copied"); b.textContent = "Copié !";
-      setTimeout(function () { b.classList.remove("copied"); b.textContent = "Copier"; }, 1400);
+      var T = function (k) { return (window.ATELIER_TXT || {})[k] || k; };
+      b.classList.add("copied"); b.textContent = T("js.copie");
+      setTimeout(function () { b.classList.remove("copied"); b.textContent = T("js.copier"); }, 1400);
     };
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(txt).then(done, function () {});
@@ -90,4 +91,17 @@
       try { window.localStorage.setItem(KEY, json); } catch (err) {}
     });
   });
+})();
+
+// --- Langue : la dernière choisie est retenue dans ce navigateur -------------
+(function () {
+  var KEY = "atelierR_langue";
+  var params = new URLSearchParams(window.location.search);
+  try {
+    if (params.has("lang")) window.localStorage.setItem(KEY, params.get("lang"));
+    else {
+      var l = window.localStorage.getItem(KEY);
+      if (l && l !== "fr") { params.set("lang", l); window.location.replace("?" + params.toString()); }
+    }
+  } catch (err) {}
 })();

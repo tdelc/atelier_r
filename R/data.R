@@ -137,10 +137,73 @@ load_bases <- function(app_dir = ".") {
     B$extras_data <- lapply(B$extras, read_data_file)
     dico <- file.path(B$dir, "dictionnaire.csv")
     B$dico <- if (file.exists(dico)) read_dictionary(dico) else auto_dictionary(B$data)
+    B$langs <- read_base_langs(B, app_dir)
     infos[[b]] <- B
   }
   BASES <<- infos
   invisible(BASES)
+}
+
+# --- Les autres langues d'une base -------------------------------------------
+# bases/<base>/<langue>/ (nl/, en/…) reprend la structure de la base :
+#   base.txt          seulement les clés à traduire (titre, libelle,
+#                     description, ligne, source, nom_lignes, code_libre…) ;
+#                     il peut aussi désigner d'autres données (objet,
+#                     fichier, compter, demarrage_python)
+#   dictionnaire.csv, cours/*.md, decouverte.md, exercices.md
+# Tout ce qui manque reste en français.
+
+CLES_TRADUISIBLES <- c("objet", "libelle", "titre", "source", "ligne", "description",
+                       "nom_lignes", "compter", "code_libre", "dashboard_titre",
+                       "demarrage_python", "fichier", "separateur")
+
+read_base_langs <- function(B, app_dir = ".") {
+  out <- list()
+  for (l in setdiff(names(LANGUES), LANGUE_SOURCE)) {
+    d <- file.path(B$dir, l)
+    if (!dir.exists(d)) next
+    f <- file.path(d, "base.txt")
+    m <- if (file.exists(f)) read_base_txt(f) else list()
+    L <- list(meta = m)
+    if (!is.null(m$fichier)) {
+      L$data <- read_data_file(find_base_file(B$dir, m$fichier, app_dir), m$separateur)
+    }
+    dico <- file.path(d, "dictionnaire.csv")
+    if (file.exists(dico)) L$dico <- read_dictionary(dico)
+    else if (!is.null(L$data)) L$dico <- auto_dictionary(L$data)
+    out[[l]] <- L
+  }
+  out
+}
+
+# La description d'une base dans une langue : les champs traduits remplacent
+# les champs français ; B$traduit dit si la langue existe pour cette base
+info <- function(base, lang = langue()) {
+  B <- BASES[[base]]
+  L <- B$langs[[lang]]
+  B$traduit <- identical(lang, LANGUE_SOURCE) || !is.null(L)
+  if (is.null(L)) return(B)
+  m <- L$meta
+  for (k in intersect(names(m), CLES_TRADUISIBLES)) {
+    B[[k]] <- switch(k,
+      compter = parse_named_list(m$compter),
+      code_libre = gsub("\\n", "\n", m$code_libre, fixed = TRUE),
+      m[[k]])
+  }
+  if (!is.null(m$demarrage_python)) B$meta$demarrage_python <- m$demarrage_python
+  if (!is.null(L$data)) B$data <- L$data
+  if (!is.null(L$dico)) B$dico <- L$dico
+  B
+}
+
+# Un fichier de contenu dans la langue demandée, ou en français s'il n'est
+# pas traduit : list(path, traduit)
+content_file <- function(base, rel, lang = langue()) {
+  if (!identical(lang, LANGUE_SOURCE)) {
+    p <- file.path(BASES[[base]]$dir, lang, rel)
+    if (file.exists(p)) return(list(path = p, traduit = TRUE))
+  }
+  list(path = file.path(BASES[[base]]$dir, rel), traduit = identical(lang, LANGUE_SOURCE))
 }
 
 # Dictionnaire minimal quand la base n'en a pas
@@ -202,8 +265,8 @@ base_lang <- function(base) if (est_python(base)) "python" else "r"
 
 # Petit libellé en tête des pages : l'objet R (BDD_NAIS) ou « Python · … »
 base_kicker <- function(base) {
-  if (!est_python(base)) return(BASES[[base]]$objet)
-  lib <- BASES[[base]]$libelle
+  if (!est_python(base)) return(info(base)$objet)
+  lib <- info(base)$libelle
   if (grepl("python", lib, ignore.case = TRUE)) lib else paste("Python ·", lib)
 }
 
@@ -213,15 +276,26 @@ py_resource <- function(base) paste0("pyfiles-", base)
 # Rend les fichiers des bases Python accessibles au navigateur, et renvoie la
 # configuration lue par www/python/atelier_py.js
 register_python <- function() {
+  for (b in names(BASES)) {
+    if (!est_python(b)) next
+    dir <- base_path(b, BASES[[b]]$dossier_python)
+    if (dir.exists(dir)) shiny::addResourcePath(py_resource(b), normalizePath(dir))
+  }
+  invisible(TRUE)
+}
+
+# Configuration lue par www/python/atelier_py.js, dans une langue : fichiers
+# à copier, code de démarrage (les tables préchargées dépendent de la langue)
+# et textes du moteur Python (aides d'erreur, messages de vérification)
+py_config <- function(lang = langue()) {
   conf <- list()
   for (b in names(BASES)) {
     if (!est_python(b)) next
     dir <- base_path(b, BASES[[b]]$dossier_python)
     files <- if (dir.exists(dir)) list.files(dir, recursive = TRUE) else character()
-    if (dir.exists(dir)) shiny::addResourcePath(py_resource(b), normalizePath(dir))
     conf[[b]] <- list(files = lapply(files, function(f)
       list(path = f, url = paste0(py_resource(b), "/", utils::URLencode(f)))),
-      demarrage = BASES[[b]]$meta$demarrage_python %||% "")
+      demarrage = info(b, lang)$meta$demarrage_python %||% "")
   }
   conf
 }
