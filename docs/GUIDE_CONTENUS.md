@@ -488,7 +488,47 @@ EXPORT1 |>
 
 ---
 
-## 9. Aide-mémoire des erreurs du test
+## 9. Traduire l'atelier (néerlandais, anglais)
+
+L'atelier existe en **français** (langue de référence), **néerlandais** et **anglais**. Le choix se fait par le sélecteur de langue en haut à droite, ou par l'adresse : `?lang=nl`, `?lang=en`. Le navigateur s'en souvient.
+
+Deux choses se traduisent séparément.
+
+**1. L'interface** (boutons, onglets, messages) : un seul fichier, `i18n/interface.csv`, une ligne par texte et une colonne par langue (`cle,fr,nl,en`). Une cellule vide affiche le français. Dans le code R, un texte s'écrit `tr("cle")`, avec des variables entre accolades : `tr("cours.n_cartes", n = 5)` pour « {n} cartes ». Les textes JavaScript (clés `js.…`) et ceux du moteur Python (clés `py.…`) sont dans le même fichier.
+
+**2. Le contenu d'une base** : un dossier par langue, à côté du français, avec **les mêmes noms de fichiers** :
+
+```
+bases/communes_py/
+  base.txt  dictionnaire.csv  cours/01-mise-en-route.md …   ← français (référence)
+  nl/
+    base.txt            ← seulement les clés traduites (titre, description, fichier…)
+    dictionnaire.csv
+    cours/01-mise-en-route.md …
+    exercices.md  decouverte.md
+    sources.txt         ← empreinte du français au moment de la traduction (automatique)
+```
+
+- **Tout fichier absent est pris en français.** On peut donc traduire progressivement ; un bandeau prévient l'étudiant quand une leçon n'est pas encore traduite.
+- Dans `nl/base.txt`, seules ces clés sont lues : `objet`, `libelle`, `titre`, `source`, `ligne`, `description`, `nom_lignes`, `compter`, `code_libre`, `dashboard_titre`, `demarrage_python`, `fichier`, `separateur`. Une base peut ainsi utiliser une **table traduite** (colonnes et modalités en néerlandais) et un script de démarrage Python propre à la langue (`demarrage_nl.py`).
+- **Ne traduisez pas la structure** : les marqueurs `::: usage`, `::: piege`, `::: note`, `::: etape`, `::: sas`, les modes de code (```` ```python erreur ````, `norun`, `setup`) et les métadonnées des exercices (`niveau:`, `theme:`, `groupe:`, `verif:`) restent tels quels. Les sous-titres des exercices peuvent être traduits (`## Opgave`, `## Hint`, `## Voorbereiding`, `## Startcode`, `## Oplossing`, `## Commentaar` ; en anglais `## Question`, `## Hint`, `## Preparation`, `## Starting code`, `## Solution`, `## Comment`).
+- **Les exercices gardent le même ordre** dans toutes les langues : la progression de l'étudiant est commune.
+- **Visite guidée** : `content/tour_nl.md`, `content/tour_en.md` (à défaut, `tour_fr.md`).
+- **Vocabulaire** : `i18n/glossaire.csv` fixe les traductions des termes du cours (tabel, rij, kolom, koppelen, opschonen…), pour rester cohérent d'une leçon à l'autre.
+
+**Le test des traductions** signale les textes d'interface manquants, une structure différente du français (nombre de cartes, de blocs de code, d'exercices, niveaux) et les traductions **périmées** : quand un fichier français change après sa traduction.
+
+```
+python tests/test_traductions.py                                    # bilan
+python tests/test_traductions.py --marquer nl bases/communes_py cours/03-calculer-compter.md
+python tests/test_traductions.py --marquer nl bases/communes_py --tout
+```
+
+Après avoir mis à jour une traduction, `--marquer` enregistre que le fichier est à jour (dans `nl/sources.txt`). Le contenu Python traduit est exécuté par `tests/test_python.py` comme le français.
+
+---
+
+## 10. Aide-mémoire des erreurs du test
 
 | Message dans `test_contenus.R` | Cause probable | Correction |
 |---|---|---|

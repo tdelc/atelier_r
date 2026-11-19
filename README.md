@@ -82,7 +82,12 @@ Rscript tests/test_verification.R      # vérification automatique des exercices
 Rscript tests/test_sandbox.R           # sécurité du bac à sable (113 tests)
 python tests/test_python.py            # contenu des bases en Python (Python du poste)
 node tests/test_python_navigateur.js   # le même, dans un navigateur avec Pyodide (application lancée)
+python tests/test_traductions.py        # traductions : textes manquants, structure, fichiers périmés
 ```
+
+## Langues
+
+L'interface existe en français, néerlandais et anglais (sélecteur en haut à droite, ou `?lang=nl` / `?lang=en` dans l'adresse). Les textes de l'interface sont dans `i18n/interface.csv` ; le contenu traduit d'une base est dans `bases/<base>/<langue>/` (mêmes noms de fichiers que le français, tout fichier absent est pris en français). Les deux cours Python sont traduits en néerlandais. Voir le guide, section « Traduire l'atelier », et `python tests/test_traductions.py`.
 
 ## Sécurité du code exécuté
 
@@ -118,6 +123,8 @@ R/render.R            coloration syntaxique, rendu des résultats, markdown
 R/viewer.R            le Viewer : tableaux gt affichés dans un cadre isolé
 R/content.R           lecture des fichiers de contenu
 R/compare.R           vérification automatique des exercices
+R/i18n.R              langues : tr(), choix de la langue
+i18n/                 textes de l'interface (interface.csv) et glossaire
 R/mod_*.R             un module par volet (accueil, cours, découverte, exercices, dashboard, visite)
 R/dash_code.R         le code R des graphiques du dashboard (exécuté ET affiché)
 www/                  CSS, JavaScript, fonds de carte
