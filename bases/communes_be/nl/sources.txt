@@ -1,0 +1,18 @@
+# Empreinte du fichier français au moment de la traduction (ne pas modifier :
+# python tests/test_traductions.py --marquer <langue> <base> <fichier>)
+base.txt: b0a4ca1b556e
+cours/01-types-operateurs.md: f8f41a15cd74
+cours/02-structures.md: d34707ccf55f
+cours/03-lire-exporter-fichiers.md: 1002c3dcf905
+cours/04-conditions.md: 20c354d47c73
+cours/05-boucles.md: ebabd7e475f1
+cours/06-fonctions.md: cc52bc5ce499
+cours/07-structurer-traitement.md: 30e64747f3f3
+cours/08-dataframes-inspection.md: 3029f7a2a2a1
+cours/09-selection-nettoyage.md: 74d3f65af996
+cours/10-agregations.md: de8546e54ce0
+cours/11-fusion.md: 638bd8af3a3f
+cours/12-consolider-duckdb.md: 6cad7c947e5f
+decouverte.md: a76ceb3cc1f7
+dictionnaire.csv: 488b23a8212e
+exercices.md: b20ec3bd096d
