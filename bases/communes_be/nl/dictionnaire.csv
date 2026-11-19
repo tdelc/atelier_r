@@ -1,0 +1,6 @@
+variable,libelle,type,modalites
+nis_code,"NIS-code (ook REFNIS-code) van de gemeente",Tekst,"5 cijfers: het eerste geeft de provincie aan, de eerste twee het arrondissement. Bv. 62063 = Luik"
+gemeente,Naam van de gemeente in het Nederlands,Tekst,565 gemeenten op 1 januari 2026
+mannen,Aantal mannen dat op 1 januari 2026 in de gemeente woont,Numeriek (geheel getal),
+vrouwen,Aantal vrouwen dat op 1 januari 2026 in de gemeente woont,Numeriek (geheel getal),
+totaal,Totale bevolking van de gemeente op 1 januari 2026,Numeriek (geheel getal),mannen + vrouwen

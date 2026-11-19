@@ -1,0 +1,13 @@
+# Nederlandse versie van de databank (alleen de vertaalde sleutels).
+
+objet: bevolking
+fichier: fichiers/gegevens/bevolking_gemeenten_2026.csv
+separateur: ;
+
+libelle: Python (oorspronkelijke cursus)
+titre: Bevolking van de Belgische gemeenten, 2026
+description: Een Python-cursus (pandas, NumPy, DuckDB) op de bestanden van Statbel: bevolking per gemeente op 1 januari 2026 en NUTS-nomenclatuur 2027. Vertrekt vanuit de basis van de taal.
+source: Statbel (Algemene Directie Statistiek)
+ligne: een gemeente
+nom_lignes: gemeenten
+code_libre: import pandas as pd\n\nbev = pd.read_csv("gegevens/bevolking_gemeenten_2026.csv", sep=";")\nbev.head()
