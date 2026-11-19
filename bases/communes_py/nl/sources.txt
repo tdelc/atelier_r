@@ -1,0 +1,22 @@
+# Empreinte du fichier français au moment de la traduction (ne pas modifier :
+# python tests/test_traductions.py --marquer <langue> <base> <fichier>)
+base.txt: 1b1377c0489c
+cours/01-mise-en-route.md: 7f7ebfd0f283
+cours/02-filtrer-selectionner.md: 51e4911cbcb9
+cours/03-calculer-compter.md: b26b31da96f1
+cours/04-explorer-variable.md: 59560e074ada
+cours/05-par-groupe.md: 4fcd33c53bfc
+cours/06-creer-variables.md: be05c4849d46
+cours/07-mettre-en-forme.md: bcdb5eaab60f
+cours/08-pourcentages-tableaux-croises.md: efa258b07793
+cours/09-traduire-une-phrase.md: e74a143a0cfe
+cours/10-graphiques.md: 64f67dc54e8f
+cours/11-analyse-a-z.md: b53f241b1dd0
+cours/12-importer-exporter.md: 45c9101d6532
+cours/13-empiler-fusionner.md: 34f3dce6d203
+cours/14-nettoyer.md: c5c3dee82be1
+cours/15-sql-duckdb.md: 37c8fa642075
+cours/16-boucles-fonctions.md: 36328111e9ea
+decouverte.md: dc964a22ce08
+dictionnaire.csv: 3bb56b8e49d0
+exercices.md: 8569415ab63f
