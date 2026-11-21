@@ -1,0 +1,49 @@
+classe;libelle;division;section;libelle_section
+01.11;Culture de céréales, de légumineuses et de graines oléagineuses;01;A;Agriculture, sylviculture et pêche
+01.41;Élevage de vaches laitières;01;A;Agriculture, sylviculture et pêche
+10.51;Exploitation de laiteries et fabrication de fromage;10;C;Industrie manufacturière
+10.71;Fabrication de pain et de pâtisserie fraîche;10;C;Industrie manufacturière
+20.14;Fabrication d'autres produits chimiques organiques de base;20;C;Industrie manufacturière
+21.20;Fabrication de préparations pharmaceutiques;21;C;Industrie manufacturière
+24.10;Sidérurgie;24;C;Industrie manufacturière
+25.62;Usinage;25;C;Industrie manufacturière
+29.10;Construction de véhicules automobiles;29;C;Industrie manufacturière
+35.11;Production d'électricité;35;D;Électricité et gaz
+38.11;Collecte des déchets non dangereux;38;E;Eau, déchets et dépollution
+41.20;Construction de bâtiments résidentiels et non résidentiels;41;F;Construction
+43.21;Installation électrique;43;F;Construction
+43.31;Travaux de plâtrerie;43;F;Construction
+45.20;Entretien et réparation de véhicules automobiles;45;G;Commerce
+46.90;Commerce de gros non spécialisé;46;G;Commerce
+47.11;Commerce de détail en magasin non spécialisé à prédominance alimentaire;47;G;Commerce
+47.30;Commerce de détail de carburants en magasin spécialisé;47;G;Commerce
+47.71;Commerce de détail d'habillement en magasin spécialisé;47;G;Commerce
+47.73;Commerce de détail de produits pharmaceutiques en magasin spécialisé;47;G;Commerce
+47.91;Vente à distance;47;G;Commerce
+49.41;Transports routiers de fret;49;H;Transports et entreposage
+52.29;Autres services auxiliaires des transports;52;H;Transports et entreposage
+55.10;Hôtels et hébergement similaire;55;I;Hébergement et restauration
+56.10;Restaurants et services de restauration mobile;56;I;Hébergement et restauration
+56.30;Débits de boissons;56;I;Hébergement et restauration
+58.13;Édition de journaux;58;J;Information et communication
+62.01;Programmation informatique;62;J;Information et communication
+62.02;Conseil informatique;62;J;Information et communication
+64.19;Autres intermédiations monétaires;64;K;Activités financières et d'assurance
+64.20;Activités des sociétés holding;64;K;Activités financières et d'assurance
+66.22;Activités des agents et courtiers d'assurances;66;K;Activités financières et d'assurance
+68.20;Location et exploitation de biens immobiliers propres ou loués;68;L;Activités immobilières
+69.10;Activités juridiques;69;M;Activités spécialisées, scientifiques et techniques
+69.20;Activités comptables;69;M;Activités spécialisées, scientifiques et techniques
+70.22;Conseil pour les affaires et autres conseils de gestion;70;M;Activités spécialisées, scientifiques et techniques
+71.11;Activités d'architecture;71;M;Activités spécialisées, scientifiques et techniques
+71.12;Activités d'ingénierie et de conseils techniques;71;M;Activités spécialisées, scientifiques et techniques
+73.11;Activités des agences de publicité;73;M;Activités spécialisées, scientifiques et techniques
+78.20;Activités des agences de travail temporaire;78;N;Services administratifs et de soutien
+81.21;Nettoyage courant des bâtiments;81;N;Services administratifs et de soutien
+85.59;Enseignement divers;85;P;Enseignement
+86.21;Activité des médecins généralistes;86;Q;Santé humaine et action sociale
+86.90;Autres activités pour la santé humaine;86;Q;Santé humaine et action sociale
+87.10;Hébergement médicalisé;87;Q;Santé humaine et action sociale
+88.10;Action sociale sans hébergement pour personnes âgées et handicapées;88;Q;Santé humaine et action sociale
+93.12;Activités de clubs de sports;93;R;Arts, spectacles et activités récréatives
+96.02;Coiffure et soins de beauté;96;S;Autres activités de services

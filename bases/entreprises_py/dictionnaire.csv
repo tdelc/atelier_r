@@ -1,0 +1,14 @@
+variable,libelle,type,modalites
+num_entreprise,"Numéro d'entreprise (fictif, au format BCE : 10 chiffres, les deux derniers forment une clé de contrôle modulo 97)",Texte,"Commence par 9 : un vrai numéro BCE commence par 0 ou 1, il ne peut donc pas désigner une vraie entreprise"
+nace,"Activité principale selon la Banque-Carrefour des Entreprises (BCE) : classe NACE-BEL 2008, 4 chiffres",Texte,"Ex. 56.10 = restaurants, 62.01 = programmation informatique"
+section,Section NACE (le premier niveau de la nomenclature),Texte,"Une lettre : C = industrie, F = construction, G = commerce, I = horeca, M = activités spécialisées…"
+secteur,Libellé de la section NACE,Texte,
+forme,Forme juridique,Texte,"SRL, SA, SC, ASBL, Personne physique"
+creation,Année de création de l'entreprise,Numérique (entier),
+code_ins,Code INS de la commune du siège,Texte,5 chiffres
+commune,Commune du siège,Texte,
+arrondissement,Arrondissement du siège,Texte,
+province,Province du siège,Texte,"10 provinces, plus Bruxelles-Capitale"
+region,Région du siège,Texte,"Bruxelles, Flandre, Wallonie"
+emploi,"Emploi salarié : nombre de postes de travail au 31 décembre 2025 (0 = pas de salarié)",Numérique (entier),
+ca,"Chiffre d'affaires 2025, en milliers d'euros, d'après les déclarations TVA",Numérique (décimal),"Vide pour les entreprises exonérées de TVA (médecins, banques, assurances, enseignement, ASBL du social et du sport…)"

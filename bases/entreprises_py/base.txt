@@ -1,0 +1,28 @@
+# ============================================================================
+# Base « entreprises_py » : le cours Python « par la table », côté
+# ENTREPRISES : chiffre d'affaires, emploi, secteur (NACE), région.
+# Les entreprises sont FICTIVES (simulées pour l'atelier, voir
+# data-raw/preparer_entreprises_py.py) ; les communes, la nomenclature NUTS et
+# les classes NACE sont réelles.
+# ============================================================================
+
+langage: python
+
+objet: entreprises
+fichier: fichiers/donnees/entreprises_2025.csv
+separateur: ;
+
+libelle: Entreprises
+titre: Python par la table : les entreprises, 2025
+description: Chiffre d'affaires, emploi, secteur d'activité (NACE) et région de 12 000 entreprises fictives. Puis les vraies difficultés : déclarations TVA trimestrielles, emploi ONSS, NACE qui diffèrent d'une source à l'autre.
+source: Données fictives, simulées pour l'atelier (communes, NUTS et classes NACE réelles)
+ligne: une entreprise
+icone: industry
+ordre: 5
+nom_lignes: entreprises
+compter: secteurs = section, communes = code_ins
+
+dossier_python: fichiers
+demarrage_python: demarrage.py
+
+code_libre: entreprises.head()
