@@ -4,7 +4,7 @@ objet: bevolking
 fichier: fichiers/gegevens/bevolking_gemeenten_2026.csv
 separateur: ;
 
-libelle: Python (oorspronkelijke cursus)
+libelle: Gemeenten (oorspronkelijke cursus)
 titre: Bevolking van de Belgische gemeenten, 2026
 description: Een Python-cursus (pandas, NumPy, DuckDB) op de bestanden van Statbel: bevolking per gemeente op 1 januari 2026 en NUTS-nomenclatuur 2027. Vertrekt vanuit de basis van de taal.
 source: Statbel (Algemene Directie Statistiek)

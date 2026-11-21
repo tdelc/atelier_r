@@ -6,7 +6,7 @@ fichier: fichiers/gegevens/gemeenten_2026.csv
 separateur: ;
 demarrage_python: demarrage_nl.py
 
-libelle: Python
+libelle: Gemeenten
 titre: Python vanuit de tabel: de Belgische gemeenten, 2026
 description: Pandas leren vanuit de tabellen, voor wie SAS gewend is: filteren, tellen, groeperen, kruisen, voorstellen, en daarna je eigen bestanden inlezen, koppelen en opschonen.
 source: Statbel (bevolking op 1 januari 2026, NUTS-nomenclatuur 2027)

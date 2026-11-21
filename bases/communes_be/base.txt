@@ -11,7 +11,7 @@ objet: population
 fichier: fichiers/donnees/population_communes_2026.csv
 separateur: ;
 
-libelle: Python (support d’origine)
+libelle: Communes (support d’origine)
 titre: Population des communes belges, 2026
 description: Un cours en Python (pandas, NumPy, DuckDB) sur les fichiers de Statbel : population par commune au 1er janvier 2026 et nomenclature NUTS 2027.
 source: Statbel (Direction générale Statistique)

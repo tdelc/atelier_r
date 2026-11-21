@@ -85,6 +85,7 @@ Une ligne = `clé: valeur`. Les lignes qui commencent par `#` sont des commentai
 | `objet` | nom de l'objet R dans le code des étudiants (`BDD_CHOMAGE`) | `BDD_` + nom du dossier en majuscules |
 | `fichier` | fichier de données, dans le dossier de la base (ou dans `data/`) : `.rds` ou `.csv` | `<objet>.rds` |
 | `separateur` | séparateur d'un CSV : `;` (lu avec `read_csv2()`, virgule décimale) ou `,` (`read_csv()`) | détecté sur la première ligne |
+| `actif` | `non` pour désactiver la base sans supprimer ses fichiers (elle n'est ni chargée ni proposée) | `oui` |
 | `libelle` | nom court, dans le sélecteur du haut | nom du dossier |
 | `titre` | titre complet (accueil, dictionnaire, visite) | `libelle` |
 | `description` | une phrase de présentation sur la page d'accueil | aucune |

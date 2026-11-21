@@ -1,6 +1,6 @@
 # Empreinte du fichier français au moment de la traduction (ne pas modifier :
 # python tests/test_traductions.py --marquer <langue> <base> <fichier>)
-base.txt: 1b1377c0489c
+base.txt: 4db38cea6762
 cours/01-mise-en-route.md: 7f7ebfd0f283
 cours/02-filtrer-selectionner.md: 51e4911cbcb9
 cours/03-calculer-compter.md: b26b31da96f1

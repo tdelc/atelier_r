@@ -1,4 +1,15 @@
-# Atelier R
+# Atelier R — branche Python
+
+> **Cette branche (`python`) évolue en parallèle de `main`** et se consacre aux cours Python. Les bases R (naissances, météo) y sont présentes mais **désactivées** (`actif: non` dans leur `base.txt`), et l'application s'appelle « Atelier Python » (fichier `atelier.txt`). Quatre cours Python y sont actifs :
+>
+> | Base | Cours | Données |
+> |---|---|---|
+> | `communes_py` | Communes : Python « par la table », 16 leçons, 26 exercices (FR, NL) | Statbel, réelles |
+> | `entreprises_py` | Entreprises : chiffre d'affaires, emploi, NACE, région ; TVA trimestrielle, ONSS, NACE selon les sources, NACE 2025 ; 16 leçons, 25 exercices | **fictives** (communes et NACE réelles) |
+> | `citoyens_py` | Citoyens : pauvreté, chômage, revenus, pondérations d'enquête ; couplage au Registre national, ONEM, SPF Finances, CPAS ; 16 leçons, 24 exercices | **fictives** (communes, NUTS et fusions de 2025 réelles) |
+> | `communes_be` | Communes (support d'origine) : cinq demi-journées en partant des bases du langage (FR, NL) | Statbel, réelles |
+>
+> Les données fictives sont produites par `data-raw/preparer_entreprises_py.py` et `data-raw/preparer_citoyens_py.py` (graines aléatoires fixes : les fichiers se régénèrent à l'identique).
 
 Application Shiny (bslib) pour apprendre l'analyse de bases de données avec R et le tidyverse. Elle comporte quatre volets, disponibles pour chaque base du cours (aujourd'hui : naissances INSEE 2021, météo Meteostat 2010-2026 ; on peut en ajouter autant qu'on veut, voir plus bas) :
 
@@ -62,6 +73,8 @@ Une base peut aussi avoir un cours en **Python** (`langage: python`) : le code s
 
 - `bases/communes_py/` (**Python**) : un cours « par la table », pour passer de SAS à Python sans être programmeur. On part tout de suite de la table des communes, déjà chargée, comme le cours R part du tidyverse : 16 leçons (filtrer, compter, regrouper, créer des variables, croiser, graphiques, étude de cas, puis importer, fusionner, nettoyer ses fichiers, SQL avec DuckDB, boucles et fonctions), 8 pistes, 26 exercices ;
 - `bases/communes_be/` (**Python, support d'origine**) : le même public, mais en partant des bases du langage (types, listes, boucles) : cinq demi-journées. Voir le guide, section « Une base en Python ».
+
+**Désactiver une base sans la supprimer** : `actif: non` dans son `base.txt`. Ses fichiers restent en place, mais elle n'est ni chargée ni proposée. Le titre et l'icône de l'application se règlent dans `atelier.txt` à la racine (`titre: Atelier Python`, `icone: python` ; sans ce fichier : « Atelier R »). Sans aucune base active ayant un `dashboard.R`, l'onglet Dashboard disparaît.
 
 Au redémarrage, la base apparaît sur l'accueil et dans le sélecteur du haut (boutons jusqu'à trois bases, liste déroulante au-delà), utilisable dans le bac à sable. Les leçons, pistes, exercices et dashboard s'ajoutent ensuite, quand on veut.
 

@@ -11,7 +11,7 @@ objet: communes
 fichier: fichiers/donnees/communes_2026.csv
 separateur: ;
 
-libelle: Python
+libelle: Communes
 titre: Python par la table : les communes belges, 2026
 description: Apprendre pandas en partant des tableaux, pour les habitués de SAS : filtrer, compter, regrouper, croiser, représenter, puis importer, fusionner et nettoyer ses fichiers.
 source: Statbel (population au 1er janvier 2026, nomenclature NUTS 2027)
