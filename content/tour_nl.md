@@ -11,7 +11,7 @@ Si la cible n'est pas visible à l'écran, la bulle s'affiche au centre.
 
 # 01-bienvenue
 tab: accueil
-## Welkom in het Atelier
+## Welkom in het {titre_app}
 Dit atelier helpt je om een databank te leren analyseren met R of Python.
 
 Deze rondleiding stelt de interface voor in enkele stappen. Gebruik **Volgende**, de pijltjestoetsen, of **Esc** om te stoppen.

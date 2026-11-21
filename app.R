@@ -37,6 +37,7 @@ options(shiny.maxRequestSize = 1e6)
 load_i18n()                    # textes de l'interface (i18n/interface.csv)
 sandbox_init()
 load_bases()
+REGLAGES <- atelier_reglages()    # titre et icône (atelier.txt)
 register_python()              # bases en Python : fichiers servis au navigateur
 load_dashboards()
 load_cours()
@@ -51,8 +52,8 @@ ui <- function(req) {
  json <- function(x) jsonlite::toJSON(x, auto_unbox = TRUE)
  py_conf <- py_config(lang)
  atelier_page_navbar(
-  title = span(class = "brand", icon("r-project"), "Atelier R"),
-  window_title = "Atelier R",
+  title = span(class = "brand", icon(REGLAGES$icone), REGLAGES$titre),
+  window_title = REGLAGES$titre,
   id = "onglets",
   theme = atelier_theme(),
   lang = lang,
@@ -74,7 +75,7 @@ ui <- function(req) {
   mod_cours_ui("cours"),
   mod_decouverte_ui("decouverte"),
   mod_exercices_ui("exercices"),
-  mod_dashboard_ui("dashboard"),
+  if (a_des_dashboards()) mod_dashboard_ui("dashboard"),
   bslib::nav_spacer(),
   bslib::nav_item(
     base_selector("base")
@@ -105,7 +106,7 @@ server <- function(input, output, session) {
   mod_cours_server("cours", base, bus, session)
   mod_decouverte_server("decouverte", base, bus, session)
   mod_exercices_server("exercices", base, session)
-  mod_dashboard_server("dashboard", base)
+  if (a_des_dashboards()) mod_dashboard_server("dashboard", base)
 
   observeEvent(input$btn_dico, showModal(dico_modal(base())))
 

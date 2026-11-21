@@ -5,6 +5,9 @@
 # Voir docs/GUIDE_CONTENUS.md, section « Ajouter une base ».
 # ============================================================================
 
+# Base désactivée sur cette branche (Python) : « actif: oui » pour la remettre.
+actif: non
+
 # Nom de l'objet R dans le code des étudiants, et fichier de données
 objet: BDD_METEO
 fichier: BDD_METEO.rds

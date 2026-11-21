@@ -1,0 +1,8 @@
+# ============================================================================
+# Réglages généraux de l'atelier (une ligne = « clé: valeur »).
+#   titre   nom affiché en haut de l'écran et sur l'accueil
+#   icone   icône Font Awesome à côté du titre (python, r-project, chart-line…)
+# Fichier absent : « Atelier R », icône R.
+# ============================================================================
+titre: Atelier Python
+icone: python

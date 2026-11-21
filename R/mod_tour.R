@@ -90,7 +90,7 @@ mod_tour_server <- function(start, base, main_session) {
     B <- info(base())
     infos <- lapply(names(BASES), info)
     vals <- list(base = if (est_python(base())) B$libelle else B$objet, titre_base = B$titre,
-                 nb_bases = length(BASES),
+                 nb_bases = length(BASES), titre_app = atelier_reglages()$titre,
                  liste_bases = paste0("**", vapply(infos, `[[`, "", "libelle"), "** (",
                                       vapply(infos, `[[`, "", "titre"), ")", collapse = ", "))
     fill <- function(x) { for (k in names(vals)) x <- gsub(paste0("{", k, "}"), vals[[k]], x, fixed = TRUE); x }
@@ -107,7 +107,8 @@ mod_tour_server <- function(start, base, main_session) {
     # la visite dans la langue de la session (content/tour_nl.md…), sinon en français
     f <- file.path("content", paste0("tour_", langue(), ".md"))
     if (!file.exists(f)) f <- "content/tour_fr.md"
-    rv$steps <- read_tour(f)
+    # sans tableau de bord, l'étape qui le présente est sautée
+    rv$steps <- Filter(function(s) !identical(s$tab, "dashboard") || a_des_dashboards(), read_tour(f))
     if (!length(rv$steps)) return()
     rv$i <- 1; show_step(1)
   })

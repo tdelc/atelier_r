@@ -40,6 +40,21 @@ body { background: var(--paper); }
 .base-select .selectize-input, .base-select .selectize-input.full { padding: .3rem 2rem .3rem .9rem; min-height: 0; font-size: .88rem; border-radius: 999px; background: #fff; color: var(--ink); box-shadow: none; }
 .base-select .selectize-input .item { color: var(--ink); font-weight: 500; }
 .base-select .selectize-dropdown { color: var(--ink); font-size: .88rem; }
+/* la barre de navigation est sombre (texte clair) : tout ce qui s'affiche sur
+   le fond blanc du sélecteur doit forcer une couleur foncée, y compris le
+   texte tapé pour filtrer la liste et l'état « ouvert » (input-active) */
+.base-select .selectize-input input, .base-select .selectize-input.focus input { color: var(--ink) !important; caret-color: var(--ink); }
+.base-select .selectize-input input::placeholder { color: var(--muted); }
+.base-select .selectize-input.focus, .base-select .selectize-input.input-active,
+.base-select .selectize-input.dropdown-active { background: #fff !important; color: var(--ink) !important; box-shadow: 0 0 0 2px rgba(255,255,255,.45); }
+.base-select .selectize-dropdown .option { color: var(--ink); background: #fff; }
+.base-select .selectize-dropdown .option.active { background: #e8eef6; color: var(--ink); }
+.base-select .selectize-dropdown .option.selected { background: var(--ink); color: #fff; }
+.base-select .selectize-control.single .selectize-input:after { border-top-color: var(--ink); }
+/* boutons segmentés : survol et clavier */
+#base label:hover span { background: rgba(255,255,255,.14); color: #fff; }
+#base input[type=radio]:checked + span, #base label:hover input[type=radio]:checked + span { background: #fff; color: var(--ink); }
+#base input[type=radio]:focus-visible + span { outline: 2px solid #9cc3ea; outline-offset: 1px; }
 .btn-nav { color: #dfe8f2 !important; border: 1px solid rgba(255,255,255,.3) !important; background: transparent !important; margin-left: .35rem; }
 .btn-nav:hover { background: rgba(255,255,255,.12) !important; }
 

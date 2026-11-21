@@ -111,10 +111,23 @@ read_base_info <- function(dir, app_dir = ".") {
 
 # Liste les dossiers de bases (ceux qui contiennent un base.txt), triés par
 # la clé « ordre » puis par nom
-list_bases <- function(app_dir = ".") {
+#
+# Une base peut être désactivée sans être supprimée : « actif: non » dans son
+# base.txt. Ses fichiers restent en place (la structure des dossiers est la
+# même d'une branche à l'autre), mais elle n'est ni chargée ni proposée.
+# Pour tout charger malgré tout (tests du moteur R) :
+#   options(atelier.toutes_bases = TRUE)
+base_active <- function(dir) {
+  a <- tolower(trimws(read_base_txt(file.path(dir, "base.txt"))$actif %||% "oui"))
+  !a %in% c("non", "no", "false", "faux", "0", "nee")
+}
+
+list_bases <- function(app_dir = ".", inactives = getOption("atelier.toutes_bases", FALSE)) {
   root <- file.path(app_dir, BASES_DIR)
   dirs <- list.dirs(root, recursive = FALSE, full.names = TRUE)
-  dirs[file.exists(file.path(dirs, "base.txt"))]
+  dirs <- dirs[file.exists(file.path(dirs, "base.txt"))]
+  if (!isTRUE(inactives)) dirs <- dirs[vapply(dirs, base_active, TRUE)]
+  dirs
 }
 
 # Chargées une seule fois au démarrage, partagées (en lecture) par toutes les
@@ -238,6 +251,20 @@ bases_objets <- function() vapply(BASES, `[[`, "", "objet")
 # peuvent utiliser les mêmes noms de fonctions et d'objets sans se gêner.
 # Dans ce fichier, BASE désigne la description de la base (BASE$data = les
 # données, BASE$dir = le dossier).
+# Réglages généraux (atelier.txt à la racine) : titre et icône de l'application
+atelier_reglages <- function(app_dir = ".") {
+  f <- file.path(app_dir, "atelier.txt")
+  m <- if (file.exists(f)) read_base_txt(f) else list()
+  list(titre = m$titre %||% "Atelier R", icone = m$icone %||% "r-project")
+}
+
+# Langages des bases actives (« r », « python ») : l'accueil s'y adapte
+langages_actifs <- function() unique(vapply(BASES, `[[`, "", "langage"))
+
+# Au moins une base active a-t-elle un tableau de bord ? (sinon l'onglet
+# Dashboard et l'étape de la visite qui le présente sont masqués)
+a_des_dashboards <- function() any(vapply(BASES, function(B) !is.null(B$dash_env), TRUE))
+
 load_dashboards <- function() {
   for (b in names(BASES)) {
     f <- base_path(b, "dashboard.R")

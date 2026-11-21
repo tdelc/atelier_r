@@ -4,6 +4,7 @@
 # ============================================================================
 suppressPackageStartupMessages({ library(dplyr); library(tidyr); library(ggplot2); library(lubridate) })
 for (f in list.files("R", full.names = TRUE)) source(f, encoding = "UTF-8")
+options(atelier.toutes_bases = TRUE)   # le moteur R est testé sur ses bases, même désactivées
 sandbox_init(); load_bases(); load_exercices()
 ok <- 0; ko <- 0
 expect <- function(desc, cond) if (isTRUE(cond)) ok <<- ok + 1 else { ko <<- ko + 1; cat("ÉCHEC :", desc, "\n") }

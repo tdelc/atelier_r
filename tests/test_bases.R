@@ -16,6 +16,8 @@ sandbox_init(); load_bases(); load_dashboards()
 load_cours(); load_pistes(); load_exercices()
 cat("Bases trouvées :", paste(names(BASES), collapse = ", "), "\n")
 expect("au moins une base", length(BASES) >= 1)
+expect("bases désactivées non chargées", !any(c("naissances", "meteo") %in% names(BASES)) ||
+         all(vapply(file.path("bases", intersect(c("naissances", "meteo"), names(BASES))), base_active, TRUE)))
 for (b in names(BASES)) {
   B <- BASES[[b]]
   expect(paste(b, ": données = tableau"), is.data.frame(B$data) && nrow(B$data) > 0)
@@ -39,7 +41,7 @@ for (b in names(BASES)) {
   cat(sprintf("  %s : %d leçons, %d pistes, %d exercices\n", b, length(cours_de(b, "fr")),
               length(pistes_de(b, "fr")), length(exercices_de(b, "fr"))))
 }
-expect("interface de l'onglet Dashboard", !inherits(tryCatch(mod_dashboard_ui("dashboard"), error = function(e) e), "error"))
+if (a_des_dashboards()) expect("interface de l'onglet Dashboard", !inherits(tryCatch(mod_dashboard_ui("dashboard"), error = function(e) e), "error"))
 expect("configuration Python", is.list(py_config("fr")) && is.list(py_config("nl")))
 expect("textes d'interface", nzchar(tr("cours.suivante", lang = "nl")) && tr("cours.n_cartes", n = 3, lang = "en") == "3 cards")
 expect("sélecteur de base", !inherits(tryCatch(base_selector("base"), error = function(e) e), "error"))
@@ -55,6 +57,11 @@ writeLines(c("nom;couleur;prix", "pomme;rouge;2,5", "banane;jaune;1,2", "fraise;
            file.path(app, "bases", "fruits", "fruits.csv"))
 # une seconde base sans base.txt : ignorée
 dir.create(file.path(app, "bases", "brouillon"))
+# une troisième, désactivée (« actif: non ») : ignorée, sauf si on demande tout
+dir.create(file.path(app, "bases", "archive"))
+writeLines(c("objet: BDD_ARCHIVE", "fichier: archive.csv", "actif: non"), file.path(app, "bases", "archive", "base.txt"))
+writeLines(c("a;b", "1;2"), file.path(app, "bases", "archive", "archive.csv"))
+expect("base désactivée listée sur demande", setequal(basename(list_bases(app, inactives = TRUE)), c("archive", "fruits")))
 BASES_SAUVE <- BASES
 load_bases(app)
 expect("nouvelle base trouvée", identical(names(BASES), "fruits"))
@@ -66,6 +73,9 @@ r <- sandbox_run('BDD_FRUITS |> filter(couleur == "rouge") |> summarise(m = mean
                  sandbox_new_env(base_datasets("fruits")))
 expect("nouvelle base utilisable dans le bac à sable", isTRUE(r$ok) && abs(r$value$m - 3.25) < 1e-9)
 expect("message read_csv cite la base", any(grepl("BDD_FRUITS", sandbox_check('read_csv("x.csv")'))))
+expect("réglages par défaut sans atelier.txt", identical(atelier_reglages(app)$titre, "Atelier R"))
+writeLines(c("titre: Mon atelier", "icone: python"), file.path(app, "atelier.txt"))
+expect("réglages lus dans atelier.txt", identical(atelier_reglages(app), list(titre = "Mon atelier", icone = "python")))
 BASES <- BASES_SAUVE
 
 cat(sprintf("\n%d tests réussis, %d échecs\n", ok, ko)); if (ko) quit(status = 1)

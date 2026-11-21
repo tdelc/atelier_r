@@ -11,6 +11,7 @@ suppressPackageStartupMessages({
   library(dplyr); library(tidyr); library(ggplot2); library(lubridate)
 })
 for (f in list.files("R", full.names = TRUE)) source(f, encoding = "UTF-8")
+options(atelier.toutes_bases = TRUE)   # le moteur R est testé sur ses bases, même désactivées
 sandbox_init(); load_bases()
 # facultatif : ne tester qu'une base -> Rscript tests/test_contenus.R meteo
 args <- setdiff(commandArgs(TRUE), "--verbose")

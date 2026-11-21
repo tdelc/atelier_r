@@ -3,15 +3,15 @@ Visite guidée. Une section = une étape, dans l'ordre du fichier.
   tab:    onglet à ouvrir (accueil, cours, decouverte, exercices, dashboard)
   target: sélecteur CSS de l'élément à entourer (facultatif -> bulle centrée)
   ##      titre de la bulle, le reste est du markdown
-  {base}  nom de l'objet de la base choisie (ex. BDD_NAIS), {titre_base} son titre
+  {base}  nom de l'objet de la base choisie (ex. BDD_NAIS), {titre_base} son titre, {titre_app} le nom de l'atelier
   {liste_bases} la liste des bases disponibles, {nb_bases} leur nombre
 Si la cible n'est pas visible à l'écran, la bulle s'affiche au centre.
 -->
 
 # 01-bienvenue
 tab: accueil
-## Bienvenue dans l'Atelier R
-Cet atelier vous accompagne pour apprendre à analyser une base de données avec R.
+## Bienvenue dans l'{titre_app}
+Cet atelier vous accompagne pour apprendre à analyser une base de données.
 
 Cette visite présente l'interface en quelques étapes. Utilisez **Suivant**, les flèches du clavier, ou **Échap** pour quitter.
 
@@ -57,19 +57,19 @@ Des pistes guidées, chacune avec un code de départ et des idées à tester. Et
 tab: decouverte
 target: .editor-card
 ## L'éditeur de code
-Modifiez le code, puis cliquez sur **Exécuter** ou tapez **Ctrl + Entrée**. Le code s'exécute sur le serveur, dans un espace protégé : vous ne pouvez rien casser, et la base d'origine reste intacte.
+Modifiez le code, puis cliquez sur **Exécuter** ou tapez **Ctrl + Entrée**. Le code s'exécute dans un espace protégé : vous ne pouvez rien casser, et la base d'origine reste intacte.
 
 # 09-objets
 tab: decouverte
 target: #decouverte-objets
 ## Vos objets
-Les objets que vous créez avec `<-` apparaissent ici et restent disponibles d'une exécution à l'autre. **Nouvel environnement** repart de zéro.
+Les objets (tables, variables) que vous créez apparaissent ici et restent disponibles d'une exécution à l'autre. **Nouvel environnement** repart de zéro.
 
 # 10-exercices
 tab: exercices
 target: #exercices-liste
 ## Les exercices
-Une progression en cinq niveaux, des premiers filtres aux variables construites avec `lag()`. Les exercices réussis sont cochés, et mémorisés dans votre navigateur.
+Une progression en cinq niveaux, des premiers filtres aux traitements complets. Les exercices réussis sont cochés, et mémorisés dans votre navigateur.
 
 # 11-verifier
 tab: exercices
@@ -82,6 +82,6 @@ Un **indice** est disponible, et la **correction commentée** quand vous le souh
 # 12-dashboard
 tab: dashboard
 ## Le Dashboard
-Pour finir, un tableau de bord interactif entièrement écrit en R. Chaque graphique a un bouton **Voir le code** : vous y retrouverez les verbes du cours.
+Pour finir, un tableau de bord interactif. Chaque graphique a un bouton **Voir le code** : vous y retrouverez les verbes du cours.
 
 Bon travail !

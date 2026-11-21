@@ -11,7 +11,7 @@ Si la cible n'est pas visible à l'écran, la bulle s'affiche au centre.
 
 # 01-bienvenue
 tab: accueil
-## Welcome to the Atelier
+## Welcome to the {titre_app}
 This workshop helps you learn to analyse a dataset with R or Python.
 
 This tour presents the interface in a few steps. Use **Next**, the arrow keys, or **Esc** to quit.
