@@ -43,7 +43,7 @@ entreprises["emploi"].quantile([0.5, 0.75, 0.9, 0.99])
 entreprises["ca"].describe().round(1)
 ```
 
-**Lecture :** médiane de 164 milliers d'euros, moyenne de 2,9 millions : la moyenne est **17 fois** la médiane.
+**Lecture :** médiane de 163 milliers d'euros, moyenne de 2,9 millions : la moyenne est **17 fois** la médiane.
 
 # Qui sont les plus grandes ? nlargest()
 

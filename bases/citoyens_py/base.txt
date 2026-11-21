@@ -1,0 +1,28 @@
+# ============================================================================
+# Base « citoyens_py » : le cours Python « par la table », côté CITOYENS :
+# pauvreté, chômage, revenus, par région, classe d'âge et type de ménage.
+# Les personnes sont FICTIVES (échantillon d'enquête simulé pour l'atelier,
+# voir data-raw/preparer_citoyens_py.py) ; les communes, la nomenclature NUTS
+# et les fusions de communes de 2025 sont réelles.
+# ============================================================================
+
+langage: python
+
+objet: personnes
+fichier: fichiers/donnees/personnes_2025.csv
+separateur: ;
+
+libelle: Citoyens
+titre: Python par la table : pauvreté et chômage, 2025
+description: Un échantillon d'enquête fictif de 13 683 personnes dans 6 000 ménages, avec pondérations : revenus, risque de pauvreté, chômage, par région et classe d'âge. Puis le couplage avec des extraits administratifs pseudonymisés (Registre national, ONEM, SPF Finances, CPAS).
+source: Données fictives, simulées pour l'atelier (communes, NUTS et fusions de communes réelles)
+ligne: une personne de l'échantillon
+icone: people-group
+ordre: 6
+nom_lignes: personnes
+compter: ménages = id_menage, communes = code_ins
+
+dossier_python: fichiers
+demarrage_python: demarrage.py
+
+code_libre: personnes.head()

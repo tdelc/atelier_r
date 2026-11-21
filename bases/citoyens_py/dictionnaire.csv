@@ -1,0 +1,18 @@
+variable,libelle,type,modalites
+id_personne,Identifiant de la personne dans l'enquête,Texte,P00001 à P13683
+id_menage,Identifiant du ménage : les personnes qui vivent ensemble,Texte,6 000 ménages
+id_pseudo,"Pseudonyme de la personne, attribué par un tiers de confiance pour coupler l'enquête aux fichiers administratifs",Texte,"16 caractères. Ne permet pas de retrouver la personne"
+region,Région de résidence,Texte,"Bruxelles, Flandre, Wallonie"
+province,Province de résidence,Texte,"10 provinces, plus Bruxelles-Capitale"
+code_ins,Code INS de la commune de résidence,Texte,5 chiffres
+commune,Commune de résidence,Texte,
+sexe,Sexe,Texte,"H = homme, F = femme"
+age,Âge au 1er janvier 2025,Numérique (entier),
+classe_age,Classe d'âge,Texte,"0-17, 18-24, 25-49, 50-64, 65+"
+statut,Statut d'activité principal (définitions du Bureau international du travail pour l'emploi et le chômage),Texte,"en emploi, chômeur, inactif, étudiant, retraité, moins de 15 ans"
+diplome,Niveau de diplôme le plus élevé (personnes de 25 ans et plus),Texte,"faible (au plus secondaire inférieur), moyen (secondaire supérieur), élevé (supérieur). Vide avant 25 ans"
+type_menage,Type de ménage,Texte,"isolé, couple sans enfant, couple avec enfants, famille monoparentale, autre"
+taille_menage,Nombre de personnes du ménage,Numérique (entier),
+revenu_menage,"Revenu disponible annuel du ménage, en euros (tous les revenus du ménage, après impôts et cotisations, allocations comprises)",Numérique (entier),La même valeur pour toutes les personnes du ménage
+revenu_equivalent,"Revenu disponible équivalent, en euros par an : le revenu du ménage divisé par le nombre d'unités de consommation (échelle de l'OCDE modifiée : 1 pour le premier adulte, 0,5 par personne de 14 ans et plus, 0,3 par enfant de moins de 14 ans)",Numérique (entier),C'est le revenu qui sert à mesurer la pauvreté
+poids,"Pondération : le nombre de personnes de la population que représente cette personne de l'échantillon",Numérique (décimal),La somme des poids donne la population de la Belgique

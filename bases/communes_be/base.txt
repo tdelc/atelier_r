@@ -17,7 +17,7 @@ description: Un cours en Python (pandas, NumPy, DuckDB) sur les fichiers de Stat
 source: Statbel (Direction générale Statistique)
 ligne: une commune
 icone: python
-ordre: 4
+ordre: 7
 nom_lignes: communes
 
 # Python : le dossier fichiers/ est copié dans le dossier de travail de
